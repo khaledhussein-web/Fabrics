@@ -1,0 +1,246 @@
+stagewareltd.co.uk
+
+
+Database : 
+categories 
+products
+users
+
+
+Admin panel : 
+Login Page
+
+Username / Password
+JWT authentication
+Redirect to dashboard
+Product Management Page
+Add new product (form: name, description, image, category)
+Edit product
+Delete product
+Show preview grid with images
+
+Category Management Page
+
+Add / edit / delete categories (optional)
+
+ Image Upload
+
+Upload via /api/upload
+
+Automatically store in /uploads/{category}/
+
+ Bilingual Inputs
+
+Two input fields for English / Arabic name and description 
+
+
+
+
+
+
+User Panel :
+Search & Filter by material, color, or price
+Navbar:
+
+Home
+
+About Us !!!
+
+Services !!!
+
+Products (Dropdown: Fabrics-->decoration fabrics/projetcs screen/holograme/flooring, Tracks-->chain track/reveal system/tracks/rollups, Frames)
+
+Contact Us
+
+Feedback !!!!!!
+
+Language Switch (AR / EN)
+
+🏠 Home Page:
+
+Hero section with slogan (e.g., “Transform Your Space with Elegance”)
+
+Featured products slider
+
+Contact info & social media icons
+
+🪟 Products Page:
+
+Category filter (buttons or tabs)
+
+Grid view of all products (loaded dynamically from /api/products)
+
+When clicked → Product details modal (image + bilingual text)
+
+📞 Contact Us:
+
+Contact form (name, email, message)
+
+Google Map location
+
+📝 Feedback:
+
+Store feedback in a feedback table (optional)
+
+
+
+
+
+
+
+
+
+
+
+
+
+SEO Usage  :
+
+1. Meta Tags (Very Important)
+<head>
+  <title>Fabrics & Flooring | Elegant Curtains, Screens, and Decor</title>
+  <meta name="description" content="High-quality fabrics, curtains, flooring, and decor solutions in Lebanon. Custom designs, blackouts, and projection screens.">
+  <meta name="keywords" content="fabrics, curtains, flooring, blackouts, decoration, Lebanon, projection screens">
+  <meta name="author" content="Your Company Name">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+For Arabic version:
+
+<html lang="ar" dir="rtl">
+<head>
+  <title>الأقمشة والأرضيات | ستائر، ديكور، وشاشات عرض</title>
+  <meta name="description" content="أقمشة وستائر فاخرة، أرضيات وديكور عالي الجودة في لبنان. تصميمات مخصصة وخدمات احترافية.">
+</head>
+
+
+2.Use Headings Correctly
+
+Search engines read your structure:
+
+<h1>Our Fabrics Collection</h1>
+<h2>Elegant Curtains and Blackouts</h2>
+<p>Our fabrics are made from high-quality materials...</p>
+
+
+🧠 Tip: Only one <h1> per page.
+
+
+
+
+3.Image Optimization
+
+Since your site is image-heavy:
+
+<img src="images/fabrics/velvet.jpg" alt="Velvet curtain fabric for living rooms">
+
+
+➡️ The alt text describes the image and helps Google understand it.
+
+Also:
+
+Resize large images (less than 300–400 KB)
+
+Use .webp format for better loading speed
+
+
+
+4. Mobile Friendly
+
+Make sure your CSS uses responsive layouts:
+
+@media (max-width: 768px) {
+  .product-card {
+    width: 100%;
+  }
+}
+
+
+Google ranks mobile-friendly websites higher.
+
+
+
+
+
+
+5.Technical SEO
+🗺️ a. Sitemap
+
+A sitemap.xml helps Google know your pages.
+
+Example:
+
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://www.yourwebsite.com/</loc>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://www.yourwebsite.com/products</loc>
+    <priority>0.8</priority>
+  </url>
+</urlset>
+
+
+➡️ Save it as sitemap.xml and upload it to your main folder.
+
+
+b. Robots.txt
+
+Tells Google what to index or ignore:
+
+User-agent: *
+Allow: /
+Sitemap: https://www.yourwebsite.com/sitemap.xml
+
+c. Google Analytics & Search Console
+
+Create a Google account
+
+Go to Google Analytics
+
+Copy the code snippet and paste it before </head>
+
+Register your domain on Google Search Console
+
+Submit your sitemap.xml there
+
+This lets you monitor:
+
+How many people visit
+
+Which country they’re from
+
+What pages perform best
+
+
+
+6.Multilingual SEO (Arabic + English)
+✅ Use Language Tags:
+<link rel="alternate" href="https://yourwebsite.com/ar/" hreflang="ar" />
+<link rel="alternate" href="https://yourwebsite.com/en/" hreflang="en" />
+
+✅ Separate URLs:
+
+English: https://yourwebsite.com/en/products
+
+Arabic: https://yourwebsite.com/ar/products
+
+Each page has its own content and meta description in that language.
+
+
+
+7.Performance & Speed
+
+Google ranks fast websites higher:
+
+Compress images
+
+Use caching
+
+Host on reliable servers
+
+Minimize JavaScript & CSS
+
+ test the site here:
+ https://pagespeed.web.dev
