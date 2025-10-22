@@ -1,9 +1,47 @@
 import React from "react";
+import "../assets/Home.css"
 
 export default function Home({ t }) {
 
   return (
     <>
+
+
+      {/* { The images} */}
+    
+    {/* <div className="full-width-banner-container">
+      <img src="/banners/banner1.png" alt="Banner 1" className="banner-image" />
+      <img src="/banners/banner2.jpg" alt="Banner 2" className="banner-image" />
+      <img src="/banners/banner3.jpg" alt="Banner 3" className="banner-image" />
+    </div> */}
+
+{/* // Replace your old structure with this: */}
+
+<div className="p-0 m-0">
+  {/* The p-0 and m-0 classes remove any default padding/margin */}
+  
+  <img 
+    src="/banners/banner1.png" 
+    alt="Banner 1" 
+    className="img-fluid d-block w-100" 
+  />
+  
+  <img 
+    src="/banners/banner2.jpg" 
+    alt="Banner 2" 
+    className="img-fluid d-block w-100" 
+  />
+  
+  <img 
+    src="/banners/banner3.jpg" 
+    alt="Banner 3" 
+    className="img-fluid d-block w-100" 
+  />
+</div>
+
+
+
+
       {/* ====== HERO SECTION ====== */}
       <section id="home">
         <h1>{t?.hero?.slogan || "Elegance in Every Detail"}</h1>
@@ -19,7 +57,7 @@ export default function Home({ t }) {
       </section>
 
       {/* ====== ABOUT SECTION ====== */}
-      <section id="about">
+      <section className="container" id="about">
         <h2>{t?.about?.title || "About Us"}</h2>
         <p>
           {t?.about?.body ||
@@ -36,13 +74,6 @@ export default function Home({ t }) {
       </section>
 
 
-      {/* ====== FOOTER ====== */}
-      <footer>
-        <p>
-          © {new Date().getFullYear()} {t?.brand || "StageWare"}. All rights
-          reserved.
-        </p>
-      </footer>
 
 
     </>

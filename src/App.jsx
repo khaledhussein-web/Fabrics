@@ -1,11 +1,23 @@
+// Import react features
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+// CSS and JS
+import "./assets/style.css"; // ✅ make sure the name matches your real file
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { UI } from "./i18n";
+
+//Componenets
+
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer"
+
 import ProductCategory from "./Pages/ProductCategory";
 import Home from "./Pages/Home";
 import Contact from "./Pages/Contact";
-import "./assets/style.css"; // ✅ make sure the name matches your real file
-import { UI } from "./i18n";
+import About from "./Pages/About"
+import Demo from "./Pages/Demo"
+import Login from "./Pages/Login"
 
 function App() {
   const [lang, setLang] = useState("en");
@@ -18,24 +30,37 @@ function App() {
   }, []);
 
   return (
-    <Router>
-      {/* ✅ Navbar visible on every page */}
-      <Navbar lang={lang} toggleLang={toggleLang} t={t} />
+   
+    <>
+   
+   <Router>
 
-      <div style={{ padding: "30px" }}>
-        <h1>StageWare</h1>
+      {/* Navbar visible on every page */}
+      <Navbar lang={lang} toggleLang={toggleLang} t={t} />
+  
+  {/* style={{ padding: "30px" }} */}
+     <div>
+        {/* <h1>StageWare</h1> */}
 
         {/* ✅ React Router setup */}
         <Routes>
+
           {/* ✅ Default home route */}
           <Route path="/" element={<Home t={t} />} />
-          <Route path="/about" element={<div>About Us Page</div>} />
+          <Route path="/about" element={<About t={t}/>} />
           <Route path="/services" element={<div>Services Page</div>} />
           <Route path="/contact" element={<Contact t={t} />} />
           <Route path="/products/:category" element={<ProductCategory />} />
+          <Route path="/products/:category/:subcategory" element={<ProductCategory />} />
+          <Route path="/Demo" element={<Demo t={t}/>}/>
+          <Route path="/Login" element ={<Login t={t}/>}/>
+
+
         </Routes>
       </div>
+      <Footer t={t} dir={t.dir}/>
     </Router>
+    </>
   );
 }
 
