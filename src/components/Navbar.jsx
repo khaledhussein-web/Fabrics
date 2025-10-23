@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-
+import Dropdown from 'react-bootstrap/Dropdown'; // Import the component
 export default function Navbar({ lang, toggleLang, t }) {
 
   //The setState for the desktop/mobile menu
@@ -45,55 +45,71 @@ export default function Navbar({ lang, toggleLang, t }) {
             {/* Services */}
             <Link to="/services" className="nav-btn">{t.nav.services}</Link>
 
-            {/* ===== Products Dropdown  ===== */}
-            <div
-              className="nav-btn dropdown"
-              onMouseEnter={() => setDropdownOpen(true)}
-              onMouseLeave={() => {
-              setDropdownOpen(false);
-              setFabricsDropdownOpen(false);
-            }}>
 
-              {t.nav.products}
-              {dropdownOpen && (
-                <div className="dropdown-menu">
 
-                  {/* NEW: Fabrics Link with Nested Dropdown */}
-      <div 
-          className="dropdown-item nested-dropdown"
-          onMouseEnter={() => setFabricsDropdownOpen(true)}
-          onMouseLeave={() => setFabricsDropdownOpen(false)}
-      >
-          {t.productCategories.fabrics} {/* The text "Fabrics" */}
-          {fabricsDropdownOpen && (
-          <div className="nested-dropdown-menu">
-            <Link to="/products/fabrics/decoration" className="dropdown-item">
-                {t.fabricsSubCategories.decoration}
-            </Link>
-            <Link to="/products/fabrics/projectors" className="dropdown-item">
-                {t.fabricsSubCategories.projectsScreen}
-            </Link>
-            <Link to="/products/fabrics/holograms" className="dropdown-item">
-                {t.fabricsSubCategories.holograme}
-            </Link>
-        </div>
-          )}
-          </div>
-                  {/* <Link to="/products/fabrics" className="dropdown-item">
-                    {lang === "en" ? "Fabrics" : "الأقمشة"}
-                  </Link> */}
-                  <Link to="/products/tracks" className="dropdown-item">
-                    {lang === "en" ? "Tracks" : "المسارات"}
-                  </Link>
-                  {/* <Link to="/products/flooring" className="dropdown-item">
-                    {lang === "en" ? "Flooring" : "الأرضيات"}
-                  </Link> */}
-                  <Link to="/products/frames" className="dropdown-item">
-                    {lang === "en" ? "Frames" : "الإطارات"}
-                  </Link>
-                </div>
-              )}
-            </div>
+          {/* Products dropdown */}
+
+
+          <Dropdown
+          // Use 'show' to control visibility via custom state (hover)
+          show={dropdownOpen} 
+          onMouseEnter={() => setDropdownOpen(true)}
+          onMouseLeave={() => setDropdownOpen(false)}
+          as="div"
+          className="nav-btn"
+        >
+          {/* Main button/toggle text */}
+          <Dropdown.Toggle as="span" className="cursor-pointer">
+            {t.nav.products}
+          </Dropdown.Toggle>
+
+          {/* Main Dropdown Menu */}
+          <Dropdown.Menu>
+            
+            {/* ---------------------------------------------------- */}
+            {/* NESTED FABRICS DROPDOWN - This is the custom part  */}
+            {/* ---------------------------------------------------- */}
+            <Dropdown.Item as="div" className="nested-dropdown">
+              {/* This is essentially the NestedHoverDropdown component logic, 
+                  but inlined for a single file example. */}
+              <Dropdown>
+                  <Dropdown.Toggle as="span" style={{ cursor: 'default'}} className="dropdown-item">
+                      {t.productCategories.fabrics} {/* The text "Fabrics" */}
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu className="nested-dropdown-menu">
+                    {/* The nested links MUST be Dropdown.Item components */}
+                    <Dropdown.Item as={Link} to="/products/fabrics/decoration">
+                      {t.fabricsSubCategories.decoration}
+                    </Dropdown.Item>
+                    <Dropdown.Item as={Link} to="/products/fabrics/projectors">
+                      {t.fabricsSubCategories.projectsScreen}
+                    </Dropdown.Item>
+                    <Dropdown.Item as={Link} to="/products/fabrics/holograms">
+                      {t.fabricsSubCategories.holograme}
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+              </Dropdown>
+            </Dropdown.Item>
+            
+            {/* ---------------------------------------------------- */}
+
+            {/* Other links in the main menu */}
+            <Dropdown.Item as={Link} to="/products/tracks">
+              {lang === "en" ? "Tracks" : "المسارات"}
+            </Dropdown.Item>
+            <Dropdown.Item as={Link} to="/products/frames">
+              {lang === "en" ? "Frames" : "الإطارات"}
+            </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+
+
+          {/*  End products dropdown*/}
+
+
+
+
+
 
             {/* Contact  */}
             <Link to="/contact" className="nav-btn">{t.nav.contact}</Link>

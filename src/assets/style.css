@@ -9,10 +9,8 @@
 
 
 
-
-
 /* === DROPDOWN MENU === */
-.dropdown {
+/* .dropdown {
   position: relative;
 }
 
@@ -27,7 +25,7 @@
   display: flex;
   flex-direction: column;
   min-width: 180px;
-  z-index: 150;
+  z-index: 1500;
 }
 
 .dropdown-item {
@@ -40,7 +38,87 @@
 .dropdown-item:hover {
   background: #fff4d8;
   color: #c49b34;
-}
+} */
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ==== Fabrics dropdown menu */
+
+
+/* === NESTED DROPDOWN MENU === */
+
+/* The dropdown item that contains the second-level menu (e.g., the 'Fabrics' link) */
+/* .dropdown-item.nested-dropdown {
+    /* Ensure the parent link can act as a container for the nested menu */
+    /* position: relative;  */
+    
+    /* Crucial: Prevents text like 'Tracks & Frames' from wrapping */
+    /* white-space: nowrap;  */
+/* }  */
+
+/* The actual second-level menu container */
+/* .nested-dropdown-menu {
+    position: absolute; */
+    /* Position the nested menu to the RIGHT of its parent item */
+    /* top: 0; */
+    /* left: 100%; Position it immediately to the right of the parent item */
+    
+    /* Inherit basic menu styles */
+    /* background: #fff;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1); */
+    
+    /* display: flex;
+    flex-direction: column;
+    min-width: 200px; 
+    z-index: 160;  */
+/* } */
+
+  
+
+
+/* Ensure all nested links are treated like regular dropdown items */
+/* .nested-dropdown-menu .dropdown-item { */
+    /* Crucial: Prevents two-word link text (like 'Projects screen') from wrapping */
+    /* white-space: nowrap; 
+    cursor: default;
+} */
+
+/* Optional: Add a subtle arrow to indicate a nested menu */
+/* .dropdown-item.nested-dropdown::after {
+   
+    font-size: 0.7em;
+    margin-left: 8px;
+    color: #999; */
+/* } */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -301,90 +379,6 @@ header {
 
 
 
-
-
-/* === DROPDOWN MENU === */
-.dropdown {
-  position: relative;
-}
-
-.dropdown-menu {
-  position: absolute;
-  top: 40px;
-  left: 0;
-  background: #fff;
-  border: 1px solid #eee;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  display: flex;
-  flex-direction: column;
-  min-width: 180px;
-  z-index: 150;
-}
-
-.dropdown-item {
-  padding: 10px 15px;
-  color: #444;
-  text-decoration: none;
-  transition: 0.3s;
-}
-
-.dropdown-item:hover {
-  background: #fff4d8;
-  color: #c49b34;
-}
-
-
-
-/* ==== Fabrics dropdown menu */
-
-
-/* === NESTED DROPDOWN MENU === */
-
-/* The dropdown item that contains the second-level menu (e.g., the 'Fabrics' link) */
-.dropdown-item.nested-dropdown {
-    /* Ensure the parent link can act as a container for the nested menu */
-    position: relative; 
-    
-    /* Crucial: Prevents text like 'Tracks & Frames' from wrapping */
-    white-space: nowrap; 
-}
-
-/* The actual second-level menu container */
-.nested-dropdown-menu {
-    position: absolute;
-    /* Position the nested menu to the RIGHT of its parent item */
-    top: 0;
-    left: 100%; /* Position it immediately to the right of the parent item */
-    
-    /* Inherit basic menu styles */
-    background: #fff;
-    border: 1px solid #eee;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    
-    display: flex;
-    flex-direction: column;
-    min-width: 200px; /* Increase min-width to accommodate multi-word links */
-    z-index: 160; /* Higher z-index than the main dropdown menu (150) */
-
-  
-}
-
-/* Ensure all nested links are treated like regular dropdown items */
-.nested-dropdown-menu .dropdown-item {
-    /* Crucial: Prevents two-word link text (like 'Projects screen') from wrapping */
-    white-space: nowrap; 
-    cursor: default;
-}
-
-/* Optional: Add a subtle arrow to indicate a nested menu */
-.dropdown-item.nested-dropdown::after {
-   
-    font-size: 0.7em;
-    margin-left: 8px;
-    color: #999;
-}
 
 
 
