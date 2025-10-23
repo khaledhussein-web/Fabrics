@@ -52,7 +52,88 @@
 
 
 
-/* ==== Fabrics dropdown menu */
+/* ====  dropdown menu */
+
+/* ------------------------------------------------------------------- */
+/* 1. Generic Styles for Nested Menus */
+/* ------------------------------------------------------------------- */
+
+/* The parent item that holds the submenu */
+.dropdown-submenu {
+    position: relative; 
+    /* Ensures the parent list item takes up the full width of the main menu */
+    display: block; 
+}
+
+/* Hide the nested menu by default */
+.dropdown-menu-nested {
+    list-style: none;
+    padding: 0;
+    margin: 0; 
+    
+    /* Apply base Bootstrap menu styles */
+    background-color: var(--bs-dropdown-bg);
+    border: var(--bs-dropdown-border-width) solid var(--bs-dropdown-border-color);
+    border-radius: var(--bs-dropdown-border-radius);
+    box-shadow: var(--bs-dropdown-box-shadow);
+    z-index: 1000;
+    
+    display: none; /* Initially hidden */
+}
+
+/* ------------------------------------------------------------------- */
+/* 2. Desktop Behavior (Hover to Open Submenu) */
+/* ------------------------------------------------------------------- */
+@media screen and (min-width: 992px) { /* Applies on desktop/large screens */
+    
+    .dropdown-submenu:hover > .dropdown-menu-nested {
+        display: block; /* Show the menu on hover */
+        
+        /* Positioning the nested menu to the right of the parent */
+        position: absolute;
+        left: 100%; 
+        top: 0; 
+        margin-top: -1px;
+        min-width: 10rem; 
+    }
+}
+
+/* ------------------------------------------------------------------- */
+/* 3. Mobile/Tablet Behavior (Inline Display) */
+/* ------------------------------------------------------------------- */
+@media screen and (max-width: 991px) {
+    /* On mobile, keep the nested menu static/inline */
+    .dropdown-submenu .dropdown-menu-nested {
+        position: static; 
+        border: none;
+        box-shadow: none;
+        /* Optional: Indent sub-items for better visibility */
+        padding-left: 1rem; 
+    }
+    
+    /* NOTE: For a click/tap functionality on mobile, you need a small JS toggle 
+       to conditionally apply an 'open' class on the .dropdown-submenu 
+       to show the .dropdown-menu-nested, as :hover is unreliable on touchscreens. 
+    */
+}
+
+.dropdown-submenu > .submenu-trigger {
+    /* Add any styles here that your old .dropdown-toggle used, 
+       BUT DO NOT include any code that adds an ::after pseudo-element */
+    padding-right: 1.5rem; 
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /* === NESTED DROPDOWN MENU === */
@@ -189,6 +270,7 @@ header {
   border-bottom: 2px solid transparent;
   margin: 0 15px;
   transition: all 0.3s ease;
+  cursor:pointer;
 }
 
 .nav-btn:hover {

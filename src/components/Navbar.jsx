@@ -19,6 +19,15 @@ export default function Navbar({ lang, toggleLang, t }) {
     setMobileMenu(false);
   }, [lang]);
 
+  const handleCategoryClick = (e) => {
+        // Stop React-Bootstrap from closing the main dropdown menu
+        e.stopPropagation(); 
+        // Stop the default action (like following a phantom link)
+        e.preventDefault(); 
+        // NOTE: The actual nested menu toggling is handled by the custom CSS (hover) 
+        // or a custom JS handler you'd implement for mobile (click).
+    };
+
   return (
     <header>
       <nav className="navbar">
@@ -49,60 +58,82 @@ export default function Navbar({ lang, toggleLang, t }) {
 
           {/* Products dropdown */}
 
+<Dropdown>
+            <Dropdown.Toggle 
+               
+                as="a" 
+                id="product-menu-dropdown-responsive"
+                className="nav-btn"
+            >
+                {t.nav.products} 
+            </Dropdown.Toggle>
 
-          <Dropdown
-          // Use 'show' to control visibility via custom state (hover)
-          show={dropdownOpen} 
-          onMouseEnter={() => setDropdownOpen(true)}
-          onMouseLeave={() => setDropdownOpen(false)}
-          as="div"
-          className="nav-btn"
-        >
-          {/* Main button/toggle text */}
-          <Dropdown.Toggle as="span" className="cursor-pointer">
-            {t.nav.products}
-          </Dropdown.Toggle>
+            <Dropdown.Menu>
+                
+                {/* --- FABRICS (Nested Menu Item) --- */}
+                <li className="dropdown-submenu">
+                    <Dropdown.Item 
+                     noCaret 
+                        className="submenu-trigger cursor-pointer"
+                    >
+                        {t.productsCategories.fabrics}
+                    </Dropdown.Item>
 
-          {/* Main Dropdown Menu */}
-          <Dropdown.Menu>
-            
-            {/* ---------------------------------------------------- */}
-            {/* NESTED FABRICS DROPDOWN - This is the custom part  */}
-            {/* ---------------------------------------------------- */}
-            <Dropdown.Item as="div" className="nested-dropdown">
-              {/* This is essentially the NestedHoverDropdown component logic, 
-                  but inlined for a single file example. */}
-              <Dropdown>
-                  <Dropdown.Toggle as="span" style={{ cursor: 'default'}} className="dropdown-item">
-                      {t.productCategories.fabrics} {/* The text "Fabrics" */}
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu className="nested-dropdown-menu">
-                    {/* The nested links MUST be Dropdown.Item components */}
-                    <Dropdown.Item as={Link} to="/products/fabrics/decoration">
-                      {t.fabricsSubCategories.decoration}
-                    </Dropdown.Item>
-                    <Dropdown.Item as={Link} to="/products/fabrics/projectors">
-                      {t.fabricsSubCategories.projectsScreen}
-                    </Dropdown.Item>
-                    <Dropdown.Item as={Link} to="/products/fabrics/holograms">
-                      {t.fabricsSubCategories.holograme}
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-              </Dropdown>
-            </Dropdown.Item>
-            
-            {/* ---------------------------------------------------- */}
+                    <div className="dropdown-menu-nested">
+                        <Dropdown.Item as={Link} to={`/products/fabrics/decoration`}>
+                          {t.fabricsSubCategories.decoration}
+                        </Dropdown.Item>
+                        <Dropdown.Item as={Link} to={`/products/fabrics/projectsScreen`}>
+                          {t.fabricsSubCategories.projectsScreen}
+                        </Dropdown.Item>
+                        <Dropdown.Item as={Link} to={`/products/fabrics/holograme`}>
+                          {t.fabricsSubCategories.holograme}
+                        </Dropdown.Item>
+                        <Dropdown.Item as={Link} to={`/products/fabrics/flooring`}>
+                          {t.fabricsSubCategories.flooring}
+                        </Dropdown.Item>
+                    </div>
+                </li>
+                
+                {/* <Dropdown.Divider /> */}
 
-            {/* Other links in the main menu */}
-            <Dropdown.Item as={Link} to="/products/tracks">
-              {lang === "en" ? "Tracks" : "المسارات"}
-            </Dropdown.Item>
-            <Dropdown.Item as={Link} to="/products/frames">
-              {lang === "en" ? "Frames" : "الإطارات"}
-            </Dropdown.Item>
-          </Dropdown.Menu>
+                {/* --- TRACKS (Nested Menu Item) --- */}
+                <li className="dropdown-submenu">
+                    <Dropdown.Item 
+                        noCaret
+                        className="submenu-trigger cursor-pointer"
+                     
+                    >
+                        {t.productsCategories.tracks}
+                    </Dropdown.Item>
+                    
+                    {/* Nested Menu Container: Subcategory Headers REMOVED */}
+                    <div className="dropdown-menu-nested">
+                        <Dropdown.Item as={Link} to={`/products/tracks/chainTrack`}>
+                          {t.tracksSubCategories.chainTrack}
+                        </Dropdown.Item>
+                        <Dropdown.Item as={Link} to={`/products/tracks/revealSystems`}>
+                          {t.tracksSubCategories.revealSystems}
+                        </Dropdown.Item>
+                        <Dropdown.Item as={Link} to={`/products/tracks/tracks`}>
+                          {t.tracksSubCategories.tracks}
+                        </Dropdown.Item>
+                        <Dropdown.Item as={Link} to={`/products/tracks/rollups`}>
+                          {t.tracksSubCategories.rollups}
+                        </Dropdown.Item>
+                    </div>
+                </li>
+
+                {/* <Dropdown.Divider /> */}
+
+                {/* --- FRAMES (Standalone Item) --- */}
+                <Dropdown.Item 
+                    as={Link} 
+                    to={`/products/frames`}>
+                    {t.productsCategories.frames}
+                </Dropdown.Item>
+            </Dropdown.Menu>
         </Dropdown>
-
 
           {/*  End products dropdown*/}
 
@@ -114,9 +145,45 @@ export default function Navbar({ lang, toggleLang, t }) {
             {/* Contact  */}
             <Link to="/contact" className="nav-btn">{t.nav.contact}</Link>
             {/* <Link to="/feedback" className="nav-btn">{t.nav.feedback}</Link> */}
-            <Link to="/Demo" className="nav-btn">{t.nav.Test}</Link>
+
+
+            
+        <Dropdown>
+            {/* The Toggle Button (Header) - styled like your Products menu */}
+            <Dropdown.Toggle 
+                as="a" // Renders as <a> to allow custom styling like 'nav-btn'
+                id="test-menu-dropdown"
+                noCaret 
+                className="nav-btn border-0" 
+            >
+                {t.nav.Test} {/* Displays "Test" */}
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu>
+                
+                {/* --- DEMO Item --- */}
+                {/* Links to your defined route: /Demo */}
+                <Dropdown.Item 
+                    as={Link} 
+                    to={`/Demo`}
+                >
+                    Demo
+                </Dropdown.Item>
+
+                {/* --- ADD DATA Item --- */}
+                {/* Assuming a route exists for /AddData */}
+                <Dropdown.Item 
+                    as={Link} 
+                    to={`/AddData`}
+                >
+                    AddData
+                </Dropdown.Item>
+            </Dropdown.Menu>
+        </Dropdown>
+
+            {/* <Link to="/Demo" className="nav-btn">{t.nav.Test}</Link>
             <Link to="/Demo" className="nav-btn">{t.nav.Demo}</Link>
-            <Link to="/Login" className="nav-btn">{t.nav.Login}</Link>
+            <Link to="/Login" className="nav-btn">{t.nav.Login}</Link> */}
           </div>
 
           {/* Language button */}
@@ -154,7 +221,7 @@ export default function Navbar({ lang, toggleLang, t }) {
         {/* <Link to="/products/fabrics" className="nav-btn" onClick={handleMenuToggle}>
           {lang === "en" ? "Fabrics" : "الأقمشة"}
         </Link> */}
-        <Link to="/products/fabrics/decoration" className="nav-btn" onClick={handleMenuToggle}>
+        <Link to="/products/fabrics/decorationFabrics" className="nav-btn" onClick={handleMenuToggle}>
           {t.fabricsSubCategories.decoration}
         </Link>
         <Link to="/products/fabrics/projectors" className="nav-btn" onClick={handleMenuToggle}>

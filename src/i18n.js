@@ -5,20 +5,7 @@ export const UI = {
     brand: "StageWare",
     nav: { home: "Home", about: "About Us", services: "Services", products: "Products", contact: "Contact Us", feedback: "Feedback" , Test: "test"},
 
-    // 👇 NEW: Top-level product category names (used in Navbar dropdown links)
-    productCategories: {
-      fabrics: "Fabrics",
-      tracks: "Tracks & Frames",
-      flooring: "Flooring",
-      frames: "Frames",
-    },
-
-    // 👇 NEW: Nested sub-category names (used in the nested Fabrics dropdown links)
-    fabricsSubCategories: {
-      decoration: "Decoration fabrics",
-      projectsScreen: "Projects screen",
-      holograme: "Holograme",
-    },
+   
 
     hero: {
       slogan: "Elegance in Every Detail",
@@ -41,6 +28,31 @@ export const UI = {
     footer: {
       rightsReserved: "  All rights reserved.",
     },
+
+
+     // Top-level product category names (used in Navbar dropdown links)
+    productsCategories: {
+      fabrics: "Fabrics",
+      tracks: "Tracks",
+      frames: "Frames",
+    },
+
+    //  Nested Frabrics sub-category names (used in the nested Fabrics dropdown links)
+    fabricsSubCategories: {
+      decoration: "Decoration fabrics",
+      projectsScreen: "Projects screen",
+      holograme: "Holograme",
+      flooring: "Flooring",
+    },
+
+      tracksSubCategories: {
+      chainTrack: "Chain Track",
+      revealSystems: "Projects screen",
+      tracks: "Tracks",
+      rollups: "Rollups",
+    },
+
+
   },
 
 
@@ -62,20 +74,8 @@ export const UI = {
     brand: "StageWare",
     nav: { home: "الرئيسية", about: "من نحن", services: "الخدمات", products: "المنتجات", contact: "اتصل بنا", feedback: "آراء العملاء" },
 
-    // 👇 NEW: Top-level product category names (used in Navbar dropdown links)
-    productCategories: {
-      fabrics: "الأقمشة",
-      tracks: "المسارات والإطارات",
-      flooring: "الأرضيات",
-      frames: "الإطارات",
-    },
 
-    // 👇 NEW: Nested sub-category names (used in the nested Fabrics dropdown links)
-    fabricsSubCategories: {
-      decoration: "أقمشة الديكور",
-      projectsScreen: "شاشات العرض",
-      holograme: "الهولوجرام",
-    },
+
 
 
     
@@ -99,6 +99,33 @@ export const UI = {
       footer: {
       rightsReserved: "جميع الحقوق محفوظة.",
     },
+
+
+    // 👇 NEW: Top-level product category names (used in Navbar dropdown links)
+      productsCategories: {
+      fabrics: "الأقمشة",
+      tracks: "المسارات",
+      frames: "الإطارات",
+    },
+
+    // 👇 NEW: Nested sub-category names (used in the nested Fabrics dropdown links)
+    fabricsSubCategories: {
+      decoration: "أقمشة الديكور",
+      projectsScreen: "شاشات العرض",
+      holograme: "الهولوجرام",
+      flooring: "الأرضيات",
+    },
+
+    
+    tracksSubCategories: {
+      chainTrack: "مسار السلسلة",
+      revealSystems: "شاشة المشاريع",
+      tracks: "المسارات",
+      rollups: "التجميعات"
+    },
+
+
+    
   },
 
 

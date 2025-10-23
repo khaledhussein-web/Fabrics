@@ -18,6 +18,7 @@ import Contact from "./Pages/Contact";
 import About from "./Pages/About"
 import Demo from "./Pages/Demo"
 import Login from "./Pages/Login"
+import AddData from "./Pages/AddData";
 
 function App() {
   const [lang, setLang] = useState("en");
@@ -54,6 +55,7 @@ function App() {
           <Route path="/products/:category/:subcategory" element={<ProductCategory />} />
           <Route path="/Demo" element={<Demo t={t}/>}/>
           <Route path="/Login" element ={<Login t={t}/>}/>
+          <Route path="/AddData" element ={<AddData t={t}/>}/>
 
 
         </Routes>
