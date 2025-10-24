@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 // CSS and JS
-import "./assets/style.css"; // ✅ make sure the name matches your real file
+import "./assets/style.css"; 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { UI } from "./i18n";
 
@@ -19,6 +19,7 @@ import About from "./Pages/About"
 import Demo from "./Pages/Demo"
 import Login from "./Pages/Login"
 import AddData from "./Pages/AddData";
+import Products from "./Pages/Products"
 
 function App() {
   const [lang, setLang] = useState("en");
@@ -56,6 +57,7 @@ function App() {
           <Route path="/Demo" element={<Demo t={t}/>}/>
           <Route path="/Login" element ={<Login t={t}/>}/>
           <Route path="/AddData" element ={<AddData t={t}/>}/>
+          <Route path="/products" element={<Products t={t}/>}/>
 
 
         </Routes>

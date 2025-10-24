@@ -61,9 +61,10 @@ export default function Navbar({ lang, toggleLang, t }) {
 <Dropdown>
             <Dropdown.Toggle 
                
-                as="a" 
-                id="product-menu-dropdown-responsive"
-                className="nav-btn"
+              id="product-menu-dropdown-responsive"
+              className="nav-btn"
+              as={Link} 
+              to={`/products`}
             >
                 {t.nav.products} 
             </Dropdown.Toggle>
@@ -73,7 +74,7 @@ export default function Navbar({ lang, toggleLang, t }) {
                 {/* --- FABRICS (Nested Menu Item) --- */}
                 <li className="dropdown-submenu">
                     <Dropdown.Item 
-                     noCaret 
+                    //  noCaret 
                         className="submenu-trigger cursor-pointer"
                     >
                         {t.productsCategories.fabrics}
@@ -100,7 +101,7 @@ export default function Navbar({ lang, toggleLang, t }) {
                 {/* --- TRACKS (Nested Menu Item) --- */}
                 <li className="dropdown-submenu">
                     <Dropdown.Item 
-                        noCaret
+                        // noCaret
                         className="submenu-trigger cursor-pointer"
                      
                     >
@@ -153,7 +154,7 @@ export default function Navbar({ lang, toggleLang, t }) {
             <Dropdown.Toggle 
                 as="a" // Renders as <a> to allow custom styling like 'nav-btn'
                 id="test-menu-dropdown"
-                noCaret 
+                // noCaret 
                 className="nav-btn border-0" 
             >
                 {t.nav.Test} {/* Displays "Test" */}
