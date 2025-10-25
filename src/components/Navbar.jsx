@@ -64,7 +64,6 @@ export default function Navbar({ lang, toggleLang, t }) {
               id="product-menu-dropdown-responsive"
               className="nav-btn"
               as={Link} 
-              to={`/products`}
             >
                 {t.nav.products} 
             </Dropdown.Toggle>
@@ -73,7 +72,7 @@ export default function Navbar({ lang, toggleLang, t }) {
                 
                 {/* --- FABRICS (Nested Menu Item) --- */}
                 <li className="dropdown-submenu">
-                    <Dropdown.Item 
+                    <Dropdown.Item as={Link} to={`/products/fabrics/`}
                     //  noCaret 
                         className="submenu-trigger cursor-pointer"
                     >
@@ -139,21 +138,11 @@ export default function Navbar({ lang, toggleLang, t }) {
           {/*  End products dropdown*/}
 
 
+          {/* Contact  */}
+          <Link to="/contact" className="nav-btn">{t.nav.contact}</Link>
 
-
-
-
-            {/* Contact  */}
-            <Link to="/contact" className="nav-btn">{t.nav.contact}</Link>
-            {/* <Link to="/feedback" className="nav-btn">{t.nav.feedback}</Link> */}
-
-
-            
+          {/* Add data */}
             <Link to="/AddData" className="nav-btn">AddData</Link>
-
-            {/* <Link to="/Demo" className="nav-btn">{t.nav.Test}</Link>
-            <Link to="/Demo" className="nav-btn">{t.nav.Demo}</Link>
-            <Link to="/Login" className="nav-btn">{t.nav.Login}</Link> */}
           </div>
 
           {/* Language button */}

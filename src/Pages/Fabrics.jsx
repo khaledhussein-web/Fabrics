@@ -1,5 +1,5 @@
 import React from 'react';
-import '../assets/Products.css'; 
+import '../assets/Fabrics.css'; 
 
 // 1. Data Structure (moved from repetitive HTML to a clean JS array)
 const productCategories = [
@@ -71,12 +71,12 @@ const productCategories = [
   },
 ];
 
-const Products = () => {
+const Fabrics = ({t}) => {
   return (
     <div  className="m-3">
       {/* Container is optional, depends on your overall layout */}
       <div className="container container--regular"> 
-        <h2 className="mb-3">Products</h2>
+        <h2 className="mb-3">Fabrics</h2>
         <div className="row g-4">
           {/* 2. Using .map() to iterate over the data and render a component for each item */}
           {productCategories.map((category, index) => (
@@ -110,4 +110,4 @@ const Products = () => {
   );
 };
 
-export default Products;
+export default Fabrics;
