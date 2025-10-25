@@ -17,7 +17,7 @@ import Home from "./Pages/Home";
 import Contact from "./Pages/Contact";
 import About from "./Pages/About"
 import AddData from "./Pages/AddData";
-import Products from "./Pages/Products"
+import Fabrics from "./Pages/Fabrics"
 
 function App() {
   const [lang, setLang] = useState("en");
@@ -53,7 +53,7 @@ function App() {
           <Route path="/products/:category" element={<ProductCategory />} />
           <Route path="/products/:category/:subcategory" element={<ProductCategory />} />
           <Route path="/AddData" element ={<AddData t={t}/>}/>
-          <Route path="/products" element={<Products t={t}/>}/>
+          <Route path="products/fabrics" element={<Fabrics t={t}/>}/>
 
         
         </Routes>
