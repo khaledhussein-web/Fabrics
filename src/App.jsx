@@ -17,7 +17,6 @@ import Home from "./Pages/Home";
 import Contact from "./Pages/Contact";
 import About from "./Pages/About"
 import Demo from "./Pages/Demo"
-import Login from "./Pages/Login"
 import AddData from "./Pages/AddData";
 import Products from "./Pages/Products"
 
@@ -55,7 +54,6 @@ function App() {
           <Route path="/products/:category" element={<ProductCategory />} />
           <Route path="/products/:category/:subcategory" element={<ProductCategory />} />
           <Route path="/Demo" element={<Demo t={t}/>}/>
-          <Route path="/Login" element ={<Login t={t}/>}/>
           <Route path="/AddData" element ={<AddData t={t}/>}/>
           <Route path="/products" element={<Products t={t}/>}/>
 
