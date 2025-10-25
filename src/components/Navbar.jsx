@@ -149,38 +149,7 @@ export default function Navbar({ lang, toggleLang, t }) {
 
 
             
-        <Dropdown>
-            {/* The Toggle Button (Header) - styled like your Products menu */}
-            <Dropdown.Toggle 
-                as="a" // Renders as <a> to allow custom styling like 'nav-btn'
-                id="test-menu-dropdown"
-                // noCaret 
-                className="nav-btn border-0" 
-            >
-                {t.nav.Test} {/* Displays "Test" */}
-            </Dropdown.Toggle>
-
-            <Dropdown.Menu>
-                
-                {/* --- DEMO Item --- */}
-                {/* Links to your defined route: /Demo */}
-                <Dropdown.Item 
-                    as={Link} 
-                    to={`/Demo`}
-                >
-                    Demo
-                </Dropdown.Item>
-
-                {/* --- ADD DATA Item --- */}
-                {/* Assuming a route exists for /AddData */}
-                <Dropdown.Item 
-                    as={Link} 
-                    to={`/AddData`}
-                >
-                    AddData
-                </Dropdown.Item>
-            </Dropdown.Menu>
-        </Dropdown>
+            <Link to="/AddData" className="nav-btn">AddData</Link>
 
             {/* <Link to="/Demo" className="nav-btn">{t.nav.Test}</Link>
             <Link to="/Demo" className="nav-btn">{t.nav.Demo}</Link>
