@@ -6,11 +6,6 @@ export default function Navbar({ lang, toggleLang, t }) {
   //The setState for the desktop/mobile menu
   const [mobileMenu, setMobileMenu] = useState(false);
 
-  //The products dropdown
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-
-  //The fabrics dropDown
-  const [fabricsDropdownOpen, setFabricsDropdownOpen] = useState(false);
 
   const handleMenuToggle = () => setMobileMenu(!mobileMenu);
 
@@ -19,14 +14,6 @@ export default function Navbar({ lang, toggleLang, t }) {
     setMobileMenu(false);
   }, [lang]);
 
-  const handleCategoryClick = (e) => {
-        // Stop React-Bootstrap from closing the main dropdown menu
-        e.stopPropagation(); 
-        // Stop the default action (like following a phantom link)
-        e.preventDefault(); 
-        // NOTE: The actual nested menu toggling is handled by the custom CSS (hover) 
-        // or a custom JS handler you'd implement for mobile (click).
-    };
 
   return (
     <header>
@@ -149,42 +136,8 @@ export default function Navbar({ lang, toggleLang, t }) {
 
 
             
-        <Dropdown>
-            {/* The Toggle Button (Header) - styled like your Products menu */}
-            <Dropdown.Toggle 
-                as="a" // Renders as <a> to allow custom styling like 'nav-btn'
-                id="test-menu-dropdown"
-                // noCaret 
-                className="nav-btn border-0" 
-            >
-                {t.nav.Test} {/* Displays "Test" */}
-            </Dropdown.Toggle>
+            <Link to="/AddData" className="nav-btn">AddData</Link>
 
-            <Dropdown.Menu>
-                
-                {/* --- DEMO Item --- */}
-                {/* Links to your defined route: /Demo */}
-                <Dropdown.Item 
-                    as={Link} 
-                    to={`/Demo`}
-                >
-                    Demo
-                </Dropdown.Item>
-
-                {/* --- ADD DATA Item --- */}
-                {/* Assuming a route exists for /AddData */}
-                <Dropdown.Item 
-                    as={Link} 
-                    to={`/AddData`}
-                >
-                    AddData
-                </Dropdown.Item>
-            </Dropdown.Menu>
-        </Dropdown>
-
-            {/* <Link to="/Demo" className="nav-btn">{t.nav.Test}</Link>
-            <Link to="/Demo" className="nav-btn">{t.nav.Demo}</Link>
-            <Link to="/Login" className="nav-btn">{t.nav.Login}</Link> */}
           </div>
 
           {/* Language button */}
@@ -239,7 +192,6 @@ export default function Navbar({ lang, toggleLang, t }) {
         </Link>
         <Link to="/contact" className="nav-btn" onClick={handleMenuToggle}>{t.nav.contact}</Link>
         {/* <Link to="/feedback" className="nav-btn" onClick={handleMenuToggle}>{t.nav.feedback}</Link> */}
-        {/* <Link to="/Demo" className="nav-btn" onClick={handleMenuToggle}>{t.nav.Demo}</Link> */}
       </div>
     </header>
   );
