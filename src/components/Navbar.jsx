@@ -125,8 +125,7 @@ export default function Navbar({ lang, toggleLang, t }) {
           {/*  End products dropdown*/}
 
 
-          {/* Contact  */}
-          <Link to="/contact" className="nav-btn">{t.nav.contact}</Link>
+        
 
 
 
