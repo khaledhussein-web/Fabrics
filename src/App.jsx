@@ -31,36 +31,30 @@ function App() {
 
   return (
    
-    <>
-   
-   <Router>
+  <>
+    <Router>
+      <div className="app-wrapper">
+        {/* Navbar visible on every page */}
+        <Navbar lang={lang} toggleLang={toggleLang} t={t} />
+          <main className="main-content">
 
-      {/* Navbar visible on every page */}
-      <Navbar lang={lang} toggleLang={toggleLang} t={t} />
-  
-  {/* style={{ padding: "30px" }} */}
-     <div>
-        {/* <h1>StageWare</h1> */}
-
-        {/* ✅ React Router setup */}
-        <Routes>
-
-          {/* ✅ Default home route */}
-          <Route path="/" element={<Home t={t} />} />
-          <Route path="/about" element={<About t={t}/>} />
-          <Route path="/services" element={<div>Services Page</div>} />
-          <Route path="/contact" element={<Contact t={t} />} />
-          <Route path="/products/:category" element={<ProductCategory />} />
-          <Route path="/products/:category/:subcategory" element={<ProductCategory />} />
-          <Route path="/AddData" element ={<AddData t={t}/>}/>
-          <Route path="products/fabrics" element={<Fabrics t={t}/>}/>
-
-        
-        </Routes>
+            {/* ✅ React Router setup */}
+            <Routes>
+              
+              <Route path="/" element={<Home t={t} />} />
+              <Route path="/about" element={<About t={t}/>} />
+              <Route path="/services" element={<div>Services Page</div>} />
+              <Route path="/contact" element={<Contact t={t} />} />
+              <Route path="/products/:category" element={<ProductCategory />} />
+              <Route path="/products/:category/:subcategory" element={<ProductCategory />} />
+              <Route path="/AddData" element ={<AddData t={t}/>}/>
+              <Route path="products/fabrics" element={<Fabrics t={t}/>}/>
+            </Routes>
+          </main>
+        <Footer t={t} dir={t.dir}/>
       </div>
-      <Footer t={t} dir={t.dir}/>
     </Router>
-    </>
+  </>
   );
 }
 

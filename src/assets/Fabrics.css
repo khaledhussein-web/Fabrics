@@ -1,4 +1,4 @@
-/* Keep this or use a Bootstrap utility class like .img-fluid */
+/* Fabrics CSS file */
 .image-fluid {
     width: 100%; /* Makes the image fill its container */
     height: auto; /* Maintains aspect ratio */
@@ -6,25 +6,3 @@
     border-radius: 4px;
 }
 
-/* Keep other custom styles for buttons, text, etc. */
-/* ... */
-
-.viewProductsbtn{
-    display: inline-block;
-    border: solid 1px #dc2626;;
-    padding: 11px 20px;
-    text-decoration: none;
-    font-size: 16px;
-    line-height: 16px;
-    font-weight: 700;
-    letter-spacing: .02em;
-    position: relative;
-    cursor: pointer;
-    background-color: #dc2626;;
-    color: #000;
-    border-radius: 6px;
-    transition: all 200ms ease-in;
-    font-family: "roboto", sans-serif;
-    color: #fff;
-    margin-top: auto;
-}

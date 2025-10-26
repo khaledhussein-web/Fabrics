@@ -73,10 +73,10 @@ const productCategories = [
 
 const Fabrics = ({t}) => {
   return (
-    <div  className="m-3">
+    <div  className="m-4">
       {/* Container is optional, depends on your overall layout */}
       <div className="container container--regular"> 
-        <h2 className="mb-3">Fabrics</h2>
+        <h2>Fabrics</h2>
         <div className="row g-4">
           {/* 2. Using .map() to iterate over the data and render a component for each item */}
           {productCategories.map((category, index) => (
@@ -98,7 +98,7 @@ const Fabrics = ({t}) => {
               <p className="mt-3"><strong>{category.name}</strong></p>
               
               {/* Button to View Products */}
-              <a className="viewProductsbtn" href={category.href}>
+              <a className="btn-primary" href={category.href}>
                 View Products
               </a>
             </div>
