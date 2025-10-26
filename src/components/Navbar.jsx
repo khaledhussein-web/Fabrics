@@ -21,7 +21,7 @@ export default function Navbar({ lang, toggleLang, t }) {
 
         {/* ===== Brand ===== */}
 
-        <Link to="/" className="nav-btn">
+        <Link to="/" className="nav-logo">
           <div className="brand">
             <div className="logo"></div>
             <div className="brand-text">{t.brand}</div>
