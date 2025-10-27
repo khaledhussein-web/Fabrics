@@ -8,21 +8,21 @@ export default function ProductCategory() {
   const products = {
     fabrics: {
       decoration: [
-        { id: 1, name: "Velvet Curtain", img: "/uploads/fabrics/velvet.jpg" },
-        { id: 2, name: "Blackout Fabric", img: "/uploads/fabrics/blackout.jpg" },
+        { id: 1, name_en: "Velvet Curtain", image_path: "/uploads/fabrics/velvet.jpg" },
+        { id: 2, name_en: "Blackout Fabric", image_path: "/uploads/fabrics/blackout.jpg" },
       ],
       projectors: [
-        { id: 5, name: "Projects Screen Fabric", img: "/uploads/fabrics/projector.jpg" },
+        { id: 5, name_en: "Projects Screen Fabric", image_path: "/uploads/fabrics/projector.jpg" },
       ],
       holograms: [
-        { id: 6, name: "Holographic Mesh", img: "/uploads/fabrics/hologram.jpg" },
+        { id: 6, name_en: "Holographic Mesh", image_path: "/uploads/fabrics/hologram.jpg" },
       ],
     },
     tracks: [
-      { id: 3, name: "Aluminum Track", img: "/uploads/tracks/track1.jpg" },
+      { id: 3, name_en: "Aluminum Track", image_path: "/uploads/tracks/track1.jpg" },
     ],
     frames: [
-      { id: 4, name: "Wood Parquet", img: "/uploads/flooring/wood.jpg" },
+      { id: 4, name_en: "Wood Parquet", image_path: "/uploads/flooring/wood.jpg" },
     ],
   };
 
@@ -53,8 +53,8 @@ export default function ProductCategory() {
       <div className="product-grid">
         {categoryProducts.map((p) => (
           <div key={p.id} className="product-card">
-            <img src={p.img} alt={p.name} />
-            <h3>{p.name}</h3>
+            <img src={p.image_path} alt={p.name_en} />
+            <h3>{p.name_en}</h3>
           </div>
         ))}
         {categoryProducts.length === 0 && (
