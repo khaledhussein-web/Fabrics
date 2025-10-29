@@ -34,7 +34,8 @@ export default function Home({ t, dir }) {
 
       {/* ====== HERO SECTION ====== */}
       <section id="home" className="d-flex flex-column justify-content-center align-items-center text-center mb-3">
-        <h1>{t?.hero?.slogan || "Elegance in Every Detail"}</h1>
+        <h1 className="mb-3">{t?.brand}</h1>
+        <h3>{t?.hero?.slogan || "Elegance in Every Detail"}</h3>
         <p>
           {t?.hero?.subtitle ||
             "Premium fabrics, flooring, and decorative materials — designed, delivered, and installed with care."}
