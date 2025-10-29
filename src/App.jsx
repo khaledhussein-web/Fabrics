@@ -9,7 +9,7 @@ import { UI } from "./i18n";
 
 //Componenets
 
-import Navbar from "./components/Navbar";
+import Header from "./components/Header";
 import Footer from "./components/Footer"
 
 import ProductCategory from "./Pages/ProductCategory";
@@ -36,7 +36,7 @@ function App() {
     <Router>
       <div className="app-wrapper">
         {/* Navbar visible on every page */}
-        <Navbar lang={lang} toggleLang={toggleLang} t={t} dir={t.dir} />
+        <Header lang={lang} toggleLang={toggleLang} t={t} dir={t.dir} />
           <main className="main-content">
 
             {/* ✅ React Router setup */}
