@@ -1,11 +1,18 @@
 // This is the js variable that contains the data that needs to be translated 
+const currentYear = new Date().getFullYear();
+
+const arabicYear = new Intl.NumberFormat('ar', { 
+    useGrouping: false,
+    numberingSystem: 'arab' // <-- This forces the Eastern Arabic digits
+}).format(new Date().getFullYear());
+console.log("Arabic year: " , arabicYear)
+// The variable 'arabicYear' now holds the string "٢٠٢٥"
+
 export const UI = {
   en: {
     dir: "ltr",
     brand: "StageWare",
     nav: { home: "Home", about: "About Us", services: "Services", products: "Products", contact: "Contact Us", feedback: "Feedback" , Test: "test"},
-
-   
 
     hero: {
       slogan: "Elegance in Every Detail",
@@ -24,9 +31,10 @@ export const UI = {
       success: "Thanks! We will contact you soon.",
     },
 
-    // key for global/footer phrases
     footer: {
-      rightsReserved: "  All rights reserved.",
+      rightsReserved: "All rights reserved",
+      StageWare: "StageWare",
+      date: currentYear, 
     },
 
 
@@ -74,17 +82,13 @@ export const UI = {
     brand: "StageWare",
     nav: { home: "الرئيسية", about: "من نحن", services: "الخدمات", products: "المنتجات", contact: "اتصل بنا", feedback: "آراء العملاء" },
 
-
-
-
-
-    
     hero: {
       slogan: "الأناقة في كل تفصيل",
       subtitle: "أقمشة وأرضيات عالية الجودة.",
       cta: "عرض المنتجات",
       quote: "اطلب عرض سعر",
     },
+
     contact: {
       title: "اتصل بنا",
       form: { name: "الاسم الكامل", email: "البريد الإلكتروني", phone: "الهاتف", message: "الرسالة", send: "إرسال" },
@@ -97,18 +101,17 @@ export const UI = {
     },
 
       footer: {
-      rightsReserved: "جميع الحقوق محفوظة.",
+      rightsReserved: "جميع الحقوق محفوظة",
+      StageWare: "ستايج وير",
+      date: arabicYear,
     },
-
-
-    // 👇 NEW: Top-level product category names (used in Navbar dropdown links)
+  
       productsCategories: {
       fabrics: "الأقمشة",
       tracks: "المسارات",
       frames: "الإطارات",
     },
 
-    // 👇 NEW: Nested sub-category names (used in the nested Fabrics dropdown links)
     fabricsSubCategories: {
       decoration: "أقمشة الديكور",
       projectsScreen: "شاشات العرض",
@@ -116,7 +119,6 @@ export const UI = {
       flooring: "الأرضيات",
     },
 
-    
     tracksSubCategories: {
       chainTrack: "مسار السلسلة",
       revealSystems: "شاشة المشاريع",

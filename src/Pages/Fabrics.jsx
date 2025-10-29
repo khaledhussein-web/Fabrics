@@ -2,7 +2,7 @@ import React from 'react';
 import '../assets/Fabrics.css'; 
 
 // 1. Data Structure (moved from repetitive HTML to a clean JS array)
-const productCategories = [
+const fabrics = [
   {
     name: 'Acoustic, Masking and Blackout',
     imageSrc: 'https://www.jcjoel.com/wp-content/uploads/2023/07/Acoustic-Masking-Blackout-Main-Image-410x309.jpg',
@@ -71,15 +71,15 @@ const productCategories = [
   },
 ];
 
-const Fabrics = ({t}) => {
+const Fabrics = ({ t, dir }) => {
   return (
-    <div  className="m-4">
-      {/* Container is optional, depends on your overall layout */}
+    
+    <div  className="m-4" dir={t.dir} >
       <div className="container container--regular"> 
-        <h2>Fabrics</h2>
+        <h2>{t.productsCategories.fabrics}</h2>
         <div className="row g-4">
           {/* 2. Using .map() to iterate over the data and render a component for each item */}
-          {productCategories.map((category, index) => (
+          {fabrics.map((category, index) => (
             // The 'key' prop is essential for list rendering in React
             <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={index}> 
             <div className="align-items-start">

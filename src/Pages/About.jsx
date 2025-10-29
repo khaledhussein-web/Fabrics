@@ -1,10 +1,10 @@
-function About() {
+function About({ t, dir }) {
 
     return (
-        <>
-        <div>
-            About Us Page</div>
-        </>
+        <div dir={t.dir}>
+            {t?.nav.about}
+        </div>
+       
     );
 
 }

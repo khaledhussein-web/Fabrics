@@ -17,6 +17,7 @@ import Home from "./Pages/Home";
 import Contact from "./Pages/Contact";
 import About from "./Pages/About"
 import AddData from "./Pages/AddData";
+import Services from "./Pages/Services"
 import Fabrics from "./Pages/Fabrics"
 
 function App() {
@@ -41,14 +42,14 @@ function App() {
             {/* ✅ React Router setup */}
             <Routes>
               
-              <Route path="/" element={<Home t={t} />} />
-              <Route path="/about" element={<About t={t}/>} />
-              <Route path="/services" element={<div>Services Page</div>} />
-              <Route path="/contact" element={<Contact t={t} />} />
+              <Route path="/" element={<Home t={t}  dir={t.dir}/>} />
+              <Route path="/about" element={<About t={t} dir={t.dir}/>} />
+              <Route path="/services" element={<Services  t={t} dir={t.dir} />} />
+              <Route path="/contact" element={<Contact t={t}  dir={t.dir} />} />
               <Route path="/products/:category" element={<ProductCategory />} />
               <Route path="/products/:category/:subcategory" element={<ProductCategory />} />
               <Route path="/AddData" element ={<AddData t={t}/>}/>
-              <Route path="products/fabrics" element={<Fabrics t={t}/>}/>
+              <Route path="products/fabrics" element={<Fabrics t={t}  dir={t.dir}/>}/>
             </Routes>
           </main>
         <Footer t={t} dir={t.dir}/>

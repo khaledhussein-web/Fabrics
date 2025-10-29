@@ -1,35 +1,33 @@
 import React from "react";
 import "../assets/Home.css"
 
-export default function Home({ t }) {
+export default function Home({ t, dir }) {
 
   return (
-    <>
 
-      {/* { The images} */}
-  
+    <div dir={t.dir} >
+      <div className="p-0 m-0"  >
+        {/* The p-0 and m-0 classes remove any default padding/margin */}
 
-<div className="p-0 m-0">
-  {/* The p-0 and m-0 classes remove any default padding/margin */}
-  
-  <img 
-    src="/banners/banner 1.png" 
-    alt="Banner 1" 
-    className="img-fluid d-block w-100" 
-  />
-  
-  {/* <img 
-    src="/banners/banner2.jpg" 
-    alt="Banner 2" 
-    className="img-fluid d-block w-100" 
-  />
-  
-  <img 
-    src="/banners/banner3.jpg" 
-    alt="Banner 3" 
-    className="img-fluid d-block w-100" 
-  /> */}
-</div>
+        <img
+          src="/banners/banner 1.png"
+          alt="Banner 1"
+          className="img-fluid d-block w-100"
+        />
+
+        {/* 
+        <img 
+          src="/banners/banner2.jpg" 
+          alt="Banner 2" 
+          className="img-fluid d-block w-100" 
+        />
+        
+        <img 
+          src="/banners/banner3.jpg" 
+          alt="Banner 3" 
+          className="img-fluid d-block w-100" 
+        /> */}
+      </div>
 
 
 
@@ -49,7 +47,7 @@ export default function Home({ t }) {
       </section>
 
       {/* ====== ABOUT SECTION ====== */}
-      <section className="container" style={{color: "var(--text-color)"}}>
+      <section className="container" style={{ color: "var(--text-color)" }}>
         <h2>{t?.about?.title || "About Us"}</h2>
         <p>
           {t?.about?.body ||
@@ -65,9 +63,8 @@ export default function Home({ t }) {
         </p>
       </section>
 
+    </div>
 
 
-
-    </>
   );
 }
