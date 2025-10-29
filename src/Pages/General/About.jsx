@@ -1,4 +1,4 @@
-function About({ t, dir }) {
+export default function About({ t, dir }) {
 
     return (
         <div dir={t.dir}>
@@ -8,5 +8,3 @@ function About({ t, dir }) {
     );
 
 }
-
-export default About

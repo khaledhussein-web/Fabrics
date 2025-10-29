@@ -1,5 +1,5 @@
 import React from 'react';
-import '../assets/Fabrics.css'; 
+import '../../assets/Fabrics.css'; 
 
 // 1. Data Structure (moved from repetitive HTML to a clean JS array)
 const fabrics = [

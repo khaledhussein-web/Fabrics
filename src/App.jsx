@@ -12,13 +12,33 @@ import { UI } from "./i18n";
 import Header from "./components/Header";
 import Footer from "./components/Footer"
 
-import ProductCategory from "./Pages/ProductCategory";
-import Home from "./Pages/Home";
-import Contact from "./Pages/Contact";
-import About from "./Pages/About"
-import AddData from "./Pages/AddData";
-import Services from "./Pages/Services"
-import Fabrics from "./Pages/Fabrics"
+// import General ;
+import Home from "./Pages/General/Home";
+import Contact from "./Pages/General/Contact";
+import About from "./Pages/General/About"
+import AddData from "./Pages/General/AddData";
+import Services from "./Pages/General/Services"
+
+
+// Fabrics imports
+import Fabrics from "./Pages/Fabrics/Fabrics"
+import DecorationFabrics from "./Pages/Fabrics/DecorationFabrics";
+import ProjectsScreen from "./Pages/Fabrics/ProjectsScreen";
+import Holograme from "./Pages/Fabrics/Holograme";
+import Flooring from "./Pages/Fabrics/Flooring";
+
+
+
+// Tracks Imports (Added based on assumed component names)
+import Tracks from "./Pages/Tracks/Tracks";
+import ChainTrack from "./Pages/Tracks/ChainTrack";
+import RevealSystems from "./Pages/Tracks/RevealSystems";
+import Rollups from "./Pages/Tracks/Rollups";
+
+// Frames Import (Added)
+import Frames from "./Pages/Frames/Frames";
+
+
 
 function App() {
   const [lang, setLang] = useState("en");
@@ -46,10 +66,25 @@ function App() {
               <Route path="/about" element={<About t={t} dir={t.dir}/>} />
               <Route path="/services" element={<Services  t={t} dir={t.dir} />} />
               <Route path="/contact" element={<Contact t={t}  dir={t.dir} />} />
-              <Route path="/products/:category" element={<ProductCategory />} />
-              <Route path="/products/:category/:subcategory" element={<ProductCategory />} />
+              {/* <Route path="/products/:category" element={<ProductCategory />} />
+              <Route path="/products/:category/:subcategory" element={<ProductCategory />} /> */}
               <Route path="/AddData" element ={<AddData t={t}/>}/>
-              <Route path="products/fabrics" element={<Fabrics t={t}  dir={t.dir}/>}/>
+
+              {/* Fabrics sub-categories */}
+              <Route path="products/fabrics" element={<Fabrics t={t} dir={t.dir} />} />
+              <Route path="products/fabrics/decoration" element={<DecorationFabrics t={t} dir={t.dir} />} />
+              <Route path="products/fabrics/projectsScreen" element={<ProjectsScreen t={t} dir={t.dir} />} />
+              <Route path="products/fabrics/holograme" element={<Holograme t={t} dir={t.dir} />} />
+              <Route path="products/fabrics/flooring" element={<Flooring t={t} dir={t.dir} />} />
+
+              {/* tracks dropdown  */}
+              <Route path="products/tracks/Tracks" element={<Tracks t={t} dir={t.dir} />} />
+              <Route path="products/tracks/chainTrack" element={<ChainTrack t={t} dir={t.dir} />} />
+              <Route path="products/tracks/revealSystems" element={<RevealSystems t={t} dir={t.dir} />} />
+              <Route path="products/tracks/rollups" element={<Rollups t={t} dir={t.dir} />} />
+
+              {/*  Frames */}
+              <Route path="products/frames" element={<Frames t={t} dir={t.dir} />} />
             </Routes>
           </main>
         <Footer t={t} dir={t.dir}/>

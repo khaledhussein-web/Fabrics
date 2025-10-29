@@ -55,8 +55,7 @@ export const UI = {
 
       tracksSubCategories: {
       chainTrack: "Chain Track",
-      revealSystems: "Projects screen",
-      tracks: "Tracks",
+      revealSystems: "Reveal Systems",
       rollups: "Rollups",
     },
 
@@ -122,7 +121,6 @@ export const UI = {
     tracksSubCategories: {
       chainTrack: "مسار السلسلة",
       revealSystems: "شاشة المشاريع",
-      tracks: "المسارات",
       rollups: "التجميعات"
     },
 
