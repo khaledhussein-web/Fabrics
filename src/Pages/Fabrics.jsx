@@ -71,7 +71,7 @@ const fabrics = [
   },
 ];
 
-const Fabrics = ({ t, dir }) => {
+const Fabrics = ({ t }) => {
   return (
     
     <div  className="m-4" dir={t.dir} >
