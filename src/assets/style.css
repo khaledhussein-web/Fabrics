@@ -10,8 +10,11 @@
 }
 
 
-html, body, #root { 
-  height: 100%; /* Ensure all containers from root to app wrapper span the viewport height */
+html,
+body,
+#root {
+  height: 100%;
+  /* Ensure all containers from root to app wrapper span the viewport height */
   margin: 0;
 }
 
@@ -19,14 +22,19 @@ html, body, #root {
   /* This is the key part for Flexbox layout */
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Make sure the wrapper is at least the full viewport height */
+  min-height: 100vh;
+  /* Make sure the wrapper is at least the full viewport height */
 }
 
 .main-content {
   /* This element must grow to fill the space between the Header and the Footer */
-  flex-grow: 1; 
+  flex-grow: 1;
 }
 
+a {
+    text-decoration:none !important;
+
+}
 
 
 /* === BUTTON STYLES === */
@@ -41,23 +49,21 @@ button,
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
-  font-family: inherit; 
+  font-family: inherit;
   cursor: pointer;
   transition: all 0.3s ease;
-  text-decoration:none
+  text-decoration: none
 }
 
 button:hover,
 .btn-primary:hover,
 .btn-ghost:hover {
-  /* background-color: var(--background-color); */
-  /* color: var(--accent-color); */
-  /* color:#1e3a8a; */
   border: 1px solid var(--accent-color);
-  color:white;
+  color: white;
 }
 
 @media (max-width: 768px) {
+
   button,
   .btn-primary,
   .btn-ghost {
@@ -90,6 +96,7 @@ button:hover,
 
 header {
   width: 100%;
+  position: relative;
 }
 
 .navbar {
@@ -146,7 +153,7 @@ header {
   border-radius: 4px;
   border-bottom: 2px solid transparent;
   transition: all 0.3s ease;
-  cursor:pointer;
+  cursor: pointer;
 }
 
 .nav-btn {
@@ -158,7 +165,7 @@ header {
   border-bottom: 2px solid transparent;
   margin: 0 15px;
   transition: all 0.3s ease;
-  cursor:pointer;
+  cursor: pointer;
 }
 
 .nav-btn:hover {
@@ -179,20 +186,14 @@ header {
 }
 
 .lang-toggle {
-  /* background: transparent;
+
+  background-color: var(--accent-color);
   border: 1px solid #ddd;
   padding: 0.5rem 1rem;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.3s ease;
-  color: red; */
- background-color: var(--accent-color);
-    border: 1px solid #ddd;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    color: white;
+  color: white;
 }
 
 .lang-toggle:hover {
@@ -220,7 +221,7 @@ header {
   display: none;
   flex-direction: column;
   gap: 1rem;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   z-index: 100;
 }
 
@@ -232,6 +233,7 @@ header {
   padding: 0.75rem 0;
   border-radius: 0;
   justify-content: flex-start;
+  margin: 0 15px;
 }
 
 @media (max-width: 768px) {
@@ -270,6 +272,55 @@ header {
 }
 
 
+/* --- Mobile Dropdown Accordion Styles --- */
+
+/* 1. Ensure the parent dropdown item stays in the document flow */
+.mobile-dropdown-item {
+    position: static !important; /* Forces it to behave like a normal block element */
+    width: 100%;
+    margin: 8px 15px;
+}
+
+/* 2. Style the Dropdown Toggle (e.g., "Fabrics") */
+.mobile-dropdown-item .dropdown-toggle {
+    /* Use the same clean style as other primary links */
+    text-align: start;
+    padding: 0.75rem 0;
+    margin: 0;
+    /* This overrides Bootstrap's background/border on a mobile button */
+    border: none;
+    background: transparent;
+    color: var(--text-color);
+
+}
+
+/* 3. Style the Dropdown Menu container (the list of sub-items) */
+.mobile-dropdown-menu {
+    /* Critical: Kills all desktop floating behavior */
+    position: static !important;
+    transform: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    
+    /* Make the menu look like it's part of the nav */
+    padding: 0;
+    margin-top: 0 !important; 
+    width: 100%;
+    background-color: transparent; 
+}
+
+/* 4. Style the indented sub-links (Dropdown.Item) */
+.mobile-dropdown-menu .dropdown-item {
+    display: block;
+    /* Visual indent to show it's a sub-item */
+    padding: 0.5rem 0.5rem 0.5rem 30px; 
+    color: var(--text-color);
+    font-size: 0.95em; 
+    opacity: 0.85;
+    background-color: transparent;
+    white-space: normal; /* Important for long subcategory names */
+}
+/* --- End Mobile Dropdown Accordion Styles --- */
 
 
 
@@ -297,7 +348,7 @@ header {
 .product-card {
   background: #fff;
   border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
   text-align: center;
   padding: 15px;
 }
@@ -407,48 +458,6 @@ footer {
 
 
 
-/* === DROPDOWN MENU === */
-/* .dropdown {
-  position: relative;
-}
-
-.dropdown-menu {
-  position: absolute;
-  top: 40px;
-  left: 0;
-  background: #fff;
-  border: 1px solid #eee;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  display: flex;
-  flex-direction: column;
-  min-width: 180px;
-  z-index: 1500;
-}
-
-.dropdown-item {
-  padding: 10px 15px;
-  color: #444;
-  text-decoration: none;
-  transition: 0.3s;
-}
-
-.dropdown-item:hover {
-  background: #fff4d8;
-  color: #c49b34;
-} */
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* ====  dropdown menu */
 
@@ -458,175 +467,69 @@ footer {
 
 /* The parent item that holds the submenu */
 .dropdown-submenu {
-    position: relative; 
-    /* Ensures the parent list item takes up the full width of the main menu */
-    display: block; 
+  position: relative;
+  /* Ensures the parent list item takes up the full width of the main menu */
+  display: block;
 }
 
 /* Hide the nested menu by default */
 .dropdown-menu-nested {
-    list-style: none;
-    padding: 0;
-    margin: 0; 
-    
-    /* Apply base Bootstrap menu styles */
-    background-color: var(--bs-dropdown-bg);
-    border: var(--bs-dropdown-border-width) solid var(--bs-dropdown-border-color);
-    border-radius: var(--bs-dropdown-border-radius);
-    box-shadow: var(--bs-dropdown-box-shadow);
-    z-index: 1000;
-    
-    display: none; /* Initially hidden */
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  /* Apply base Bootstrap menu styles */
+  background-color: var(--bs-dropdown-bg);
+  border: var(--bs-dropdown-border-width) solid var(--bs-dropdown-border-color);
+  border-radius: var(--bs-dropdown-border-radius);
+  box-shadow: var(--bs-dropdown-box-shadow);
+  z-index: 1000;
+
+  display: none;
+  /* Initially hidden */
 }
 
 /* ------------------------------------------------------------------- */
 /* 2. Desktop Behavior (Hover to Open Submenu) */
 /* ------------------------------------------------------------------- */
-@media screen and (min-width: 992px) { /* Applies on desktop/large screens */
-    
-    .dropdown-submenu:hover > .dropdown-menu-nested {
-        display: block; /* Show the menu on hover */
-        
-        /* Positioning the nested menu to the right of the parent */
-        position: absolute;
-        left: 100%; 
-        top: 0; 
-        margin-top: -1px;
-        min-width: 10rem; 
-    }
+@media screen and (min-width: 992px) {
+  /* Applies on desktop/large screens */
+
+  .dropdown-submenu:hover>.dropdown-menu-nested {
+    display: block;
+    /* Show the menu on hover */
+
+    /* Positioning the nested menu to the right of the parent */
+    position: absolute;
+    left: 100%;
+    top: 0;
+    margin-top: -1px;
+    min-width: 10rem;
+  }
 }
 
 /* ------------------------------------------------------------------- */
 /* 3. Mobile/Tablet Behavior (Inline Display) */
 /* ------------------------------------------------------------------- */
 @media screen and (max-width: 991px) {
-    /* On mobile, keep the nested menu static/inline */
-    .dropdown-submenu .dropdown-menu-nested {
-        position: static; 
-        border: none;
-        box-shadow: none;
-        /* Optional: Indent sub-items for better visibility */
-        padding-left: 1rem; 
-    }
-    
-    /* NOTE: For a click/tap functionality on mobile, you need a small JS toggle 
+
+  /* On mobile, keep the nested menu static/inline */
+  .dropdown-submenu .dropdown-menu-nested {
+    position: static;
+    border: none;
+    box-shadow: none;
+    /* Optional: Indent sub-items for better visibility */
+    padding-left: 1rem;
+  }
+
+  /* NOTE: For a click/tap functionality on mobile, you need a small JS toggle 
        to conditionally apply an 'open' class on the .dropdown-submenu 
        to show the .dropdown-menu-nested, as :hover is unreliable on touchscreens. 
     */
 }
 
-.dropdown-submenu > .submenu-trigger {
-    /* Add any styles here that your old .dropdown-toggle used, 
+.dropdown-submenu>.submenu-trigger {
+  /* Add any styles here that your old .dropdown-toggle used, 
        BUT DO NOT include any code that adds an ::after pseudo-element */
-    padding-right: 1.5rem; 
+  padding-right: 1.5rem;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* === NESTED DROPDOWN MENU === */
-
-/* The dropdown item that contains the second-level menu (e.g., the 'Fabrics' link) */
-/* .dropdown-item.nested-dropdown {
-    /* Ensure the parent link can act as a container for the nested menu */
-    /* position: relative;  */
-    
-    /* Crucial: Prevents text like 'Tracks & Frames' from wrapping */
-    /* white-space: nowrap;  */
-/* }  */
-
-/* The actual second-level menu container */
-/* .nested-dropdown-menu {
-    position: absolute; */
-    /* Position the nested menu to the RIGHT of its parent item */
-    /* top: 0; */
-    /* left: 100%; Position it immediately to the right of the parent item */
-    
-    /* Inherit basic menu styles */
-    /* background: #fff;
-    border: 1px solid #eee;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1); */
-    
-    /* display: flex;
-    flex-direction: column;
-    min-width: 200px; 
-    z-index: 160;  */
-/* } */
-
-  
-
-
-/* Ensure all nested links are treated like regular dropdown items */
-/* .nested-dropdown-menu .dropdown-item { */
-    /* Crucial: Prevents two-word link text (like 'Projects screen') from wrapping */
-    /* white-space: nowrap; 
-    cursor: default;
-} */
-
-/* Optional: Add a subtle arrow to indicate a nested menu */
-/* .dropdown-item.nested-dropdown::after {
-   
-    font-size: 0.7em;
-    margin-left: 8px;
-    color: #999; */
-/* } */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
