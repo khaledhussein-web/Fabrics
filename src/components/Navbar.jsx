@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Dropdown from 'react-bootstrap/Dropdown';
-export default function Navbar({ lang, toggleLang, t }) {
+export default function Navbar({ lang, toggleLang, t , dir }) {
 
   //The setState for the desktop/mobile menu
   const [mobileMenu, setMobileMenu] = useState(false);
@@ -16,7 +16,7 @@ export default function Navbar({ lang, toggleLang, t }) {
 
 
   return (
-    <header>
+    <header dir={t.dir}>
       <nav className="navbar">
 
         {/* ===== Brand ===== */}

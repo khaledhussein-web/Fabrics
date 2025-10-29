@@ -36,7 +36,7 @@ function App() {
     <Router>
       <div className="app-wrapper">
         {/* Navbar visible on every page */}
-        <Navbar lang={lang} toggleLang={toggleLang} t={t} />
+        <Navbar lang={lang} toggleLang={toggleLang} t={t} dir={t.dir} />
           <main className="main-content">
 
             {/* ✅ React Router setup */}

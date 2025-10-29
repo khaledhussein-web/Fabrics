@@ -11,7 +11,7 @@ console.log("Arabic year: " , arabicYear)
 export const UI = {
   en: {
     dir: "ltr",
-    brand: "StageWare",
+    // brand: "StageWare",
     nav: { home: "Home", about: "About Us", services: "Services", products: "Products", contact: "Contact Us", feedback: "Feedback" , Test: "test"},
 
     hero: {
@@ -79,7 +79,7 @@ export const UI = {
 
   ar: {
     dir: "rtl",
-    brand: "StageWare",
+    // brand: "StageWare",
     nav: { home: "الرئيسية", about: "من نحن", services: "الخدمات", products: "المنتجات", contact: "اتصل بنا", feedback: "آراء العملاء" },
 
     hero: {
