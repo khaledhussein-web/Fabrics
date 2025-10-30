@@ -74,9 +74,7 @@ export default function Header({ lang, toggleLang, t , dir }) {
               </Dropdown.Toggle>
               <Dropdown.Menu>
                 <li className="dropdown-submenu">
-                  <Dropdown.Item as={Link} to={`/products/fabrics/`}
-                    className="submenu-trigger cursor-pointer"
-                  >
+                  <Dropdown.Item as={Link} to={`/products/fabrics/`} className="submenu-trigger cursor-pointer" >
                     {t.productsCategories.fabrics}
                   </Dropdown.Item>
 
@@ -97,7 +95,8 @@ export default function Header({ lang, toggleLang, t , dir }) {
                 </li>
 
                 <li className="dropdown-submenu">
-                  <Dropdown.Item className="submenu-trigger cursor-pointer">
+                  
+                  <Dropdown.Item as={Link} to={`/products/tracks/Tracks`} className="submenu-trigger cursor-pointer">
                     {t.productsCategories.tracks}
                   </Dropdown.Item>
                   <div className="dropdown-menu-nested">
@@ -106,9 +105,6 @@ export default function Header({ lang, toggleLang, t , dir }) {
                     </Dropdown.Item>
                     <Dropdown.Item as={Link} to={`/products/tracks/revealSystems`}>
                       {t.tracksSubCategories.revealSystems}
-                    </Dropdown.Item>
-                    <Dropdown.Item as={Link} to={`/products/tracks/tracks`}>
-                      {t.tracksSubCategories.tracks}
                     </Dropdown.Item>
                     <Dropdown.Item as={Link} to={`/products/tracks/rollups`}>
                       {t.tracksSubCategories.rollups}
@@ -190,7 +186,7 @@ export default function Header({ lang, toggleLang, t , dir }) {
         
         {/* --- 2. TRACKS DROPDOWN (Vertical Accordion) --- */}
         <Dropdown className="w-100 mobile-dropdown-item">
-            <Dropdown.Toggle as="a" className="nav-btn-parent w-100 text-start">
+            <Dropdown.Toggle as={Link} to={`/products/tracks/tracks`} className="nav-btn-parent w-100 text-start">
                 {t.productsCategories.tracks}
             </Dropdown.Toggle>
             <Dropdown.Menu className="mobile-dropdown-menu">
@@ -199,9 +195,6 @@ export default function Header({ lang, toggleLang, t , dir }) {
                 </Dropdown.Item>
                 <Dropdown.Item as={Link} to={`/products/tracks/revealSystems`} onClick={handleMenuToggle} className="nav-btn-child">
                     {t.tracksSubCategories.revealSystems}
-                </Dropdown.Item>
-                <Dropdown.Item as={Link} to={`/products/tracks/tracks`} onClick={handleMenuToggle} className="nav-btn-child">
-                    {t.tracksSubCategories.tracks}
                 </Dropdown.Item>
                 <Dropdown.Item as={Link} to={`/products/tracks/rollups`} onClick={handleMenuToggle} className="nav-btn-child">
                     {t.tracksSubCategories.rollups}
