@@ -14,3 +14,45 @@ The React Compiler is not enabled on this template because of its impact on dev 
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+
+<!-- The database drawing  -->
+
+
+# 🛒 E-Commerce Schema Diagram (Using Mermaid)
+
+This diagram visualizes the main entities and their relationships.
+
+```mermaid
+erDiagram
+    CUSTOMER ||--o{ CART : places
+
+    CUSTOMER {
+        int id PK
+        string name
+        string email
+    }
+
+    PRODUCT {
+        int id PK
+        string name
+        float price
+        int stockQuantity
+    }
+
+    CART {
+        int id PK
+        int customerId FK "CUSTOMER"
+        date creationDate
+    }
+
+    CART ||--o{ CART_ITEM : contains
+
+    CART_ITEM {
+        int id PK
+        int cartId FK "CART"
+        int productId FK "PRODUCT"
+        int quantity
+    }
+
+    PRODUCT ||--o{ CART_ITEM : included_in
