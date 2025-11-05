@@ -1,4 +1,4 @@
-export default function About({ t, dir }) {
+export default function About({ t }) {
 
     return (
         <div dir={t.dir}>

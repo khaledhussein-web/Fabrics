@@ -1,4 +1,4 @@
-export default function Holograme({ t, dir }) {
+export default function Holograme({ t }) {
 
     return (
         <div dir={t.dir}>

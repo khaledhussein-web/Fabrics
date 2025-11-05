@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Dropdown from 'react-bootstrap/Dropdown';
-export default function Header({ lang, toggleLang, t , dir }) {
+export default function Header({ lang, toggleLang, t }) {
 
 
   // Mobile menu logic
@@ -155,10 +155,10 @@ export default function Header({ lang, toggleLang, t , dir }) {
 
 {/* ===== Mobile Navigation (ADJUSTED TO USE DROPDOWNS) ===== */}
 
-      <div className={`mobile-nav ${mobileMenu ? "show" : ""}`} id="mobile-nav">
-        {/* Primary Top-Level Links */}
-        <Link to="/about" className="nav-btn" onClick={handleMenuToggle}>{t.nav.about}</Link>
-        <Link to="/services" className="nav-btn" onClick={handleMenuToggle}>{t.nav.services}</Link>
+     <div className={`mobile-nav ${mobileMenu ? "show" : ""}`} id="mobile-nav">
+       {/* Primary Top-Level Links */}
+       <Link to="/about" className="nav-btn" onClick={handleMenuToggle}>{t.nav.about}</Link>
+       <Link to="/services" className="nav-btn" onClick={handleMenuToggle}>{t.nav.services}</Link>
         
         {/* --- 1. FABRICS DROPDOWN (Vertical Accordion) --- */}
         <Dropdown className="w-100 mobile-dropdown-item">
@@ -203,12 +203,12 @@ export default function Header({ lang, toggleLang, t , dir }) {
         </Dropdown>
         
         {/* --- 3. FRAMES Standalone Item --- */}
-        <Link to={`/products/frames`} className="nav-btn" onClick={handleMenuToggle}>
-          {t.productsCategories.frames}
-        </Link>
-        
-        {/* Utility Links */}
-        <Link to="/contact" className="nav-btn" onClick={handleMenuToggle}>{t.nav.contact}</Link>
+       <Link to={`/products/frames`} className="nav-btn" onClick={handleMenuToggle}>
+         {t.productsCategories.frames}
+       </Link>
+
+       {/* Utility Links */}
+       <Link to="/contact" className="nav-btn" onClick={handleMenuToggle}>{t.nav.contact}</Link>
       </div>
     </header>
   );

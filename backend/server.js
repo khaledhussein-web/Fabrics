@@ -3,7 +3,6 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const db = require('./db'); // PostgreSQL connection (Pool)
-
 // ==================== CONFIG ====================
 dotenv.config();
 const app = express();
@@ -12,6 +11,7 @@ const PORT = process.env.PORT || 5000;
 // ==================== MIDDLEWARE ====================
 app.use(cors());
 app.use(express.json());
+app.use('/uploads', express.static('uploads'));
 
 // ==================== BASIC ROUTE ====================
 app.get('/', (req, res) => {
@@ -79,6 +79,7 @@ app.post('/api/products', async (req, res) => {
   } = req.body;
 
   console.log('POST /api/products received:', req.body);
+  console.log('🔍 Category ID:', category_id, typeof category_id);
 
   try {
     await db.query('SELECT 1');
@@ -107,6 +108,17 @@ app.post('/api/products', async (req, res) => {
 
     const { rows } = await db.query(query, values);
     console.log('✅ Product inserted:', rows[0]);
+    console.log('🔍 Inserted values:', values);
+
+    // Fetch and log the inserted product to verify
+    const verifyQuery = `
+      SELECT p.*, c.name AS category_name
+      FROM products p
+      JOIN categories c ON p.category_id = c.id
+      WHERE p.id = $1
+    `;
+    const verifyResult = await db.query(verifyQuery, [rows[0].id]);
+    console.log('🔍 Verified inserted product:', verifyResult.rows[0]);
 
     res.status(201).json({
       message: 'Product added successfully',

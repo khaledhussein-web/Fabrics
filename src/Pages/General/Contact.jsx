@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import '../../assets/Contact.css'; 
 
-export default function Contact({ t, dir }) {
+export default function Contact({ t }) {
   const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
   const [toast, setToast] = useState("");
 
