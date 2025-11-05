@@ -10,32 +10,35 @@ export default function AddData() {
   const [imagePath, setImagePath] = useState('');
   const [createdAt, setCreatedAt] = useState('');
 
-  // 🔹 Fetch categories from backend
+  // 🔹 Fetch all categories from backend
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const res = await fetch('http://localhost:5000/api/categories');
         const data = await res.json();
-        if (data.categories && data.categories.length > 0) {
+
+        console.log("Fetched categories:", data.categories); // ✅ Debug log
+
+        if (data.categories && Array.isArray(data.categories)) {
           setCategories(data.categories);
         } else {
-          console.warn('No categories in DB, using predefined fallback list.');
+          console.warn('⚠️ No categories found or invalid response format.');
           setCategories([]);
         }
       } catch (err) {
-        console.error('Error fetching categories:', err);
+        console.error('❌ Error fetching categories:', err);
         setCategories([]);
       }
     };
     fetchCategories();
   }, []);
 
-  // 🔹 Handle form submit
+  // 🔹 Handle form submission
   async function handleSubmit(e) {
     e.preventDefault();
 
     const productData = {
-      category_id: categoryId,
+      category_id: Number(categoryId),
       name_en: englishName,
       name_ar: arabicName,
       description_en: englishDesc,
@@ -61,11 +64,12 @@ export default function AddData() {
         setImagePath('');
         setCreatedAt('');
       } else {
-        alert('❌ Failed to add product');
+        const errData = await response.json();
+        alert(`❌ Failed to add product: ${errData.message || 'Unknown error'}`);
       }
     } catch (error) {
-      console.error('Error:', error);
-      alert('❌ Error adding product');
+      console.error('❌ Error adding product:', error);
+      alert('Error adding product. Check the console for details.');
     }
   }
 
@@ -74,45 +78,24 @@ export default function AddData() {
       <h2 className="text-center mb-3">Add Product</h2>
 
       <form onSubmit={handleSubmit}>
+        {/* CATEGORY DROPDOWN */}
         <div className="mb-3">
           <label>Category:&nbsp;</label>
           <select
             value={categoryId}
-            onChange={(e) => setCategoryId(e.target.value)}
+            onChange={(e) => setCategoryId(Number(e.target.value))}
             required
           >
             <option value="">Select Category</option>
-
-            {/* ✅ If backend has categories */}
-            {categories.length > 0 ? (
-              categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.name}
-                </option>
-              ))
-            ) : (
-              <>
-                {/* ✅ Fallback: predefined local categories */}
-                <optgroup label="Fabrics">
-                  <option value="Decoration fabrics">Decoration fabrics</option>
-                  <option value="Projects screen">Projects screen</option>
-                  <option value="Holograme">Holograme</option>
-                  <option value="Flooring">Flooring</option>
-                </optgroup>
-
-                <optgroup label="Tracks">
-                  <option value="Chain Track">Chain Track</option>
-                  <option value="Reveal systems">Reveal systems</option>
-                  <option value="Tracks">Tracks</option>
-                  <option value="Rollups">Rollups</option>
-                </optgroup>
-
-                <option value="Frames">Frames</option>
-              </>
-            )}
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
+              </option>
+            ))}
           </select>
         </div>
 
+        {/* ENGLISH NAME */}
         <p>
           <label>English Name:&nbsp;</label>
           <input
@@ -123,6 +106,7 @@ export default function AddData() {
           />
         </p>
 
+        {/* ARABIC NAME */}
         <p>
           <label>Arabic Name:&nbsp;</label>
           <input
@@ -132,6 +116,7 @@ export default function AddData() {
           />
         </p>
 
+        {/* ENGLISH DESC */}
         <p>
           <label>English Description:&nbsp;</label>
           <textarea
@@ -142,6 +127,7 @@ export default function AddData() {
           ></textarea>
         </p>
 
+        {/* ARABIC DESC */}
         <p>
           <label>Arabic Description:&nbsp;</label>
           <textarea
@@ -152,15 +138,21 @@ export default function AddData() {
           ></textarea>
         </p>
 
+        {/* IMAGE PATH */}
         <p>
           <label>Image Path:&nbsp;</label>
           <input
             type="text"
             value={imagePath}
             onChange={(e) => setImagePath(e.target.value)}
+            placeholder="/uploads/fabrics/example.jpg"
           />
+          <small className="text-muted d-block">
+            Use server-relative paths like "/uploads/fabrics/velvet.jpg". Avoid local file paths like "C:\Users\...".
+          </small>
         </p>
 
+        {/* CREATED AT */}
         <p>
           <label>Created At:&nbsp;</label>
           <input
@@ -170,7 +162,7 @@ export default function AddData() {
           />
         </p>
 
-        <button className="rounded btn btn-primary">Submit</button>
+        <button className="rounded btn btn-primary mt-3">Submit</button>
       </form>
     </div>
   );

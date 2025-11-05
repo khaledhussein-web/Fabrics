@@ -1,4 +1,4 @@
-export default function ProjectsScreen({ t, dir }) {
+export default function ProjectsScreen({ t }) {
 
     return (
         <div dir={t.dir}>

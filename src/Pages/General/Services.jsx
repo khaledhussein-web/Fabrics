@@ -1,4 +1,4 @@
-function Services({ t, dir }) {
+function Services({ t }) {
 
     return (
         <div dir={t.dir}>

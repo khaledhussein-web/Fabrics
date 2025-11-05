@@ -1,4 +1,4 @@
-export default function RevealSystems({ t, dir }) {
+export default function RevealSystems({ t }) {
 
     return (
         <div dir={t.dir}>

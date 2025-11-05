@@ -1,4 +1,4 @@
-export default function Rollups({ t, dir }) {
+export default function Rollups({ t }) {
 
     return (
         <div dir={t.dir}>

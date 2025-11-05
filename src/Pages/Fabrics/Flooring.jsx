@@ -1,4 +1,4 @@
-export default function Flooring({ t, dir }) {
+export default function Flooring({ t }) {
 
     return (
         <div dir={t.dir}>

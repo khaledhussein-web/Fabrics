@@ -1,4 +1,4 @@
-export default function DecorationFabrics({ t, dir }) {
+export default function DecorationFabrics({ t }) {
 
     return (
         <div dir={t.dir}>
