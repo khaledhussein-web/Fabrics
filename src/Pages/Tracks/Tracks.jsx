@@ -8,9 +8,16 @@ export default function Tracks() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+        console.log("🔍 Attempting to fetch products from API...");
         const res = await fetch("http://localhost:5000/api/products");
+        if (!res.ok) {
+          console.error("❌ API response not ok:", res.status, res.statusText);
+          throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+        }
         const data = await res.json();
-        setProducts(data.products);
+        console.log("✅ Raw API response data:", data);
+        console.log("✅ Products array:", data.products || []);
+        setProducts(data.products || []); // ✅ Prevent crash
       } catch (err) {
         console.error("❌ Error fetching products:", err);
         setError(err.message);
@@ -24,7 +31,7 @@ export default function Tracks() {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
-  const filteredProducts = products.filter((p) =>
+  const filteredProducts = (products || []).filter((p) =>
     ["chain track", "reveal systems", "rollups"].includes(
       p.category_name?.toLowerCase().trim()
     )

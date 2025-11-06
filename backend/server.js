@@ -13,6 +13,7 @@ app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 
+
 // ==================== BASIC ROUTE ====================
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to the Fabrics API with Category Support 🧵' });
