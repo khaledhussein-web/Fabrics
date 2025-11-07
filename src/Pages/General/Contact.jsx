@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import '../../assets/Contact.css'; 
+import '../../assets/Contact.css';
 
 export default function Contact({ t }) {
   const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
@@ -10,16 +10,38 @@ export default function Contact({ t }) {
     setTimeout(() => setToast(""), 3000);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    showToast(t?.contact?.success || "Thanks! We will contact you soon.");
-    setForm({ name: "", email: "", phone: "", message: "" });
+
+    try {
+      const response = await fetch("http://localhost:5000/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullName: form.name,
+          email: form.email,
+          phone: form.phone,
+          message: form.message,
+        }),
+      });
+
+      if (response.ok) {
+        showToast(t?.contact?.success || "Message sent successfully!");
+        setForm({ name: "", email: "", phone: "", message: "" });
+      } else {
+        showToast("⚠️ Failed to send message.");
+      }
+    } catch (error) {
+      console.error("Send error:", error);
+      showToast("❌ Error sending message.");
+    }
   };
 
   return (
     <div className="contact-page" dir={t.dir}>
       <section className="contact-form-section">
         <h1>{t?.contact?.title || "Contact Us"}</h1>
+
         <form onSubmit={handleSubmit} className="contact-form">
           <label>{t?.contact?.form?.name || "Full Name"}</label>
           <input
@@ -80,7 +102,6 @@ export default function Contact({ t }) {
         </div>
       </section>
 
-      {/* Toast Notification */}
       {toast && <div id="toast" className="toast">{toast}</div>}
 
       <a

@@ -3,6 +3,8 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const db = require('./db'); // PostgreSQL connection (Pool)
+const nodemailer = require("nodemailer");
+dotenv.config
 // ==================== CONFIG ====================
 dotenv.config();
 const app = express();
@@ -169,6 +171,44 @@ app.post('/api/categories', async (req, res) => {
     });
   }
 });
+
+// ==================== CONTACT FORM ROUTE ====================
+app.post("/api/contact", async (req, res) => {
+  const { fullName, email, message } = req.body;
+
+  try {
+    const transporter = nodemailer.createTransport({
+      host: "smtp-mail.outlook.com",
+      port: 587,
+      secure: false, // true for 465 / false for 587
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+      tls: {
+        rejectUnauthorized: false, // prevents certificate issues
+      }
+    });
+
+    await transporter.sendMail({
+      from: `"Website Contact Form" <${process.env.SMTP_USER}>`,
+      to: process.env.SMTP_USER, // send to your company inbox
+      subject: `New contact message from ${fullName}`,
+      html: `
+        <h2>New Contact Request</h2>
+        <p><strong>Name:</strong> ${fullName}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Message:</strong><br>${message}</p>
+      `,
+    });
+
+    res.status(200).json({ message: "Message sent successfully" });
+  } catch (err) {
+    console.error("Email send error:", err);
+    res.status(500).json({ error: "Failed to send message" });
+  }
+});
+
 
 // ==================== START SERVER ====================
 app.listen(PORT, () => {
