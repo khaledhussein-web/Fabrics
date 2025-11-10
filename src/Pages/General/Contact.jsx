@@ -14,26 +14,30 @@ export default function Contact({ t }) {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:5000/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          fullName: form.name,
-          email: form.email,
-          phone: form.phone,
-          message: form.message,
-        }),
-      });
+      const response = await fetch(
+        "https://us-central1-fabrics-5c021.cloudfunctions.net/sendContactEmail",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: form.name,
+            email: form.email,
+            phone: form.phone,
+            message: form.message,
+            lang: t.dir === "rtl" ? "ar" : "en",
+  }),
+        }
+      );
 
       if (response.ok) {
-        showToast(t?.contact?.success || "Message sent successfully!");
+        showToast("Message sent successfully!");
         setForm({ name: "", email: "", phone: "", message: "" });
       } else {
-        showToast("⚠️ Failed to send message.");
+        showToast("Failed to send message. Please try again.");
       }
     } catch (error) {
-      console.error("Send error:", error);
-      showToast("❌ Error sending message.");
+      console.error(error);
+      showToast("Server error. Try again later.");
     }
   };
 

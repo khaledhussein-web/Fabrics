@@ -1,32 +1,91 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * const {onCall} = require("firebase-functions/v2/https");
- * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
+const functions = require("firebase-functions");
+const brevoLib = require("@getbrevo/brevo");
 
-const {setGlobalOptions} = require("firebase-functions");
-const {onRequest} = require("firebase-functions/https");
-const logger = require("firebase-functions/logger");
+exports.sendContactEmail = functions.https.onRequest(async (req, res) => {
+  // Set CORS headers
+  res.set('Access-Control-Allow-Origin', '*');
+  res.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.set('Access-Control-Allow-Headers', 'Content-Type');
 
-// For cost control, you can set the maximum number of containers that can be
-// running at the same time. This helps mitigate the impact of unexpected
-// traffic spikes by instead downgrading performance. This limit is a
-// per-function limit. You can override the limit for each function using the
-// `maxInstances` option in the function's options, e.g.
-// `onRequest({ maxInstances: 5 }, (req, res) => { ... })`.
-// NOTE: setGlobalOptions does not apply to functions using the v1 API. V1
-// functions should each use functions.runWith({ maxInstances: 10 }) instead.
-// In the v1 API, each function can only serve one request per container, so
-// this will be the maximum concurrent request count.
-setGlobalOptions({ maxInstances: 10 });
+  // Handle preflight OPTIONS request
+  if (req.method === 'OPTIONS') {
+    res.status(204).send('');
+    return;
+  }
 
-// Create and deploy your first functions
-// https://firebase.google.com/docs/functions/get-started
+  // ✅ Initialize Brevo Email API using environment variable
+  const brevo = new brevoLib.TransactionalEmailsApi();
+  brevo.setApiKey(
+    brevoLib.TransactionalEmailsApiApiKeys.apiKey,
+    functions.config().brevo.api_key
+  );
 
-// exports.helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+       if (req.headers["content-type"] === "application/json" && !req.body) {
+      try {
+        req.body = JSON.parse(req.rawBody.toString());
+      } catch (e) {
+        return res.status(400).send("Invalid JSON");
+      }
+    }
+    if (req.method !== "POST") {
+      return res.status(405).send("Method Not Allowed");
+    }
+
+    const { name, email, phone, message, lang } = req.body;
+
+    const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+    const date = new Date().toLocaleString("en-US", { timeZone: "Asia/Beirut" });
+
+    const isArabic = lang === "ar";
+
+    const adminEmailHTML = `
+      <div style="font-family:Arial; padding:20px;">
+        <h2 style="color:#c49b34;">New Contact Request</h2>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Phone:</strong> ${phone}</p>
+        <p><strong>Message:</strong><br>${message}</p>
+        <hr>
+        <p><small>IP: ${ip}</small></p>
+        <p><small>Sent at: ${date}</small></p>
+      </div>
+    `;
+
+    const customerReplyHTML = isArabic
+      ? `
+        <div style="font-family:Arial; padding:20px; direction:rtl; text-align:right;">
+          <h3>شكراً لتواصلك معنا</h3>
+          <p>لقد استلمنا رسالتك وسنقوم بالرد عليك قريباً.</p>
+          <p>مع التحية،<br>فريق Stageware</p>
+        </div>`
+      : `
+        <div style="font-family:Arial; padding:20px;">
+          <h3>Thank you for contacting us</h3>
+          <p>We have received your message and will reply shortly.</p>
+          <p>Best regards,<br>Stageware Team</p>
+        </div>`;
+
+    try {
+      // ✅ Email to Admin
+      await brevo.sendTransacEmail({
+        sender: { email: "Naderarmoush@stagewareltd.co.uk" },
+        to: [{ email: "Naderarmoush@stagewareltd.co.uk" }],
+        subject: `New Website Contact Request — ${name}`,
+        htmlContent: adminEmailHTML,
+      });
+
+      // ✅ Reply email to customer
+      await brevo.sendTransacEmail({
+        sender: { email: "Naderarmoush@stagewareltd.co.uk" },
+        to: [{ email }],
+        subject: isArabic ? "تم استلام رسالتك" : "Your message was received",
+        htmlContent: customerReplyHTML,
+      });
+
+      return res.status(200).json({ success: true });
+
+    } catch (error) {
+      console.error("Brevo Email Error:", error);
+      return res.status(500).json({ success: false });
+    }
+});
