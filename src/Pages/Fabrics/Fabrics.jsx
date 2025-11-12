@@ -1,116 +1,114 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios"; // You'll need to install axios if you haven't: npm install axios
 import "../../assets/Fabrics.css";
 
-const fabricsCategories = [
-  {
-    name: "Acoustic, Masking and Blackout",
-    imageSrc:
-      "https://www.jcjoel.com/wp-content/uploads/2023/07/Acoustic-Masking-Blackout-Main-Image-410x309.jpg",
-    href: "/product-category/fabric/acoustic-masking-blackout-fabric",
-    alt: "Fabric for acoustic, masking and blackout purposes",
-  },
-  {
-    name: "Chroma Key",
-    imageSrc:
-      "https://www.jcjoel.com/wp-content/uploads/2023/07/chroma-key-main-image-410x309.jpg",
-    href: "/product-category/fabric/chroma-key",
-    alt: "Chroma Key fabric for video production",
-  },
-  {
-    name: "Decorative and Display",
-    imageSrc:
-      "https://www.jcjoel.com/wp-content/uploads/2023/07/Decorative-Display-MAIN-IMAGE-min-410x309.jpeg",
-    href: "/product-category/fabric/decoration-fabrics",
-    alt: "Decorative and Display fabric",
-  },
-  {
-    name: "Digital Print",
-    imageSrc:
-      "https://www.jcjoel.com/wp-content/uploads/2023/07/Digital-Print-Main-Image-410x309.png",
-    href: "/product-category/fabric/digital-print",
-    alt: "Digital Print fabric",
-  },
-  {
-    name: "Flooring",
-    imageSrc:
-      "https://www.jcjoel.com/wp-content/uploads/2023/07/Flooring-410x309.png",
-    href: "/product-category/fabric/flooring",
-    alt: "Flooring materials",
-  },
-  {
-    name: "Muslin, Canvas and Scenic",
-    imageSrc:
-      "https://www.jcjoel.com/wp-content/uploads/2023/07/Muslin-Canvas-Scenic-MAIN-IMAGE-min-410x309.jpg",
-    href: "/product-category/fabric/muslin-canvas-scenic",
-    alt: "Muslin, Canvas, and Scenic fabric",
-  },
-  {
-    name: "Projection Screens",
-    imageSrc:
-      "https://www.jcjoel.com/wp-content/uploads/2023/07/IMG_3708-410x309.jpeg",
-    href: "/product-category/fabric/projects-screen",
-    alt: "Projection Screens material",
-  },
-  {
-    name: "Scrim, Gauze and Netting",
-    imageSrc:
-      "https://www.jcjoel.com/wp-content/uploads/2023/07/Scrim-Gauze-Netting-Main-Image-410x309.png",
-    href: "/product-category/fabric/scrim-gauze-netting",
-    alt: "Scrim, Gauze, and Netting fabric",
-  },
-  {
-    name: "Sheers, Silks and Satins",
-    imageSrc:
-      "https://www.jcjoel.com/wp-content/uploads/2023/07/Sheers-Silks-Satins-MAIN-IMAGE-410x309.jpg",
-    href: "/product-category/fabric/sheers-silks-satins",
-    alt: "Sheers, Silks, and Satins fabric",
-  },
-  {
-    name: "Velvet - Natural",
-    imageSrc:
-      "https://www.jcjoel.com/wp-content/uploads/2023/07/Velvet-Natural-410x309.png",
-    href: "/product-category/fabric/velvet-natural",
-    alt: "Natural Velvet fabric",
-  },
-  {
-    name: "Velvet - Synthetic",
-    imageSrc:
-      "https://www.jcjoel.com/wp-content/uploads/2023/07/Synthetic-Velvet-Main-Image-410x309.png",
-    href: "/product-category/fabric/velvet-synthetic",
-    alt: "Synthetic Velvet fabric",
-  },
-];
+// NOTE: We are removing the hardcoded fabricsCategories array.
 
 const Fabrics = ({ t }) => {
+  // State to hold the fetched content (products and L1 content)
+  const [content, setContent] = useState([]);
+  // State for loading status
+  const [loading, setLoading] = useState(true);
+  // State for error handling
+  const [error, setError] = useState(null);
+
+  // Hardcode the ID for the 'Fabrics' category (which is 1 in your DB)
+  const FABRICS_CATEGORY_ID = 1;
+  // Use your backend URL
+  const API_URL = `http://localhost:5000/api/category-content/${FABRICS_CATEGORY_ID}`;
+
+  useEffect(() => {
+    const fetchFabricsContent = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        // Fetch the flexible content using the new API route
+        const response = await axios.get(API_URL);
+
+        // The API returns the data under the 'content' key
+        setContent(response.data.content);
+        
+      } catch (err) {
+        console.error("Error fetching Fabrics content:", err);
+        setError("Failed to load products. Please check the server.");
+        setContent([]); // Clear content on error
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFabricsContent();
+  }, [API_URL]); // Dependency array ensures effect runs only on mount
+
+  // Determine which field to display based on translation context
+  const getNameField = (item) => {
+    // If translation direction is RTL (Arabic), use name_ar, otherwise use name_en
+    return t?.dir === "rtl" ? item.name_ar || item.name_en : item.name_en;
+  };
+
+  // --- RENDERING LOGIC ---
+
+  if (loading) {
+    return <div className="fabrics-page m-4">Loading Fabrics content...</div>;
+  }
+
+  if (error) {
+    return <div className="fabrics-page m-4 text-danger">{error}</div>;
+  }
+
+  if (content.length === 0) {
+    return <div className="fabrics-page m-4">No content found for Fabrics.</div>;
+  }
+
+
   return (
     <div className="fabrics-page m-4" dir={t?.dir || "ltr"}>
-      {/* 🔹 Dashboard grid (static fabric categories) */}
+      {/* 🔹 Dashboard grid (dynamic content from DB) */}
       <div className="container container--regular mb-5">
         <h2 className="mb-4">{t?.productsCategories?.fabrics || "Fabrics"}</h2>
         <div className="row g-4">
-          {fabricsCategories.map((category, index) => (
-            <div
-              className="col-12 col-sm-6 col-md-4 col-lg-3"
-              key={index}
-            >
-              <div className="align-items-start card border-0">
-                <a href={category.href}>
-                  <img
-                    src={category.imageSrc}
-                    className="img-fluid rounded shadow-sm"
-                    alt={category.alt}
-                    loading="lazy"
-                  />
-                </a>
-                <p className="mt-3 fw-bold text-center">{category.name}</p>
-                <div className="text-center">
-                  <a className="btn btn-primary" href={category.href}>
-                    View Products
+          
+          {content.map((item, index) => {
+            
+            // Determine the URL for the product/content item
+            // This needs custom logic based on how you route your individual pages.
+            // For now, we'll use a placeholder.
+            const itemHref = `/product/${item.id}`; 
+            
+            return (
+              <div
+                className="col-12 col-sm-6 col-md-4 col-lg-3"
+                key={item.id || index} // Use item.id for a stable key
+              >
+                <div className="align-items-start card border-0">
+                  <a href={itemHref}>
+                    <img
+                      // Assuming your image_path contains a full or relative URL
+                      // We'll prepend the server base URL if needed.
+                      src={`http://localhost:5000${item.image_path}`} 
+                      className="img-fluid rounded shadow-sm"
+                      alt={getNameField(item)} // Use the dynamic name for alt text
+                      loading="lazy"
+                    />
                   </a>
+                  {/* Display the name based on language/direction */}
+                  <p className="mt-3 fw-bold text-center">
+                    {getNameField(item)} 
+                    {item.subcategory_name && (
+                      <span className="text-muted d-block small">({item.subcategory_name})</span>
+                    )}
+                  </p>
+                  
+                  <div className="text-center">
+                    <a className="btn btn-primary" href={itemHref}>
+                      {t?.viewProducts || "View Details"}
+                    </a>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

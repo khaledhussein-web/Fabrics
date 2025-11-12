@@ -177,7 +177,7 @@ export default function Header({ lang, toggleLang, t }) {
         
         {/* --- 1. FABRICS DROPDOWN (Vertical Accordion) --- */}
         <Dropdown className="w-100 mobile-dropdown-item">
-            <Dropdown.Toggle as="a" className="nav-btn-parent w-100 text-start">
+            <Dropdown.Toggle as={Link} to={`/products/fabrics/`} className="nav-btn-parent w-100 text-start">
                 {t.productsCategories.fabrics}
             </Dropdown.Toggle>
 
