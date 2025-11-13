@@ -96,7 +96,7 @@ export default function Header({ lang, toggleLang, t }) {
                       {t.fabricsSubCategories.decoration}
                     </Dropdown.Item>
                     <Dropdown.Item as={Link} to={`/products/fabrics/2`}>
-                      {t.fabricsSubCategories.projectsScreen}
+                      {t.fabricsSubCategories.projectionScreens}
                     </Dropdown.Item>
                     <Dropdown.Item as={Link} to={`/products/fabrics/3`}>
                       {t.fabricsSubCategories.holograme}
@@ -113,7 +113,6 @@ export default function Header({ lang, toggleLang, t }) {
                       {t.productsCategories.tracks}
                     </Dropdown.Item>
                     <div className="dropdown-menu-nested">
-                      {/* ⚠️ NOTE: Replace the numeric IDs (5, 6, 7) with the actual database ID for each subcategory */}
                       <Dropdown.Item as={Link} to={`/products/tracks/5`}>
                         {t.tracksSubCategories.chainTrack}
                       </Dropdown.Item>

@@ -48,7 +48,7 @@ export const UI = {
     //  Nested Frabrics sub-category names (used in the nested Fabrics dropdown links)
     fabricsSubCategories: {
       decoration: "Decoration fabrics",
-      projectsScreen: "Projects screen",
+      projectionScreens: "Projection screens",
       holograme: "Holograme",
       flooring: "Flooring",
     },
@@ -113,7 +113,7 @@ export const UI = {
 
     fabricsSubCategories: {
       decoration: "أقمشة الديكور",
-      projectsScreen: "شاشات العرض",
+      projectionScreens: "شاشات العرض",
       holograme: "الهولوجرام",
       flooring: "الأرضيات",
     },
