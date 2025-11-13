@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios"; // You'll need to install axios if you haven't: npm install axios
+import axios from "axios";
 import "../../assets/Fabrics.css";
 
-// NOTE: We are removing the hardcoded fabricsCategories array.
-
 const Fabrics = ({ t }) => {
-  // State to hold the fetched content (products and L1 content)
+  // State to hold the fetched content (subcategories and products)
   const [content, setContent] = useState([]);
   // State for loading status
   const [loading, setLoading] = useState(true);
@@ -13,9 +11,9 @@ const Fabrics = ({ t }) => {
   const [error, setError] = useState(null);
 
   // Hardcode the ID for the 'Fabrics' category (which is 1 in your DB)
-  const FABRICS_CATEGORY_ID = 1;
+  const CATEGORY_ID = 1;
   // Use your backend URL
-  const API_URL = `http://localhost:5000/api/category-content/${FABRICS_CATEGORY_ID}`;
+  const API_URL = `http://localhost:5000/api/category-content/${CATEGORY_ID}`;
 
   useEffect(() => {
     const fetchFabricsContent = async () => {
@@ -39,7 +37,7 @@ const Fabrics = ({ t }) => {
     };
 
     fetchFabricsContent();
-  }, [API_URL]); // Dependency array ensures effect runs only on mount
+  }, [API_URL]);
 
   // Determine which field to display based on translation context
   const getNameField = (item) => {
@@ -71,38 +69,44 @@ const Fabrics = ({ t }) => {
           
           {content.map((item, index) => {
             
-            // Determine the URL for the product/content item
-            // This needs custom logic based on how you route your individual pages.
-            // For now, we'll use a placeholder.
-            const itemHref = `/product/${item.id}`; 
+            let itemHref = '';
+            
+            // ⭐️ NEW LOGIC: Check if this item is a SUB-CATEGORY (L1) or a product (L0)
+            // If subcategory_id is NULL, it means the item is an L1 Subcategory (e.g., Decoration Fabrics).
+            // We use the new dynamic route: /products/categoryName/subcategoryId
+            if (item.subcategory_id === null) {
+                // The main category name is 'fabrics' (hardcoded based on context)
+                // The subcategory ID is stored in the item.id field for L1 categories.
+                itemHref = `/products/fabrics/${item.id}`;
+            } else {
+                // If subcategory_id is NOT null, it's an L0 product
+                // This link should go to the individual product page
+                itemHref = `/product/${item.id}`;
+            }
             
             return (
               <div
                 className="col-12 col-sm-6 col-md-4 col-lg-3"
-                key={item.id || index} // Use item.id for a stable key
+                key={item.id || index} 
               >
                 <div className="align-items-start card border-0">
                   <a href={itemHref}>
                     <img
-                      // Assuming your image_path contains a full or relative URL
-                      // We'll prepend the server base URL if needed.
                       src={`http://localhost:5000${item.image_path}`} 
                       className="img-fluid rounded shadow-sm"
-                      alt={getNameField(item)} // Use the dynamic name for alt text
+                      alt={getNameField(item)} 
                       loading="lazy"
                     />
                   </a>
                   {/* Display the name based on language/direction */}
                   <p className="mt-3 fw-bold text-center">
                     {getNameField(item)} 
-                    {item.subcategory_name && (
-                      <span className="text-muted d-block small">({item.subcategory_name})</span>
-                    )}
+                    {/* Hiding the subcategory name helper here, as this is the main page */}
                   </p>
                   
                   <div className="text-center">
                     <a className="btn btn-primary" href={itemHref}>
-                      {t?.viewProducts || "View Details"}
+                      {t?.viewProducts || "View Products"}
                     </a>
                   </div>
                 </div>

@@ -42,12 +42,7 @@ export default function Header({ lang, toggleLang, t }) {
   }, []); // Empty dependency array means this runs only on mount/unmount
 
 
-
   // End of mobile menu logic
-
-
-
-
 
   return (
     <header dir={t.dir}>
@@ -61,8 +56,7 @@ export default function Header({ lang, toggleLang, t }) {
             <div className="brand-text">{t.brand}</div>
           </div>
         </Link>
-{/* 
-        <Navbar.Brand as={Link} to="/" className="nav-logo">
+{/* <Navbar.Brand as={Link} to="/" className="nav-logo">
           <Image
             src={Logo1} 
             alt="Company Logo"
@@ -82,56 +76,64 @@ export default function Header({ lang, toggleLang, t }) {
 
 
 
-            {/* Products dropdown */}
+            {/* Products dropdown (Desktop - RESTORED) */}
             <Dropdown>
-              <Dropdown.Toggle id="product-menu-dropdown-responsive" className="nav-btn" as={Link}>
+              <Dropdown.Toggle id="product-menu-dropdown-responsive" className="nav-btn" as="span">
                 {t.nav.products}
               </Dropdown.Toggle>
               <Dropdown.Menu>
+                
+                {/* 1. Fabrics Dropdown */}
                 <li className="dropdown-submenu">
-                  <Dropdown.Item as={Link} to={`/products/fabrics/`} className="submenu-trigger cursor-pointer" >
+                  {/* Link to main Fabrics page */}
+                  <Dropdown.Item as={Link} to={`/products/fabrics`} className="submenu-trigger cursor-pointer" >
                     {t.productsCategories.fabrics}
                   </Dropdown.Item>
 
                   <div className="dropdown-menu-nested">
-                    <Dropdown.Item as={Link} to={`/products/fabrics/decoration`}>
+                    {/* ⚠️ NOTE: Replace the numeric IDs (1, 2, 3, 4) with the actual database ID for each subcategory */}
+                    <Dropdown.Item as={Link} to={`/products/fabrics/1`}> 
                       {t.fabricsSubCategories.decoration}
                     </Dropdown.Item>
-                    <Dropdown.Item as={Link} to={`/products/fabrics/projectsScreen`}>
+                    <Dropdown.Item as={Link} to={`/products/fabrics/2`}>
                       {t.fabricsSubCategories.projectsScreen}
                     </Dropdown.Item>
-                    <Dropdown.Item as={Link} to={`/products/fabrics/holograme`}>
+                    <Dropdown.Item as={Link} to={`/products/fabrics/3`}>
                       {t.fabricsSubCategories.holograme}
                     </Dropdown.Item>
-                    <Dropdown.Item as={Link} to={`/products/fabrics/flooring`}>
+                    <Dropdown.Item as={Link} to={`/products/fabrics/4`}>
                       {t.fabricsSubCategories.flooring}
                     </Dropdown.Item>
                   </div>
                 </li>
 
+                {/* 2. Tracks Dropdown */}
                 <li className="dropdown-submenu">
-                  
-                  <Dropdown.Item as={Link} to={`/products/tracks/Tracks`} className="submenu-trigger cursor-pointer">
-                    {t.productsCategories.tracks}
-                  </Dropdown.Item>
-                  <div className="dropdown-menu-nested">
-                    <Dropdown.Item as={Link} to={`/products/tracks/chainTrack`}>
-                      {t.tracksSubCategories.chainTrack}
+                    <Dropdown.Item as={Link} to={`/products/tracks`} className="submenu-trigger cursor-pointer">
+                      {t.productsCategories.tracks}
                     </Dropdown.Item>
-                    <Dropdown.Item as={Link} to={`/products/tracks/revealSystems`}>
-                      {t.tracksSubCategories.revealSystems}
-                    </Dropdown.Item>
-                    <Dropdown.Item as={Link} to={`/products/tracks/rollups`}>
-                      {t.tracksSubCategories.rollups}
-                    </Dropdown.Item>
-                  </div>
+                    <div className="dropdown-menu-nested">
+                      {/* ⚠️ NOTE: Replace the numeric IDs (5, 6, 7) with the actual database ID for each subcategory */}
+                      <Dropdown.Item as={Link} to={`/products/tracks/5`}>
+                        {t.tracksSubCategories.chainTrack}
+                      </Dropdown.Item>
+                      <Dropdown.Item as={Link} to={`/products/tracks/6`}>
+                        {t.tracksSubCategories.revealSystems}
+                      </Dropdown.Item>
+                      <Dropdown.Item as={Link} to={`/products/tracks/7`}>
+                        {t.tracksSubCategories.rollups}
+                      </Dropdown.Item>
+                    </div>
                 </li>
+                
+                {/* 3. Frames Link */}
                 <Dropdown.Item as={Link} to={`/products/frames`}> 
-                    {t.productsCategories.frames}
+                  {t.productsCategories.frames}
                 </Dropdown.Item>
+
               </Dropdown.Menu>
             </Dropdown>
-            {/*  End products dropdown*/}
+            {/* End products dropdown*/}
 
 
             {/* Contact  */}
@@ -155,45 +157,32 @@ export default function Header({ lang, toggleLang, t }) {
       </nav>
 
 
+{/* ===== Mobile Navigation (RESTORED) ===== */}
 
-
-
-
-
-
-
-
-
-
-
-
-
-{/* ===== Mobile Navigation (ADJUSTED TO USE DROPDOWNS) ===== */}
-
-     <div className={`mobile-nav ${mobileMenu ? "show" : ""}`} id="mobile-nav">
-       {/* Primary Top-Level Links */}
-       <Link to="/about" className="nav-btn" onClick={handleMenuToggle}>{t.nav.about}</Link>
-       <Link to="/services" className="nav-btn" onClick={handleMenuToggle}>{t.nav.services}</Link>
+      <div className={`mobile-nav ${mobileMenu ? "show" : ""}`} id="mobile-nav">
+        {/* Primary Top-Level Links */}
+        <Link to="/about" className="nav-btn" onClick={handleMenuToggle}>{t.nav.about}</Link>
+        <Link to="/services" className="nav-btn" onClick={handleMenuToggle}>{t.nav.services}</Link>
         
         {/* --- 1. FABRICS DROPDOWN (Vertical Accordion) --- */}
         <Dropdown className="w-100 mobile-dropdown-item">
-            <Dropdown.Toggle as={Link} to={`/products/fabrics/`} className="nav-btn-parent w-100 text-start">
+            <Dropdown.Toggle as={Link} to={`/products/fabrics`} className="nav-btn-parent w-100 text-start" onClick={handleMenuToggle}>
                 {t.productsCategories.fabrics}
             </Dropdown.Toggle>
 
             {/* Sub-Items are inside the Dropdown.Menu */}
             <Dropdown.Menu className="mobile-dropdown-menu">
-                {/* Close menu when navigating */}
-                <Dropdown.Item as={Link} to={`/products/fabrics/decoration`} onClick={handleMenuToggle} className="nav-btn-child">
+                {/* ⚠️ NOTE: Replace the numeric IDs (1, 2, 3, 4) with the actual database ID for each subcategory */}
+                <Dropdown.Item as={Link} to={`/products/fabrics/1`} onClick={handleMenuToggle} className="nav-btn-child">
                     {t.fabricsSubCategories.decoration}
                 </Dropdown.Item>
-                <Dropdown.Item as={Link} to={`/products/fabrics/projectsScreen`} onClick={handleMenuToggle} className="nav-btn-child">
+                <Dropdown.Item as={Link} to={`/products/fabrics/2`} onClick={handleMenuToggle} className="nav-btn-child">
                     {t.fabricsSubCategories.projectsScreen}
                 </Dropdown.Item>
-                <Dropdown.Item as={Link} to={`/products/fabrics/holograme`} onClick={handleMenuToggle} className="nav-btn-child">
+                <Dropdown.Item as={Link} to={`/products/fabrics/3`} onClick={handleMenuToggle} className="nav-btn-child">
                     {t.fabricsSubCategories.holograme}
                 </Dropdown.Item>
-                <Dropdown.Item as={Link} to={`/products/fabrics/flooring`} onClick={handleMenuToggle} className="nav-btn-child">
+                <Dropdown.Item as={Link} to={`/products/fabrics/4`} onClick={handleMenuToggle} className="nav-btn-child">
                     {t.fabricsSubCategories.flooring}
                 </Dropdown.Item>
             </Dropdown.Menu>
@@ -201,29 +190,31 @@ export default function Header({ lang, toggleLang, t }) {
         
         {/* --- 2. TRACKS DROPDOWN (Vertical Accordion) --- */}
         <Dropdown className="w-100 mobile-dropdown-item">
-            <Dropdown.Toggle as={Link} to={`/products/tracks/tracks`} className="nav-btn-parent w-100 text-start">
+            <Dropdown.Toggle as={Link} to={`/products/tracks/`} className="nav-btn-parent w-100 text-start" onClick={handleMenuToggle}>
                 {t.productsCategories.tracks}
             </Dropdown.Toggle>
             <Dropdown.Menu className="mobile-dropdown-menu">
-                <Dropdown.Item as={Link} to={`/products/tracks/chainTrack`} onClick={handleMenuToggle} className="nav-btn-child">
+                {/* ⚠️ NOTE: Replace the numeric IDs (5, 6, 7) with the actual database ID for each subcategory */}
+                <Dropdown.Item as={Link} to={`/products/tracks/5`} onClick={handleMenuToggle} className="nav-btn-child">
                     {t.tracksSubCategories.chainTrack}
                 </Dropdown.Item>
-                <Dropdown.Item as={Link} to={`/products/tracks/revealSystems`} onClick={handleMenuToggle} className="nav-btn-child">
+                <Dropdown.Item as={Link} to={`/products/tracks/6`} onClick={handleMenuToggle} className="nav-btn-child">
                     {t.tracksSubCategories.revealSystems}
                 </Dropdown.Item>
-                <Dropdown.Item as={Link} to={`/products/tracks/rollups`} onClick={handleMenuToggle} className="nav-btn-child">
+                <Dropdown.Item as={Link} to={`/products/tracks/7`} onClick={handleMenuToggle} className="nav-btn-child">
                     {t.tracksSubCategories.rollups}
                 </Dropdown.Item>
             </Dropdown.Menu>
         </Dropdown>
         
         {/* --- 3. FRAMES Standalone Item --- */}
-       <Link to={`/products/frames`} className="nav-btn" onClick={handleMenuToggle}>
-         {t.productsCategories.frames}
-       </Link>
+        <Link to={`/products/frames`} className="nav-btn" onClick={handleMenuToggle}>
+           {t.productsCategories.frames}
+        </Link>
 
-       {/* Utility Links */}
-       <Link to="/contact" className="nav-btn" onClick={handleMenuToggle}>{t.nav.contact}</Link>
+        {/* Utility Links */}
+        <Link to="/contact" className="nav-btn" onClick={handleMenuToggle}>{t.nav.contact}</Link>
+        <Link to="/AddData" className="nav-btn" onClick={handleMenuToggle}>AddData</Link>
       </div>
     </header>
   );

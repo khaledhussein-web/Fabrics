@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 // We use useParams to read the ID from the URL (e.g., /fabrics/1)
 import { useParams } from 'react-router-dom'; 
 import axios from "axios"; 
-import "../../assets/Subcategory.css"; // Optional: Add styling here
+// import "../../assets/Subcategory.css"; 
 
 const SubcategoryPage = ({ t }) => {
   // 1. Get the subcategory ID from the URL parameters
