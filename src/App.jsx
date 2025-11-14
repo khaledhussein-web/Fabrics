@@ -18,7 +18,7 @@ import SubcategoryPage from "./components/SubcategoryPage";
 import Home from "./Pages/General/Home";
 import Contact from "./Pages/General/Contact";
 import About from "./Pages/General/About"
-// import AddData from "./Pages/General/AddData";
+import AddData from "./Pages/General/AddData";
 import Services from "./Pages/General/Services"
 
 // Fabrics imports
@@ -57,7 +57,7 @@ function App() {
             <Route path="/about" element={<About t={t} dir={t.dir}/>} />
             <Route path="/services" element={<Services t={t} dir={t.dir} />} />
             <Route path="/contact" element={<Contact t={t} dir={t.dir} />} />
-            {/* <Route path="/AddData" element ={<AddData t={t}/>}/> */}
+            <Route path="/AddData" element ={<AddData t={t}/>}/>
 
 
             {/* Main Category Pages */}
