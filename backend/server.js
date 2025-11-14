@@ -82,7 +82,7 @@ app.get('/api/category-content/:categoryId', async (req, res) => {
             AND
             p.subcategory_id IS NULL
        
-        ORDER BY p.id;
+        ORDER BY p.product_id;
     `;
  
     try {
@@ -110,7 +110,7 @@ app.get('/api/subcategory-products/:subcategoryId', async (req, res) => {
         WHERE
             p.subcategory_id = $1
        
-        ORDER BY p.id;
+        ORDER BY p.product_id;
     `;
  
     try {
@@ -242,7 +242,7 @@ app.get('/api/products', async (req, res) => {
  
     const query = `
       SELECT
-        p.id,
+        p.product_id,
         p.category_id,
         p.subcategory_id,
         p.name_en,
@@ -313,7 +313,7 @@ app.post('/api/products', async (req, res) => {
       INSERT INTO products (
         category_id, subcategory_id, name_en, name_ar, description_en, description_ar, image_path, created_at
       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-      RETURNING id
+      RETURNING product_id
     `;
  
     const values = [
