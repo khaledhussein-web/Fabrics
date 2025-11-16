@@ -19,7 +19,7 @@ router.get('/hierarchy/menu', async (req, res) => {
                     )
                 ) AS subcategories
             FROM public.categories c
-            LEFT JOIN public.subcategories s ON s.parent_category_id = c.id
+            LEFT JOIN public.subcategories s ON s.parent_category_id = c.category_id
             GROUP BY c.id, c.name
             ORDER BY c.id;
         `;
@@ -208,7 +208,7 @@ router.get('/products', async (req, res) => {
                 c.name AS category_name,
                 s.name AS subcategory_name
             FROM products p
-            LEFT JOIN categories c ON p.category_id = c.id
+            LEFT JOIN categories c ON p.category_id = c.category_id
             LEFT JOIN subcategories s ON p.subcategory_id = s.subcategory_id
             ORDER BY p.created_at DESC
         `;
@@ -238,10 +238,24 @@ router.get('/products', async (req, res) => {
 
 // ==================== CATEGORIES ROUTES ====================
 
+// 🟢 GET all subcategories
+router.get('/subcategories', async (req, res) => {
+    try {
+        const { rows } = await db.query('SELECT * FROM subcategories ORDER BY subcategory_id ASC');
+        res.json({ subcategories: rows });
+    } catch (error) {
+        console.error('❌ Error fetching subcategories:', error);
+        res.status(500).json({
+            message: 'Internal server error while fetching subcategories',
+            error: error.message
+        });
+    }
+});
+
 // 🟢 GET all categories (Top-level only)
 router.get('/categories', async (req, res) => {
     try {
-        const { rows } = await db.query('SELECT * FROM categories ORDER BY id ASC');
+        const { rows } = await db.query('SELECT category_id, name FROM categories ORDER BY category_id ASC');
         res.json({ categories: rows });
     } catch (error) {
         console.error('❌ Error fetching categories:', error);
