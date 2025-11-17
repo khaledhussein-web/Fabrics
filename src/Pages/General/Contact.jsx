@@ -2,7 +2,13 @@ import React, { useState } from "react";
 import '../../assets/Contact.css';
 
 export default function Contact({ t }) {
-  const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: ""
+  });
+
   const [toast, setToast] = useState("");
 
   const showToast = (msg) => {
@@ -10,34 +16,40 @@ export default function Contact({ t }) {
     setTimeout(() => setToast(""), 3000);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const onSubmit = async (event) => {
+    event.preventDefault();
+
+    const data = {
+      access_key: "85557aa4-5508-4ecb-9819-3a11e23b9f61",
+      name: form.name,
+      email: form.email,
+      phone: form.phone,
+      message: form.message,
+      from_name: "Fabrics Website Contact",
+      subject: "New Contact Message"
+    };
 
     try {
-      const response = await fetch(
-        "https://us-central1-fabrics-5c021.cloudfunctions.net/sendContactEmail",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: form.name,
-            email: form.email,
-            phone: form.phone,
-            message: form.message,
-            lang: t.dir === "rtl" ? "ar" : "en",
-  }),
-        }
-      );
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(data),
+      });
 
-      if (response.ok) {
-        showToast("Message sent successfully!");
+      const result = await res.json();
+
+      if (result.success) {
+        showToast(t?.contact?.success || "Message sent successfully!");
         setForm({ name: "", email: "", phone: "", message: "" });
       } else {
-        showToast("Failed to send message. Please try again.");
+        showToast(t?.contact?.error || "Failed to send the message.");
       }
     } catch (error) {
+      showToast(t?.contact?.error || "Something went wrong.");
       console.error(error);
-      showToast("Server error. Try again later.");
     }
   };
 
@@ -46,7 +58,9 @@ export default function Contact({ t }) {
       <section className="contact-form-section">
         <h1>{t?.contact?.title || "Contact Us"}</h1>
 
-        <form onSubmit={handleSubmit} className="contact-form">
+        {/* FIXED: using onSubmit instead of handleSubmit */}
+        <form onSubmit={onSubmit} className="contact-form">
+
           <label>{t?.contact?.form?.name || "Full Name"}</label>
           <input
             type="text"
@@ -54,6 +68,7 @@ export default function Contact({ t }) {
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             required
             placeholder="Your Name"
+            name="name"
           />
 
           <label>{t?.contact?.form?.email || "Email"}</label>
@@ -63,6 +78,7 @@ export default function Contact({ t }) {
             onChange={(e) => setForm({ ...form, email: e.target.value })}
             required
             placeholder="you@example.com"
+            name="email"
           />
 
           <label>{t?.contact?.form?.phone || "Phone"}</label>
@@ -72,6 +88,7 @@ export default function Contact({ t }) {
             onChange={(e) => setForm({ ...form, phone: e.target.value })}
             required
             placeholder="Your Phone Number"
+            name="phone"
           />
 
           <label>{t?.contact?.form?.message || "Message"}</label>
@@ -80,6 +97,7 @@ export default function Contact({ t }) {
             onChange={(e) => setForm({ ...form, message: e.target.value })}
             required
             placeholder="Write your message..."
+            name="message"
           ></textarea>
 
           <button className="btn-primary" type="submit">
@@ -118,7 +136,7 @@ export default function Contact({ t }) {
         <img
           src="https://cdn-icons-png.flaticon.com/512/733/733585.png"
           alt="WhatsApp"
-          style={{ width: '30px', height: '30px' }}
+          style={{ width: "30px", height: "30px" }}
         />
       </a>
     </div>
