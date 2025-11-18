@@ -50,20 +50,20 @@ export default function Header({ lang, toggleLang, t }) {
 
         {/* ===== Brand ===== */}
 
-        <Link to="/" className="nav-logo">
+        {/* <Link to="/" className="nav-logo">
           <div className="brand">
             <div className="logo"></div> 
             <div className="brand-text">{t.brand}</div>
           </div>
-        </Link>
-{/* <Navbar.Brand as={Link} to="/" className="nav-logo">
+        </Link> */}
+<Navbar.Brand as={Link} to="/" className="nav-logo">
           <Image
-            src={Logo1} 
+            src={Logo2} 
             alt="Company Logo"
             height="70" 
             className="d-inline-block" 
             />
-        </Navbar.Brand> */}
+        </Navbar.Brand>
 
         {/* ===== Nav Links and Controls ===== */}
         <div className="nav-right">
