@@ -40,7 +40,7 @@ function App() {
   const t = UI[lang];
 
   useEffect(() => {
-    document.title = "StageWare";
+    document.title = "Fire retendant fabrics - StageWare";
   }, []);
 
   return (
