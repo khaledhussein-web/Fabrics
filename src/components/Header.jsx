@@ -77,7 +77,7 @@ export default function Header({ lang, toggleLang, t }) {
 
 
             {/* Products dropdown (Desktop - RESTORED) */}
-            <Dropdown>
+            <Dropdown className="products-dropdown-override">
               <Dropdown.Toggle id="product-menu-dropdown-responsive" className="nav-btn" as="span">
                 {t.nav.products}
               </Dropdown.Toggle>

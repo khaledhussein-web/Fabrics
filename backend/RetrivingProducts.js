@@ -286,5 +286,33 @@ router.post('/categories', async (req, res) => {
     }
 });
 
-
+// 🟢 GET: Fetch details for a SINGLE product by its ID
+router.get('/product/:productId', async (req, res) => {
+    const productId = req.params.productId;
+    
+    // 💡 CRITICAL FIX: The query must filter by the primary key: product_id
+    const query = `
+        SELECT p.*
+        FROM public.products p
+        WHERE p.product_id = $1;
+    `;
+    
+    try {
+        const result = await db.query(query, [productId]);
+        
+        if (result.rows.length === 0) {
+            // Return 404 if the product ID doesn't exist in the DB
+            return res.status(404).json({ message: `Product ID ${productId} not found.` });
+        }
+        
+        // Success: Return the first (and only) row
+        res.json({ product: result.rows[0] });
+    } catch (err) {
+        console.error(`❌ Error fetching single product ID ${productId}:`, err);
+        res.status(500).json({
+            message: 'Server error while fetching single product details.',
+            error: err.message
+        });
+    }
+});
 module.exports = router;

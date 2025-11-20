@@ -10,8 +10,6 @@ import { UI } from "./i18n";
 //Componenets
 import Header from "./components/Header";
 import Footer from "./components/Footer"
-// ⭐️ NEW IMPORT: The Dynamic Subcategory Page Component
-import SubcategoryPage from "./components/SubcategoryPage";
 
 
 // import General 
@@ -22,15 +20,15 @@ import AddData from "./Pages/General/AddData";
 import Services from "./Pages/General/Services"
 
 // Fabrics imports
-import Fabrics from "./Pages/Fabrics/Fabrics" 
-// All specific subcategory pages (DecorationFabrics, ProjectsScreen, etc.) are now replaced by SubcategoryPage
-
+import Fabrics from "./Pages/Fabrics" 
 // Tracks Imports
-import Tracks from "./Pages/Tracks/Tracks"; 
-// All specific track pages (ChainTrack, RevealSystems, etc.) are now replaced by SubcategoryPage
-
+import Tracks from "./Pages/Tracks"; 
 // Frames Import
-import Frames from "./Pages/Frames/Frames"; 
+import Frames from "./Pages/Frames"; 
+
+
+import SubcategoryPage from "./components/SubcategoryPage";
+import ProductDetailPage from "./components/ProductDetailPage"
 
 
 function App() {
@@ -65,15 +63,17 @@ function App() {
             <Route path="products/tracks" element={<Tracks t={t} dir={t.dir} />} />
             <Route path="products/frames" element={<Frames t={t} dir={t.dir} />} />
 
-            {/* 🛑 OLD STATIC SUBCATEGORY ROUTES (Removed) */}
-
-            {/* ⭐️ DYNAMIC SUBCATEGORY ROUTE (New, cleaner URL structure) 
-                Now accepts the category name and the subcategory ID.
-                Example: /products/fabrics/1
-            */}
             <Route 
                 path="/products/:categoryName/:subcategoryId" 
                 element={<SubcategoryPage t={t} dir={t.dir}/>} 
+            />
+
+            {/* new paths */}
+
+            <Route path="/product/:productId" element={<ProductDetailPage t={t} dir={t.dir} />} />
+            <Route 
+                path="/static-content/:productId" 
+                element={<ProductDetailPage t={t} dir={t.dir} />} 
             />
           
           </Routes>

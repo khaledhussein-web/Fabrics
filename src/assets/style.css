@@ -111,6 +111,7 @@ header {
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   position: relative;
+  z-index: 10000; /* Set a massive z-index */
 }
 
 .brand {
@@ -382,6 +383,14 @@ header {
   padding-right: 1.5rem;
 }
 
+/* Add this new CSS class */
+.products-dropdown-override {
+    /* Critical: Set position to relative for z-index to work */
+    position: relative; 
+    /* Set a very high Z-index to override ALL page content */
+    /* z-index: 9999;  */
+}
+
 /* === END navbar CSS === */
 
 
@@ -504,16 +513,4 @@ footer {
 
 
 /* === END WHATSAPP FLOATING BUTTON === */
-
-
-
-
-
-
-
-
-
-
-
-
 

@@ -1,0 +1,32 @@
+/* Fabrics CSS file */
+/* .image-fluid { */
+    /* width: 100%; Makes the image fill its container */
+    /* height: auto; Maintains aspect ratio */
+    /* display: block; 
+    border-radius: 4px;
+} */
+
+
+/* Fabrics CSS file */
+
+/* 1. The Wrapper/Container to enforce the aspect ratio */
+.product-image-wrapper {
+    width: 100%; 
+    overflow: hidden; 
+    position: relative;
+    /* (196.7 / 260.98) * 100 = 75.378% */
+    padding-top: 75.378%; 
+    border-radius: 4px; /* Move border-radius here to round the container */
+    /* Remove the old .image-fluid styles if you're not using them elsewhere */
+}
+
+/* 2. The Image inside the wrapper */
+.product-image-wrapper img {
+    position: absolute; 
+    top: 0;
+    left: 0;
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; /* Ensures image covers the space */
+    display: block;
+}
