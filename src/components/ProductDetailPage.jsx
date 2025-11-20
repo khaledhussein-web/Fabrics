@@ -85,7 +85,7 @@ const ProductDetailPage = ({ t, dir }) => {
             <div className="container container--regular mb-5">
                 
                 {/* 🔹 Product Title (using DB data) */}
-                <h1 className="mb-5 display-5 fw-bold">{productName}</h1>
+                <h1 className="mb-5 display-5 fw-bold" style={{color:'#1e3a8a'}}>{productName}</h1>
                 
                 <div className="row g-5">
                     
@@ -101,31 +101,31 @@ const ProductDetailPage = ({ t, dir }) => {
                     {/* 🔹 Right Column: Details */}
                     <div className="col-lg-7 col-md-6">
                         
-                        <h3 className="mb-4 text-accent">
+                        <h3 className="mb-4 text-accent" style={{color:'#1e3a8a'}}>
                             {t?.details || (dir === "rtl" ? "التفاصيل" : "Details")}
                         </h3>
 
                         {/* Description (using DB data) */}
-                        <p className="lead" dangerouslySetInnerHTML={{ __html: productDescription }}>
+                        <p className="lead" style={{color:'#1e3a8a'}} dangerouslySetInnerHTML={{ __html: productDescription }}>
                         </p>
 
                         {/* Example of displaying additional data points from the DB */}
-                        <ul className="list-unstyled mt-4">
+                        {/* <ul className="list-unstyled mt-4">
                             <li className="mb-2">
                                 <span className="fw-bold me-2">
                                     {t?.model || (dir === "rtl" ? "الموديل:" : "Model:")}
                                 </span>
-                                {/* Assuming product object has model_number field */}
+                               
                                 {product.model_number || "N/A"}
                             </li>
                             <li className="mb-2">
                                 <span className="fw-bold me-2">
                                     {t?.material || (dir === "rtl" ? "المادة:" : "Material:")}
                                 </span>
-                                {/* Assuming product object has material_type field */}
+                               
                                 {product.material_type || "N/A"}
                             </li>
-                        </ul>
+                        </ul> */}
 
                         {/* <div className="mt-5">
                             <a 
