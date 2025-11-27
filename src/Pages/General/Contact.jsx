@@ -10,14 +10,19 @@ export default function Contact({ t }) {
   });
 
   const [toast, setToast] = useState("");
+  const [toastType, setToastType] = useState(""); // 'success' or 'error'
 
-  const showToast = (msg) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSent, setIsSent] = useState(false);
+
+  const showToast = (msg, type = "success") => {
     setToast(msg);
-    setTimeout(() => setToast(""), 3000);
+    setToastType(type);
   };
 
   const onSubmit = async (event) => {
     event.preventDefault();
+    setIsLoading(true);
 
     const data = {
       access_key: "85557aa4-5508-4ecb-9819-3a11e23b9f61",
@@ -43,14 +48,17 @@ export default function Contact({ t }) {
 
       if (result.success) {
         showToast(t?.contact?.success || "Message sent successfully!");
+        setIsSent(true);
         setForm({ name: "", email: "", phone: "", message: "" });
       } else {
-        showToast(t?.contact?.error || "Failed to send the message.");
+        showToast(t?.contact?.error || "Failed to send the message.", "error");
       }
     } catch (error) {
-      showToast(t?.contact?.error || "Something went wrong.");
+      showToast(t?.contact?.error || "Something went wrong.", "error");
       console.error(error);
     }
+
+    setIsLoading(false);
   };
 
   return (
@@ -58,14 +66,13 @@ export default function Contact({ t }) {
       <section className="contact-form-section">
         <h1>{t?.contact?.title || "Contact Us"}</h1>
 
-        {/* FIXED: using onSubmit instead of handleSubmit */}
         <form onSubmit={onSubmit} className="contact-form">
 
           <label>{t?.contact?.form?.name || "Full Name"}</label>
           <input
             type="text"
             value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            onChange={(e) => { setForm({ ...form, name: e.target.value }); setIsSent(false); }}
             required
             placeholder="Your Name"
             name="name"
@@ -85,7 +92,7 @@ export default function Contact({ t }) {
           <input
             type="tel"
             value={form.phone}
-            onChange={(e) => setForm({ ...form, phone: e.target.value })}
+            onChange={(e) => { setForm({ ...form, phone: e.target.value }); setIsSent(false); }}
             required
             placeholder="Your Phone Number"
             name="phone"
@@ -100,9 +107,25 @@ export default function Contact({ t }) {
             name="message"
           ></textarea>
 
-          <button className="btn-primary" type="submit">
-            {t?.contact?.form?.send || "Send Message"}
+          <button
+            className="btn-primary"
+            type="submit"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <div className="spinner"></div>
+            ) : (
+              t?.contact?.form?.send || "Send Message"
+            )}
           </button>
+
+          {/* SINGLE SUCCESS MESSAGE BOX */}
+          {isSent && (
+            <div className="success-box">
+              <span className="checkmark">✔</span>
+              {t?.contact?.success || "Thanks! We will contact you soon."}
+            </div>
+          )}
         </form>
       </section>
 
@@ -124,7 +147,12 @@ export default function Contact({ t }) {
         </div>
       </section>
 
-      {toast && <div id="toast" className="toast">{toast}</div>}
+      {/* TOAST (optional) */}
+      {toast && (
+        <div id="toast" className={toastType === "error" ? "toast error" : "toast"}>
+          {toast}
+        </div>
+      )}
 
       <a
         href="https://wa.me/your-phone-number?text=Hello"
