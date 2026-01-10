@@ -1,26 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from 'react-router-dom'; 
 import axios from "axios"; 
-// Import your necessary CSS here, e.g.:
-// import "../../assets/ProductDetail.css"; 
 
 const ProductDetailPage = ({ t, dir }) => {
-    // 1. Get the Product ID from the URL parameters
+    // 1. productId must match your App.js route exactly
     const { productId } = useParams(); 
     
-    // Initialize state to null/empty, relying on the API fetch below
     const [product, setProduct] = useState(null); 
-    const [loading, setLoading] = useState(true); // Start loading
+    const [loading, setLoading] = useState(true); 
     const [error, setError] = useState(null);
     
-    // Define the API URL for clarity
     const API_URL = `http://localhost:5000/api/product/${productId}`;
 
-    // 2. useEffect Hook to Fetch Data from the API
     useEffect(() => {
-        
-        if (!productId) {
-            setError("Invalid product URL. ID is missing.");
+        if (!productId || productId === "undefined") {
+            setError("Invalid product ID.");
             setLoading(false);
             return;
         }
@@ -28,113 +22,74 @@ const ProductDetailPage = ({ t, dir }) => {
         const fetchProductDetails = async () => {
             try {
                 setLoading(true);
-                setError(null);
-                
-                // AXIOS CALL TO THE BACKEND SERVER
                 const response = await axios.get(API_URL);
-                
-                // Assuming your API returns the product details directly or nested under 'product'
-                // Adjust response.data.product based on your backend response structure
+                // Extracting 'product' object from the API response
                 setProduct(response.data.product || response.data); 
-                
             } catch (err) {
-                console.error(`Error fetching Product ID ${productId}:`, err);
-                setError(`Failed to load product details for ID ${productId}. Please check the Backend API.`);
-                setProduct(null); 
+                console.error("Fetch error:", err);
+                setError("Failed to load details.");
             } finally {
                 setLoading(false);
             }
         };
-
-        fetchProductDetails(); // Execute the fetch
-        
-        // Dependency array: re-run effect if productId or API_URL changes
+        fetchProductDetails();
     }, [productId, API_URL]); 
 
-    // Helper function for multilingual display
-    const getNameField = (item) => {
-        // Fallback to name_en if name_ar is null, and vice versa
-        return dir === "rtl" ? item?.name_ar || item?.name_en : item?.name_en || item?.name_ar;
+    // Helper: Determine folder based on category_id
+    const getFolderByCategory = (catId) => {
+        switch (catId) {
+            case 1: return "Fabrics";
+            case 2: return "Tracks";
+            case 3: return "Frames";
+            default: return "General";
+        }
     };
 
-    // --- RENDERING LOGIC ---
+    if (loading) return <div className="container py-5 text-center">Loading...</div>;
+    if (error || !product) return <div className="container py-5 text-center text-danger">{error || "Not found"}</div>;
 
-    if (loading) {
-        return <div className="product-detail-page m-4">Loading Product details...</div>;
-    }
-
-    if (error) {
-        // Display the error message if the API call failed
-        return <div className="product-detail-page m-4 text-danger">{error}</div>;
-    }
-
-    if (!product) {
-        // If loading finished but product is null (e.g., product doesn't exist in DB)
-        return <div className="product-detail-page m-4">Product not found.</div>;
-    }
-
-    // Dynamic content extraction
-    const productName = getNameField(product);
-    const productDescription = dir === "rtl" ? product.description_ar : product.description_en;
-    // Assuming image_path is returned from the DB, append it to your base URL
-    const imageUrl = product.image_path ? `http://localhost:5000${product.image_path}` : 'path/to/default/image.jpg';
-
+    const productName = dir === "rtl" ? product.name_ar || product.name_en : product.name_en;
+    
+    // 💡 DYNAMIC IMAGE PATH LOGIC
+    // Uses category_id from DB to pick the right folder
+    const folder = getFolderByCategory(product.category_id);
+    const imageUrl = product.image_path?.startsWith('/') 
+        ? `http://localhost:5000${product.image_path}` 
+        : `http://localhost:5000/uploads/${folder}/${product.image_path}`;
 
     return (
-        <div className="product-detail-page m-4" dir={dir || "ltr"}>
-            <div className="container container--regular mb-5">
-                
-                {/* 🔹 Product Title (using DB data) */}
+        <div className="product-detail-page py-5" dir={dir || "ltr"}>
+            <div className="container">
                 <h1 className="mb-5 display-5 fw-bold" style={{color:'#1e3a8a'}}>{productName}</h1>
                 
                 <div className="row g-5">
-                    
-                    {/* 🔹 Left Column: Image */}
-                    <div className="col-lg-5 col-md-6">
+                    <div className="col-lg-5">
                         <img
                             src={imageUrl} 
                             alt={productName} 
                             className="img-fluid rounded shadow-lg"
+                            onError={(e) => { 
+                                e.target.onerror = null; 
+                                e.target.src = "https://via.placeholder.com/500x400?text=Image+Not+Found"; 
+                            }}
                         />
                     </div>
 
-                    {/* 🔹 Right Column: Details */}
-                    <div className="col-lg-7 col-md-6">
-                        
-                        <h3 className="mb-4 text-accent" style={{color:'#1e3a8a'}}>
+                    <div className="col-lg-7">
+                        <h3 className="mb-4" style={{color:'#1e3a8a'}}>
                             {t?.details || (dir === "rtl" ? "التفاصيل" : "Details")}
                         </h3>
-
-                        {/* Description (using DB data) */}
-                        <p className="lead" style={{color:'#1e3a8a'}} dangerouslySetInnerHTML={{ __html: productDescription }}>
-                        </p>
-
-                        {/* Example of displaying additional data points from the DB */}
-                        {/* <ul className="list-unstyled mt-4">
-                            <li className="mb-2">
-                                <span className="fw-bold me-2">
-                                    {t?.model || (dir === "rtl" ? "الموديل:" : "Model:")}
-                                </span>
-                               
-                                {product.model_number || "N/A"}
-                            </li>
-                            <li className="mb-2">
-                                <span className="fw-bold me-2">
-                                    {t?.material || (dir === "rtl" ? "المادة:" : "Material:")}
-                                </span>
-                               
-                                {product.material_type || "N/A"}
-                            </li>
-                        </ul> */}
-
-                        {/* <div className="mt-5">
-                            <a 
-                                href="/contact" 
-                                className="btn btn-primary btn-lg"
-                            >
-                                {t?.requestQuote || (dir === "rtl" ? "طلب عرض سعر" : "Request a Quote")}
-                            </a>
-                        </div> */}
+                        <div 
+                            className="lead" 
+                            style={{color:'#334155', lineHeight: '1.8'}} 
+                            dangerouslySetInnerHTML={{ __html: product.description_en || "" }}
+                        ></div>
+                        
+                        <div className="mt-5">
+                            <button onClick={() => window.history.back()} className="btn btn-primary rounded-pill px-4">
+                                {dir === "rtl" ? "العودة" : "Back"}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

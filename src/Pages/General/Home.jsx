@@ -16,9 +16,6 @@ export default function Home({ t }) {
         />
       </div>
 
-
-
-
       {/* ====== HERO SECTION ====== */}
       <section id="home" className="d-flex flex-column justify-content-center align-items-center text-center mb-3">
         <h1 className="mb-3">{t?.brand}</h1>
@@ -35,24 +32,24 @@ export default function Home({ t }) {
      <div class="container">
   <div class="row">
     <div class="col-12">
-      <h2>View products</h2>
+      <h2>Our products</h2>
     </div>
   </div>
 
   <div class="row">
     <div class="col-md-4">
-      <img src="image1.jpg" class="img-fluid" alt="Image 1" />
-      <a href="#" class="btn btn-primary">Button 1</a>
+      {/* <img src="image1.jpg" class="img-fluid" alt="Image 1" /> */}
+      <a href="/products/fabrics" class="btn btn-primary">View Fabrics</a>
     </div>
 
     <div class="col-md-4">
-      <img src="image2.jpg" class="img-fluid" alt="Image 2" />
-      <a href="#" class="btn btn-primary">Button 2</a>
+      {/* <img src="image2.jpg" class="img-fluid" alt="Image 2" /> */}
+      <a href="/products/tracks" class="btn btn-primary">View Tracks</a>
     </div>
 
     <div class="col-md-4">
-      <img src="image3.jpg" class="img-fluid" alt="Image 3" />
-      <a href="#" class="btn btn-primary">Button 3</a>
+      {/* <img src="image3.jpg" class="img-fluid" alt="Image 3" /> */}
+      <a href="/products/frames" class="btn btn-primary">View Frames</a>
     </div>
   </div>
 </div>

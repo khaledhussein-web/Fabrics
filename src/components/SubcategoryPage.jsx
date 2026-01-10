@@ -4,123 +4,110 @@ import axios from "axios";
 import "../assets/Listing.css";
 
 const SubcategoryPage = ({ t, dir }) => {
-  // 1. Get the L2 Subcategory ID from the URL parameters
-  const { subcategoryId } = useParams(); 
-    
-  // State holds the final L3 Products
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { subcategoryId } = useParams(); 
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Use your backend URL
-  const API_URL = `http://localhost:5000/api/subcategory-products/${subcategoryId}`;
+  // 1. Create a map to connect Database IDs to your UI keys
+  const subcategoryKeyMap = {
+    "1": "decoration",
+    "2": "projectionScreens",
+    "3": "holograme",
+    "4": "flooring",
+    "5": "Chain Track",
+    "6": "Reveal systems",
+    "7": "Rollups"
+};
 
-  useEffect(() => {
-    if (!subcategoryId) {
-        setError("Invalid subcategory URL. ID is missing.");
-        setLoading(false);
-        return;
-    }
-    
-    const fetchSubcategoryProducts = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+  const API_URL = `http://localhost:5000/api/subcategory-products/${subcategoryId}`;
 
-        // Fetch the dedicated L3 Products using the backend route
-        const response = await axios.get(API_URL);
-        setProducts(response.data.products);
-        
-      } catch (err) {
-        console.error("Error fetching Subcategory products:", err);
-        setError(`Failed to load products for subcategory ID ${subcategoryId}. Check server status.`);
-        setProducts([]); 
-      } finally {
-        setLoading(false);
-      }
-    };
+  useEffect(() => {
+    if (!subcategoryId) {
+        setError("Invalid subcategory URL.");
+        setLoading(false);
+        return;
+    }
+    
+    const fetchSubcategoryProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(API_URL);
+        setProducts(response.data.products || []);
+      } catch (err) {
+        console.error("Error fetching products:", err);
+        setError(`Failed to load products.`);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    fetchSubcategoryProducts();
-  }, [subcategoryId, API_URL]);
+    fetchSubcategoryProducts();
+  }, [subcategoryId, API_URL]);
 
-  // Helper function for multilingual display (uses the 'dir' prop for context)
-  const getNameField = (item, isTitle = false) => {
-    // If it's a product name, check name_ar/name_en
-    if (!isTitle) {
-      return dir === "rtl" ? item.name_ar || item.name_en : item.name_en;
-    }
-    // If it's the subcategory title (from the product's embedded data)
-    return dir === "rtl" ? item.subcategory_name_ar || item.subcategory_name_en : item.subcategory_name_en;
-  };
+  const getNameField = (item) => {
+    return dir === "rtl" ? item.name_ar || item.name_en : item.name_en;
+  };
 
-  // --- RENDERING LOGIC ---
+  if (loading) return (
+    <div className="text-center my-5 py-5">
+        <div className="spinner-border text-primary"></div>
+    </div>
+  );
 
-  if (loading) {
-    return <div className="subcategory-page m-4">Loading Products...</div>;
-  }
+  // --- 🔑 TITLE LOGIC FROM i18n ---
+  // Get the key (e.g., 'projectionScreens') based on the ID from the URL
+  const uiKey = subcategoryKeyMap[subcategoryId];
+  // Look it up in your translated UI object
+  const subcategoryTitle = t?.fabricsSubCategories?.[uiKey] || (dir === "rtl" ? "المنتجات" : "Products");
 
-  if (error) {
-    return <div className="subcategory-page m-4 text-danger">{error}</div>;
-  }
+  return (
+    <div className="container py-5" dir={dir || "ltr"}>
+      {/* Dynamic Header using your i18n file */}
+      <h2 className="display-6 fw-bold mb-5 border-bottom pb-3">
+        {subcategoryTitle}
+      </h2> 
+      
+      <div className="row g-4">
+        {products.length === 0 ? (
+          <div className="col-12 text-center py-5">
+            <p className="lead text-muted">No products found.</p>
+          </div>
+        ) : (
+          products.map((item, index) => {
+            const itemHref = `/product/${item.product_id}`;
+            
+            return (
+              <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={item.product_id || index}>
+                <div className="card h-100 border-0 shadow-sm overflow-hidden bg-white">
+                  <div className="bg-dark overflow-hidden" style={{ height: '220px' }}>
+                    <a href={itemHref}>
+                      <img
+                        src={`http://localhost:5000${item.image_path}`} 
+                        alt={getNameField(item)} 
+                        className="img-fluid w-100 h-100 transition-zoom"
+                        style={{ objectFit: 'cover' }}
+                        loading="lazy"
+                      />
+                    </a>
+                  </div>
 
-  // Determine the dynamic title from the first product's subcategory name
-  const subcategoryTitle = products.length > 0 
-    ? getNameField(products[0], true) 
-    : (dir === "rtl" ? "منتجات الفئة الفرعية" : "Subcategory Products");
-
-
-  return (
-    <div className="subcategory-page m-4" dir={dir || "ltr"}>
-      <div className="container container--regular mb-5">
-        
-        {/* Dynamic Title */}
-        <h2 className="mb-4">{subcategoryTitle}</h2> 
-        
-        <div className="row g-4">
-          
-          {products.length === 0 ? (
-            <div className="col-12">No products found in this subcategory.</div>
-          ) : (
-            products.map((item, index) => {
-              
-              // 🔑 REVERTED CHANGE: Link goes directly to the final L4 Product Detail Page
-          // في ملف SubcategoryPage.jsx
-const itemHref = `/product/${item.product_id}`; // تأكد من استخدام product_id
-              
-              return (
-                <div
-                  className="col-12 col-sm-6 col-md-4 col-lg-3"
-                  key={item.id || index} 
-                >
-                  <div className="align-items-start card border-0">
-                    <div className="product-image-wrapper shadow-sm">
-                    <a href={itemHref}>
-                      <img
-                        src={`http://localhost:5000${item.image_path}`} 
-                        alt={getNameField(item)} 
-                        loading="lazy"
-                      />
-                    </a>
-                    </div>
-                    <p className="mt-3 fw-bold text-center">
-                      {getNameField(item)} 
-                    </p>
-                    
-                    <div className="text-center">
-                      {/* 🔑 REVERTED CHANGE: Button text points to product details */}
-                      <a className="btn btn-primary" href={itemHref}>
-                        {t?.viewDetails || (dir === "rtl" ? "عرض التفاصيل" : "View Details")}
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              );
-            })
-          )}
-        </div>
-      </div>
-    </div>
-  );
+                  <div className="card-body d-flex flex-column align-items-start p-3">
+                    <h6 className="card-title fw-bold text-dark mt-1 mb-3 flex-grow-1">
+                      {getNameField(item)} 
+                    </h6>
+                    <a className="btn btn-primary rounded-pill px-4 py-2 fw-bold shadow-sm border-0" href={itemHref}>
+                      {t?.viewDetails || (dir === "rtl" ? "عرض التفاصيل" : "View Details")}
+                    </a>
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default SubcategoryPage;
