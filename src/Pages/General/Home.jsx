@@ -10,23 +10,10 @@ export default function Home({ t }) {
         {/* The p-0 and m-0 classes remove any default padding/margin */}
 
         <img
-          src="/banners/banner 1.png"
-          alt="Banner 1"
+          src="/banners/banner4.png"
+          alt="Banner"
           className="img-fluid d-block w-100"
         />
-
-        {/* 
-        <img 
-          src="/banners/banner2.jpg" 
-          alt="Banner 2" 
-          className="img-fluid d-block w-100" 
-        />
-        
-        <img 
-          src="/banners/banner3.jpg" 
-          alt="Banner 3" 
-          className="img-fluid d-block w-100" 
-        /> */}
       </div>
 
 
@@ -40,11 +27,35 @@ export default function Home({ t }) {
           {t?.hero?.subtitle ||
             "Premium fabrics, flooring, and decorative materials — designed, delivered, and installed with care."}
         </p>
-        <div className="d-flex gap-3 justify-content-center mt-3">
+        {/* <div className="d-flex gap-3 justify-content-center mt-3">
           <a href="#products" className="btn-primary">
             {t?.hero?.cta || "View Products"}
           </a>
-        </div>
+        </div> */}
+     <div class="container">
+  <div class="row">
+    <div class="col-12">
+      <h2>View products</h2>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <img src="image1.jpg" class="img-fluid" alt="Image 1" />
+      <a href="#" class="btn btn-primary">Button 1</a>
+    </div>
+
+    <div class="col-md-4">
+      <img src="image2.jpg" class="img-fluid" alt="Image 2" />
+      <a href="#" class="btn btn-primary">Button 2</a>
+    </div>
+
+    <div class="col-md-4">
+      <img src="image3.jpg" class="img-fluid" alt="Image 3" />
+      <a href="#" class="btn btn-primary">Button 3</a>
+    </div>
+  </div>
+</div>
       </section>
 
       {/* ====== ABOUT SECTION ====== */}
@@ -54,9 +65,6 @@ export default function Home({ t }) {
           {t?.about?.body ||
             "We are a specialized interior solutions company providing high-quality fabrics, curtains, flooring, and decorative materials."}
         </p>
-        <div className="">
-          {t?.about?.years || "+10 years of experience"}
-        </div>
         <h3>{t?.about?.missionTitle || "Our Mission"}</h3>
         <p>
           {t?.about?.mission ||

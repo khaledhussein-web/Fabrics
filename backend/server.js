@@ -1,40 +1,32 @@
-// server.js (The Main Application File)
-// ==================== IMPORTS ====================
+// server.js
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const knex = require('./db'); // Import knex for explicit database access
-require('./db'); // Ensure the DB connection file runs
+const knex = require('./db'); 
 
-// 🚨 IMPORT BOTH ROUTE FILES 🚨
+// Import Route Files
 const productAddRoutes = require('./AddingProducts');
 const generalRoutes = require('./RetrivingProducts');
 
 dotenv.config();
-// ==================== CONFIG ====================
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// ==================== MIDDLEWARE ====================
+// Middleware
 app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 
+// Connect Routers
+app.use('/api', productAddRoutes); 
+app.use('/api', generalRoutes); 
 
-// ==================== BASIC ROUTE ====================
-app.get('/', (req, res) => {
-  res.json({ message: 'Welcome to the Fabrics API with complete Category/Subcategory Support 🧵' });
-});
+// ==================== API ROUTES ====================
 
-// 🚨 CONNECT BOTH ROUTERS 🚨
-// All /api requests are now routed to their respective handlers.
-app.use('/api', productAddRoutes); // Handles POST /api/products (from AddingProducts.js)
-app.use('/api', generalRoutes);    // Handles GET/CRUD for everything else (from RetrivingProducts.js)
-
-
+// Get Categories (L1)
 app.get("/api/categories", async (req, res) => {
   try {
-    const categories = await knex.select(knex.raw("id as category_id"), "name").from("categories");
+    const categories = await knex.select("id as category_id", "name").from("categories");
     res.json({ categories });
   } catch (error) {
     console.error("Error fetching categories:", error);
@@ -42,16 +34,27 @@ app.get("/api/categories", async (req, res) => {
   }
 });
 
+// Get Subcategories (L2)
 app.get("/api/subcategories", async (req, res) => {
   try {
-    const subcategories = await knex.select("subcategory_id", "name", "parent_category_id as category_id", "name_ar").from("subcategories");
+    // We alias parent_category_id to category_id so React can filter easily
+    const subcategories = await knex.select(
+        "subcategory_id", 
+        "name", 
+        "parent_category_id as category_id", 
+        "name_ar"
+    ).from("subcategories");
     res.json({ subcategories });
   } catch (error) {
     console.error("Error fetching subcategories:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
-// ==================== START SERVER ====================
+
+app.get('/', (req, res) => {
+  res.json({ message: 'Server is running 🚀' });
+});
+
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
 });

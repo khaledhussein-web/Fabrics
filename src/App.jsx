@@ -28,7 +28,8 @@ import Frames from "./Pages/Frames";
 
 
 import SubcategoryPage from "./components/SubcategoryPage";
-import ProductDetailPage from "./components/ProductDetailPage"
+import ProductDetailPage from "./components/ProductDetailPage";
+import SubSubListing from "./components/SubSubListing";
 
 
 function App() {
@@ -75,6 +76,7 @@ function App() {
                 path="/static-content/:productId" 
                 element={<ProductDetailPage t={t} dir={t.dir} />} 
             />
+            <Route path="/products/sub-sub-list/:folderId" element={<SubSubListing t={t} dir={t.dir} />} />
           
           </Routes>
           </main>

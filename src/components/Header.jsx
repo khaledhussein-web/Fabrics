@@ -4,8 +4,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import Navbar from 'react-bootstrap/Navbar'; 
 import Image from 'react-bootstrap/Image';
 
-import Logo1 from "../../public/logo1.jpg"
-import Logo2 from "../../public/logo 2.jpg"
+import logo from "../../public/logo3.png"
 
 export default function Header({ lang, toggleLang, t }) {
 
@@ -58,7 +57,7 @@ export default function Header({ lang, toggleLang, t }) {
         </Link> */}
 <Navbar.Brand as={Link} to="/" className="nav-logo">
           <Image
-            src={Logo2} 
+            src={logo} 
             alt="Company Logo"
             height="70" 
             className="d-inline-block" 

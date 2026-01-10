@@ -2,208 +2,135 @@ import React, { useState, useEffect } from "react";
 
 export default function AddData() {
     const [formData, setFormData] = useState({
-        name_en: "",
-        name_ar: "",
-        description_en: "",
-        description_ar: "",
-        image_path: "",
-        category_id: "",
-        subcategory_id: ""
+        name_en: "", name_ar: "", description_en: "", description_ar: "", 
+        image_path: "", category_id: "", subcategory_id: "",
+        parent_id: "", is_folder: false
     });
 
     const [categories, setCategories] = useState([]);
     const [subcategories, setSubcategories] = useState([]);
+    const [parentOptions, setParentOptions] = useState([]); 
     const [loading, setLoading] = useState(true);
 
-    // Fetch categories + subcategories
+    // 1. Initial Load from Port 5000
     useEffect(() => {
-        const loadData = async () => {
+        const loadInitial = async () => {
             try {
-                const res1 = await fetch("http://localhost:5000/api/categories");
-                const res2 = await fetch("http://localhost:5000/api/subcategories");
-
-                const data1 = await res1.json();
-                const data2 = await res2.json();
-
-                setCategories(data1.categories || []);
-                setSubcategories(data2.subcategories || []);
-            } catch (error) {
-                console.error("Fetch error:", error);
-            } finally {
-                setLoading(false);
+                const [catRes, subRes] = await Promise.all([
+                    fetch("http://localhost:5000/api/categories"),
+                    fetch("http://localhost:5000/api/subcategories")
+                ]);
+                const catData = await catRes.json();
+                const subData = await subRes.json();
+                
+                setCategories(catData.categories || []);
+                setSubcategories(subData.subcategories || []);
+                console.log("Subcategories received:", subData.subcategories);
+            } catch (e) { 
+                console.error("Fetch error:", e); 
+            } finally { 
+                setLoading(false); 
             }
         };
-        loadData();
+        loadInitial();
     }, []);
 
-    // Handle form input change
+    // 2. Fetch L3 Folders when Category changes
+    useEffect(() => {
+        if (formData.category_id) {
+            fetch(`http://localhost:5000/api/products-folders/${formData.category_id}`)
+                .then(res => res.json())
+                .then(data => setParentOptions(data.products || []))
+                .catch(err => console.error("L3 Fetch error:", err));
+        }
+    }, [formData.category_id]);
+
     const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
+        const { name, value, type, checked } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: type === "checkbox" ? checked : value,
+            ...(name === "category_id" ? { subcategory_id: "", parent_id: "" } : {}),
+        }));
     };
 
-    // Filter subcategories for selected category
-    const filteredSubcategories = subcategories.filter(
-        (sub) => sub.category_id == formData.category_id
-    );
+    // 💡 THE CRITICAL FIX: Changed 'category_id' to 'parent_category_id' 
+    // to match your database response
+    const filteredSubcategories = subcategories.filter((sub) => {
+        return Number(sub.parent_category_id) === Number(formData.category_id);
+    });
 
-    // Submit product
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        const payload = {
-            category_id: parseInt(formData.category_id),
-            subcategory_id: formData.subcategory_id ? parseInt(formData.subcategory_id) : null,
-            name_en: formData.name_en,
-            name_ar: formData.name_ar,
-            description_en: formData.description_en,
-            description_ar: formData.description_ar,
-            image_path: formData.image_path
-        };
-
-        console.log("Sending product:", payload);
-
         try {
             const res = await fetch("http://localhost:5000/api/products", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
+                body: JSON.stringify(formData)
             });
-
-            const data = await res.json();
-
-            if (res.ok) {
-                alert("Product added successfully!");
-
-                setFormData({
-                    name_en: "",
-                    name_ar: "",
-                    description_en: "",
-                    description_ar: "",
-                    image_path: "",
-                    category_id: "",
-                    subcategory_id: ""
-                });
-            } else {
-                alert(`❌ Failed to add product: ${data.message || data.error}`);
-            }
-        } catch (error) {
-            console.error("Submit error:", error);
-            alert("❌ Server error");
-        }
+            if (res.ok) alert("Data successfully saved!");
+        } catch (error) { alert("Error saving data"); }
     };
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <div style={{padding: "20px"}}>Loading Data...</div>;
 
     return (
         <div style={styles.container}>
-            <h2>Add New Product</h2>
-
+            <h2 style={{textAlign: "center", marginBottom: "20px"}}>Add Product</h2>
             <form onSubmit={handleSubmit} style={styles.form}>
+                <div style={styles.row}>
+                    <input name="name_en" placeholder="Name (EN)" value={formData.name_en} onChange={handleChange} required style={styles.input} />
+                    <input name="name_ar" placeholder="Name (AR)" value={formData.name_ar} onChange={handleChange} required style={styles.input} />
+                </div>
 
-                {/* Name EN */}
-                <label style={styles.label}>Name (EN)</label>
-                <input
-                    name="name_en"
-                    value={formData.name_en}
-                    onChange={handleChange}
-                    required
-                    style={styles.input}
-                />
+                <div style={styles.row}>
+                    <div style={{flex: 1}}>
+                        <label style={styles.label}>Category (L1)</label>
+                        <select name="category_id" value={formData.category_id} onChange={handleChange} required style={styles.input}>
+                            <option value="">-- Select --</option>
+                            {categories.map(c => <option key={c.category_id} value={c.category_id}>{c.name}</option>)}
+                        </select>
+                    </div>
 
-                {/* Name AR */}
-                <label style={styles.label}>Name (AR)</label>
-                <input
-                    name="name_ar"
-                    value={formData.name_ar}
-                    onChange={handleChange}
-                    required
-                    style={styles.input}
-                />
+                    <div style={{flex: 1}}>
+                        <label style={styles.label}>Subcategory (L2)</label>
+                        <select name="subcategory_id" value={formData.subcategory_id} onChange={handleChange} style={styles.input}>
+                            <option value="">-- Select --</option>
+                            {filteredSubcategories.map(s => (
+                                <option key={s.subcategory_id} value={s.subcategory_id}>{s.name}</option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
 
-                {/* Description EN */}
-                <label style={styles.label}>Description (EN)</label>
-                <textarea
-                    name="description_en"
-                    value={formData.description_en}
-                    onChange={handleChange}
-                    required
-                    style={styles.input}
-                />
+                <div style={styles.checkboxWrapper}>
+                    <input type="checkbox" name="is_folder" id="is_folder" checked={formData.is_folder} onChange={handleChange} />
+                    <label htmlFor="is_folder" style={styles.checkboxLabel}>Mark as L3 Folder</label>
+                </div>
 
-                {/* Description AR */}
-                <label style={styles.label}>Description (AR)</label>
-                <textarea
-                    name="description_ar"
-                    value={formData.description_ar}
-                    onChange={handleChange}
-                    required
-                    style={styles.input}
-                />
+                {!formData.is_folder && (
+                    <div>
+                        <label style={styles.label}>Parent Folder (L3)</label>
+                        <select name="parent_id" value={formData.parent_id} onChange={handleChange} style={styles.input}>
+                            <option value="">-- None --</option>
+                            {parentOptions.map(p => <option key={p.product_id} value={p.product_id}>{p.name_en}</option>)}
+                        </select>
+                    </div>
+                )}
 
-                {/* Image Path */}
-                <label style={styles.label}>Image Path</label>
-                <input
-                    name="image_path"
-                    value={formData.image_path}
-                    onChange={handleChange}
-                    required
-                    style={styles.input}
-                />
-
-                {/* Category */}
-                <label style={styles.label}>Category</label>
-                <select
-                    name="category_id"
-                    value={formData.category_id}
-                    onChange={handleChange}
-                    required
-                    style={styles.input}
-                >
-                    <option value="">-- Select Category --</option>
-                    {categories.map((c) => (
-                        <option key={c.category_id} value={c.category_id}>
-                            {c.name}
-                        </option>
-                    ))}
-                </select>
-
-                {/* Subcategory */}
-                <label style={styles.label}>Subcategory</label>
-                <select
-                    name="subcategory_id"
-                    value={formData.subcategory_id}
-                    onChange={handleChange}
-                    disabled={!formData.category_id}
-                    style={styles.input}
-                >
-                    <option value="">-- Select Subcategory --</option>
-                    {filteredSubcategories.map((s) => (
-                        <option key={s.subcategory_id} value={s.subcategory_id}>
-                            {s.name}
-                        </option>
-                    ))}
-                </select>
-
-                <button type="submit" style={styles.button}>Add Product</button>
+                <button type="submit" style={styles.button}>Save Data</button>
             </form>
         </div>
     );
 }
 
 const styles = {
-    container: { maxWidth: "500px", margin: "30px auto" },
-    form: { display: "flex", flexDirection: "column", gap: "10px" },
-    label: { fontWeight: "bold" },
-    input: { padding: "10px", border: "1px solid #ccc", borderRadius: "6px" },
-    button: {
-        padding: "12px",
-        background: "#007bff",
-        color: "#fff",
-        border: "none",
-        borderRadius: "6px",
-        cursor: "pointer"
-    }
+    container: { maxWidth: "600px", margin: "30px auto", padding: "20px", background: "#fff", borderRadius: "8px", boxShadow: "0 4px 12px rgba(0,0,0,0.1)" },
+    form: { display: "flex", flexDirection: "column", gap: "15px" },
+    row: { display: "flex", gap: "10px" },
+    input: { padding: "10px", border: "1px solid #ddd", borderRadius: "5px", width: "100%" },
+    label: { fontSize: "12px", fontWeight: "bold", color: "#666", display: "block", marginBottom: "5px" },
+    checkboxWrapper: { display: "flex", alignItems: "center", gap: "10px", padding: "10px", background: "#f9f9f9", borderRadius: "5px" },
+    checkboxLabel: { fontWeight: "bold", color: "#007bff" },
+    button: { padding: "12px", background: "#28a745", color: "#fff", border: "none", borderRadius: "5px", cursor: "pointer", fontWeight: "bold" }
 };

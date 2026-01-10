@@ -1,10 +1,11 @@
-const pool = require('./db'); // Requires your existing database connection file
+// backend/fix_db.js
+const pool = require('./db'); // This is your pg Pool connection
 
 async function runDatabaseFixes() {
-    console.log('Starting structural database fix: Adding Arabic column to subcategories...');
+    console.log('🚀 Starting React Backend Fix: Adding Arabic column...');
 
     try {
-        // SQL query uses a transactional block (DO $$) to check for the column existence first.
+        // Raw SQL is safest when your 'db.js' uses the 'pg' library
         const alterTableQuery = `
             DO $$ 
             BEGIN
@@ -12,24 +13,20 @@ async function runDatabaseFixes() {
                     SELECT 1 FROM information_schema.columns 
                     WHERE table_name='subcategories' AND column_name='name_ar'
                 ) THEN
-                    -- Add the Arabic name column (name_ar) for long-term multilingual support
                     ALTER TABLE public.subcategories
                     ADD COLUMN name_ar character varying(100);
-                    
-                    -- Optional: You may also need a description column later
-                    -- ALTER TABLE public.subcategories
-                    -- ADD COLUMN description_ar text;
                 END IF;
             END $$;
         `;
+
         await pool.query(alterTableQuery);
-        console.log('✅ Subcategories table schema successfully updated with name_ar column.');
+        console.log('✅ Success: "name_ar" column is now in your database.');
 
     } catch (error) {
-        console.error('❌ An error occurred during database fix execution:', error.message);
+        console.error('❌ Database fix failed:', error.message);
     } finally {
-        // Close the connection pool
-        pool.end();
+        // Use .end() for PG Pool, NOT .destroy()
+        await pool.end();
         console.log('Database connection closed.');
     }
 }
