@@ -51,16 +51,15 @@ const SubSubListing = ({ t }) => {
                                 {/* Image Wrapper: bg-dark helps projection screens pop */}
                                 <div className="bg-dark overflow-hidden" style={{ height: '220px' }}>
                                     <a href={itemHref}>
-                                        <img 
-                                            src={`http://localhost:5000/uploads/Fabrics/${item.image_path}`} 
-                                            alt={getNameField(item)} 
-                                            className="img-fluid w-100 h-100 transition-zoom"
-                                            style={{ objectFit: 'cover' }}
-                                            loading="lazy"
-                                            onError={(e) => {
-                                                e.target.src = "https://via.placeholder.com/300x220?text=Projection+Screen";
-                                            }}
-                                        />
+                                       <img 
+    src={`http://localhost:5000${item.image_path}`} 
+    alt={getNameField(item)} 
+    className="img-fluid w-100 h-100 transition-zoom"
+    style={{ objectFit: 'cover' }}
+    onError={(e) => {
+        e.target.src = "https://via.placeholder.com/300x220?text=Product+Image";
+    }}
+/>
                                     </a>
                                 </div>
 
