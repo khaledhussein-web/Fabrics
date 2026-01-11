@@ -29,27 +29,78 @@ export default function Home({ t }) {
             {t?.hero?.cta || "View Products"}
           </a>
         </div> */}
-     <div class="container">
-  <div class="row">
-    <div class="col-12">
-      <h2>Our products</h2>
+     <div className="container py-5">
+  <div className="row mb-5">
+    <div className="col-12 text-center">
+      <h2 className="display-5 fw-bold text-dark">Our Products</h2>
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-md-4">
-      {/* <img src="image1.jpg" class="img-fluid" alt="Image 1" /> */}
-      <a href="/products/fabrics" class="btn btn-primary">View Fabrics</a>
+  <div className="row g-4">
+    {/* Fabrics Card */}
+    <div className="col-md-4">
+      <div className="card h-100 border-0 shadow-lg overflow-hidden rounded-4 group">
+        <div className="position-relative overflow-hidden">
+          <img 
+            src="fabrics.jpg" 
+            className="card-img-top img-fluid" 
+            alt="Stage Fabrics" 
+            style={{ height: '280px', objectFit: 'cover', transition: 'transform 0.3s ease' }}
+            onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+            onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+          />
+        </div>
+        <div className="card-body text-center bg-white p-4">
+          <h4 className="fw-bold mb-3">Fabrics</h4>
+          <a href="/products/fabrics" className="btn btn-primary w-100 py-2 rounded-pill fw-bold shadow-sm">
+            View Fabrics
+          </a>
+        </div>
+      </div>
     </div>
 
-    <div class="col-md-4">
-      {/* <img src="image2.jpg" class="img-fluid" alt="Image 2" /> */}
-      <a href="/products/tracks" class="btn btn-primary">View Tracks</a>
+    {/* Tracks Card */}
+    <div className="col-md-4">
+      <div className="card h-100 border-0 shadow-lg overflow-hidden rounded-4">
+        <div className="position-relative overflow-hidden">
+          <img 
+            src="tracks.jpg" 
+            className="card-img-top img-fluid" 
+            alt="Curtain Tracks" 
+            style={{ height: '280px', objectFit: 'cover', transition: 'transform 0.3s ease' }}
+            onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+            onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+          />
+        </div>
+        <div className="card-body text-center bg-white p-4">
+          <h4 className="fw-bold mb-3">Tracks</h4>
+          <a href="/products/tracks" className="btn btn-primary w-100 py-2 rounded-pill fw-bold shadow-sm">
+            View Tracks
+          </a>
+        </div>
+      </div>
     </div>
 
-    <div class="col-md-4">
-      {/* <img src="image3.jpg" class="img-fluid" alt="Image 3" /> */}
-      <a href="/products/frames" class="btn btn-primary">View Frames</a>
+    {/* Frames Card */}
+    <div className="col-md-4">
+      <div className="card h-100 border-0 shadow-lg overflow-hidden rounded-4">
+        <div className="position-relative overflow-hidden">
+          <img 
+            src="frames.jpg" 
+            className="card-img-top img-fluid" 
+            alt="Aluminum Frame Profiles" 
+            style={{ height: '280px', objectFit: 'cover', transition: 'transform 0.3s ease' }}
+            onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+            onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+          />
+        </div>
+        <div className="card-body text-center bg-white p-4">
+          <h4 className="fw-bold mb-3">Frames</h4>
+          <a href="/products/frames" className="btn btn-primary w-100 py-2 rounded-pill fw-bold shadow-sm">
+            View Frames
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 </div>

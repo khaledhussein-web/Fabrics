@@ -12,7 +12,7 @@ export const UI = {
   en: {
     dir: "ltr",
     brand: "StageWare",
-    nav: { home: "Home", about: "About Us", services: "Services", products: "Products", contact: "Contact Us", feedback: "Feedback" , Test: "test"},
+    nav: { home: "Home", about: "About Us", services: "Our Services", products: "Products", contact: "Contact Us", feedback: "Feedback" , Test: "test"},
 
     hero: {
       slogan: "Elegance in Every Detail",
@@ -58,6 +58,19 @@ export const UI = {
       revealSystems: "Reveal Systems",
       rollups: "Rollups",
     },
+      fabricSubCategories: {
+      acousticMaskingBlackout: "Acoustic, Masking and Blackout",
+      chromaKey: "Chroma Key",
+      decorativeDisplay: "Decorative and Display",
+      digitalPrint: "Digital Print",
+      flooring: "Flooring",
+      muslinCanvasScenic: "Muslin, Canvas and Scenic",
+      projectionScreens: "Projection Screens",
+      scrimGauzeNetting: "Scrim, Gauze and Netting",
+      sheersSilksSatins: "Sheers, Silks and Satins",
+      velvetNatural: "Velvet – Natural",
+      velvetSynthetic: "Velvet – Synthetic",
+    },
 
 
   },
@@ -79,7 +92,7 @@ export const UI = {
   ar: {
     dir: "rtl",
     brand: "ستايج وير",
-    nav: { home: "الرئيسية", about: "من نحن", services: "الخدمات", products: "المنتجات", contact: "اتصل بنا", feedback: "آراء العملاء" },
+    nav: { home: "الرئيسية", about: "من نحن", services: "خدماتنا", products: "المنتجات", contact: "اتصل بنا", feedback: "آراء العملاء" },
 
     hero: {
       slogan: "الأناقة في كل تفصيل",
@@ -123,6 +136,19 @@ export const UI = {
       revealSystems: "شاشة المشاريع",
       rollups: "التجميعات"
     },
+      fabricSubCategories: {
+      acousticMaskingBlackout: "أقمشة العزل الصوتي والتعتيم",
+      chromaKey: "كروما (خلفيات التصوير)",
+      decorativeDisplay: "أقمشة الديكور والعرض",
+      digitalPrint: "الطباعة الرقمية",
+      flooring: "الأرضيات",
+      muslinCanvasScenic: "أقمشة الموسلين والكانفاس والسينوغراف",
+      projectionScreens: "شاشات العرض",
+      scrimGauzeNetting: "أقمشة الشاش والشبك (سكريم)",
+      sheersSilksSatins: "أقمشة الشيفون والحرير والساتان",
+      velvetNatural: "مخمل طبيعي",
+      velvetSynthetic: "مخمل صناعي",
+    }
 
 
     

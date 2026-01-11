@@ -52,3 +52,21 @@
 .card:hover {
     transform: translateY(-5px);
 }
+
+
+
+
+
+
+
+
+/* Services */
+
+
+.transition-zoom {
+    transition: transform 0.3s ease;
+}
+
+.transition-zoom:hover {
+    transform: scale(1.05);
+}
