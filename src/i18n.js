@@ -43,6 +43,7 @@ export const UI = {
       fabrics: "Fabrics",
       tracks: "Tracks",
       frames: "Frames",
+      flooring: "Flooring",
     },
 
     //  Nested Frabrics sub-category names (used in the nested Fabrics dropdown links)
@@ -50,7 +51,6 @@ export const UI = {
       decoration: "Decoration fabrics",
       projectionScreens: "Projection screens",
       holograme: "Holograme",
-      flooring: "Flooring",
     },
 
       tracksSubCategories: {
@@ -63,7 +63,6 @@ export const UI = {
       chromaKey: "Chroma Key",
       decorativeDisplay: "Decorative and Display",
       digitalPrint: "Digital Print",
-      flooring: "Flooring",
       muslinCanvasScenic: "Muslin, Canvas and Scenic",
       projectionScreens: "Projection Screens",
       scrimGauzeNetting: "Scrim, Gauze and Netting",
@@ -122,13 +121,14 @@ export const UI = {
       fabrics: "الأقمشة",
       tracks: "المسارات",
       frames: "الإطارات",
+      flooring: "الأرضيات",
     },
 
     fabricsSubCategories: {
       decoration: "أقمشة الديكور",
       projectionScreens: "شاشات العرض",
       holograme: "الهولوجرام",
-      flooring: "الأرضيات",
+     
     },
 
     tracksSubCategories: {
@@ -141,7 +141,6 @@ export const UI = {
       chromaKey: "كروما (خلفيات التصوير)",
       decorativeDisplay: "أقمشة الديكور والعرض",
       digitalPrint: "الطباعة الرقمية",
-      flooring: "الأرضيات",
       muslinCanvasScenic: "أقمشة الموسلين والكانفاس والسينوغراف",
       projectionScreens: "شاشات العرض",
       scrimGauzeNetting: "أقمشة الشاش والشبك (سكريم)",

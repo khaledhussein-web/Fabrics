@@ -8,7 +8,7 @@ const Tracks = ({ t }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const CATEGORY_ID = 2;
+    const CATEGORY_ID = 4;
     const API_URL = `http://localhost:5000/api/category-content/${CATEGORY_ID}`;
 
     useEffect(() => {

@@ -26,6 +26,8 @@ import Tracks from "./Pages/Tracks";
 // Frames Import
 import Frames from "./Pages/Frames"; 
 
+import Flooring from "./Pages/Flooring";
+
 
 import SubcategoryPage from "./components/SubcategoryPage";
 import ProductDetailPage from "./components/ProductDetailPage";
@@ -63,6 +65,7 @@ function App() {
             <Route path="products/fabrics" element={<Fabrics t={t} dir={t.dir} />} />
             <Route path="products/tracks" element={<Tracks t={t} dir={t.dir} />} />
             <Route path="products/frames" element={<Frames t={t} dir={t.dir} />} />
+            <Route path="products/flooring" element={<Flooring t={t} dir={t.dir} />} />
 
             <Route 
                 path="/products/:categoryName/:subcategoryId" 

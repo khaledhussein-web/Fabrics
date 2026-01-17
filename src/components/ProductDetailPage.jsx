@@ -37,10 +37,11 @@ const ProductDetailPage = ({ t, dir }) => {
 
     // Helper: Determine folder based on category_id
     const getFolderByCategory = (catId) => {
-        switch (catId) {
+        switch (Number(catId)) { // Added Number() to ensure it matches correctly
             case 1: return "Fabrics";
-            case 2: return "Tracks";
+            case 2: return "Flooring"; // Changed from "Tracks" to "Flooring"
             case 3: return "Frames";
+            case 4: return "Tracks";   // Added Case 4 for your new Tracks ID
             default: return "General";
         }
     };
