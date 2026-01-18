@@ -1,7 +1,6 @@
 import React from "react";
 import { FaHardHat, FaUsers, FaLanguage, FaAward } from "react-icons/fa";
 import "../../assets/Listing.css";
-// import logo from "/logo3-transparent.png"
 
 const About = ({ t }) => {
     const isRtl = t?.dir === "rtl";
@@ -27,7 +26,7 @@ const About = ({ t }) => {
                     <div className="col-lg-5 d-none d-lg-block">
                         <div className="p-2 border rounded-4 shadow-sm">
                             <img 
-                                // src={logo}
+                                src="logo3.png"
                                 alt="Stage Engineering" 
                                 className="img-fluid rounded-4"
                             />

@@ -49,27 +49,35 @@ export const UI = {
     //  Nested Frabrics sub-category names (used in the nested Fabrics dropdown links)
     fabricsSubCategories: {
       decoration: "Decoration fabrics",
-      projectionScreens: "Projection screens",
-      holograme: "Holograme",
+      ph: "Projection screens & Holograme",
     },
 
-      tracksSubCategories: {
+    tracksSubCategories: {
       chainTrack: "Chain Track",
       revealSystems: "Reveal Systems",
       rollups: "Rollups",
     },
-      fabricSubCategories: {
+
+      fabricsDirectSubCategories: {
       acousticMaskingBlackout: "Acoustic, Masking and Blackout",
       chromaKey: "Chroma Key",
       decorativeDisplay: "Decorative and Display",
       digitalPrint: "Digital Print",
       muslinCanvasScenic: "Muslin, Canvas and Scenic",
-      projectionScreens: "Projection Screens",
       scrimGauzeNetting: "Scrim, Gauze and Netting",
       sheersSilksSatins: "Sheers, Silks and Satins",
       velvetNatural: "Velvet – Natural",
       velvetSynthetic: "Velvet – Synthetic",
     },
+
+    allSubCategories : {
+      decoration: "Decoration fabrics",
+      ph: "Projection screens & Holograme",
+      chainTrack: "Chain Track",
+      revealSystems: "Reveal Systems",
+      rollups: "Rollups",
+    },
+
 
 
   },
@@ -126,8 +134,7 @@ export const UI = {
 
     fabricsSubCategories: {
       decoration: "أقمشة الديكور",
-      projectionScreens: "شاشات العرض",
-      holograme: "الهولوجرام",
+      ph: " شاشات العرض و الهولوجرام",
      
     },
 
@@ -142,11 +149,17 @@ export const UI = {
       decorativeDisplay: "أقمشة الديكور والعرض",
       digitalPrint: "الطباعة الرقمية",
       muslinCanvasScenic: "أقمشة الموسلين والكانفاس والسينوغراف",
-      projectionScreens: "شاشات العرض",
       scrimGauzeNetting: "أقمشة الشاش والشبك (سكريم)",
       sheersSilksSatins: "أقمشة الشيفون والحرير والساتان",
       velvetNatural: "مخمل طبيعي",
       velvetSynthetic: "مخمل صناعي",
+    },
+    allSubCategories : {
+      decoration: "أقمشة الديكور",
+      ph: " شاشات العرض و الهولوجرام",
+      chainTrack: "مسار السلسلة",
+      revealSystems: "شاشة المشاريع",
+      rollups: "التجميعات"
     }
 
 

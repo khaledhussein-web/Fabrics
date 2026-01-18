@@ -1,7 +1,7 @@
 import React from "react";
 import '../../assets/Home.css'; 
 
-export default function Home({ t }) {
+export default function Home({ t , dir}) {
 
   return (
 
@@ -37,9 +37,9 @@ export default function Home({ t }) {
   </div>
 
   <div className="row g-4">
-    {/* Fabrics Card */}
-    <div className="col-md-4">
-      <div className="card h-100 border-0 shadow-lg overflow-hidden rounded-4 group">
+    {/* Fabrics Card - Changed to col-md-3 */}
+    <div className="col-md-3">
+      <div className="card h-100 border-0 shadow-lg overflow-hidden rounded-4">
         <div className="position-relative overflow-hidden">
           <img 
             src="fabrics.jpg" 
@@ -51,16 +51,61 @@ export default function Home({ t }) {
           />
         </div>
         <div className="card-body text-center bg-white p-4">
-          <h4 className="fw-bold mb-3">Fabrics</h4>
+          <h4 className="fw-bold mb-3">{t?.productsCategories?.fabrics || (t?.dir === "rtl" ? "الأقمشة" : "Fabrics")}</h4>
           <a href="/products/fabrics" className="btn btn-primary w-100 py-2 rounded-pill fw-bold shadow-sm">
-            View Fabrics
+           {t?.viewDetails || (dir === "rtl" ? "عرض اكثر" : "View More")}
           </a>
         </div>
       </div>
     </div>
 
-    {/* Tracks Card */}
-    <div className="col-md-4">
+    <div className="col-md-3">
+      <div className="card h-100 border-0 shadow-lg overflow-hidden rounded-4">
+        <div className="position-relative overflow-hidden">
+          <img 
+            src="flooring.jpg" 
+            className="card-img-top img-fluid" 
+            alt="Accessories" 
+            style={{ height: '280px', objectFit: 'cover', transition: 'transform 0.3s ease' }}
+            onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+            onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+          />
+        </div>
+        <div className="card-body text-center bg-white p-4">
+          <h4 className="fw-bold mb-3">{t?.productsCategories?.flooring || (t?.dir === "rtl" ? "الأقمشة" : "Flooring")}</h4>
+          <a href="/products/flooring" className="btn btn-primary w-100 py-2 rounded-pill fw-bold shadow-sm">
+            {t?.viewDetails || (dir === "rtl" ? "عرض اكثر" : "View More")}
+          </a>
+        </div>
+      </div>
+    </div>
+
+   
+
+    {/* Frames Card - Changed to col-md-3 */}
+    <div className="col-md-3">
+      <div className="card h-100 border-0 shadow-lg overflow-hidden rounded-4">
+        <div className="position-relative overflow-hidden">
+          <img 
+            src="frames.jpg" 
+            className="card-img-top img-fluid" 
+            alt="Aluminum Frame Profiles" 
+            style={{ height: '280px', objectFit: 'cover', transition: 'transform 0.3s ease' }}
+            onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+            onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+          />
+        </div>
+        <div className="card-body text-center bg-white p-4">
+          <h4 className="fw-bold mb-3">{t?.productsCategories?.frames || (t?.dir === "rtl" ? "الإطارات" : "Frames")}</h4>
+          <a href="/products/frames" className="btn btn-primary w-100 py-2 rounded-pill fw-bold shadow-sm">
+            {t?.viewDetails || (dir === "rtl" ? "عرض اكثر" : "View More")}
+          </a>
+        </div>
+      </div>
+    </div>
+
+ {/* Tracks Card - Changed to col-md-3 */}
+    <div className="col-md-3">
       <div className="card h-100 border-0 shadow-lg overflow-hidden rounded-4">
         <div className="position-relative overflow-hidden">
           <img 
@@ -75,33 +120,13 @@ export default function Home({ t }) {
         <div className="card-body text-center bg-white p-4">
           <h4 className="fw-bold mb-3">Tracks</h4>
           <a href="/products/tracks" className="btn btn-primary w-100 py-2 rounded-pill fw-bold shadow-sm">
-            View Tracks
+            {t?.viewDetails || (dir === "rtl" ? "عرض اكثر" : "View More")}
           </a>
         </div>
       </div>
     </div>
-
-    {/* Frames Card */}
-    <div className="col-md-4">
-      <div className="card h-100 border-0 shadow-lg overflow-hidden rounded-4">
-        <div className="position-relative overflow-hidden">
-          <img 
-            src="frames.jpg" 
-            className="card-img-top img-fluid" 
-            alt="Aluminum Frame Profiles" 
-            style={{ height: '280px', objectFit: 'cover', transition: 'transform 0.3s ease' }}
-            onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-            onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
-          />
-        </div>
-        <div className="card-body text-center bg-white p-4">
-          <h4 className="fw-bold mb-3">Frames</h4>
-          <a href="/products/frames" className="btn btn-primary w-100 py-2 rounded-pill fw-bold shadow-sm">
-            View Frames
-          </a>
-        </div>
-      </div>
-    </div>
+    {/* New Fourth Card - Changed to col-md-3 */}
+    
   </div>
 </div>
       </section>

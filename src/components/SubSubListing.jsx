@@ -59,7 +59,7 @@ const SubSubListing = ({ t, dir }) => {
     const getNameField = (item) => (dir === "rtl" ? item.name_ar || item.name_en : item.name_en);
 
     const uiKey = folderKeyMap[folderId];
-    const folderTitle = t?.fabricSubCategories?.[uiKey] || (dir === "rtl" ? "المنتجات" : "Products");
+    const folderTitle = t?.fabricsDirectSubCategories?.[uiKey] || (dir === "rtl" ? "المنتجات" : "Products");
 
     if (loading) return (
         <div className="text-center my-5 py-5">

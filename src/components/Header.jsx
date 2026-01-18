@@ -94,10 +94,7 @@ export default function Header({ lang, toggleLang, t }) {
                       {t.fabricsSubCategories.decoration}
                     </Dropdown.Item>
                     <Dropdown.Item as={Link} to={`/products/fabrics/2`}>
-                      {t.fabricsSubCategories.projectionScreens}
-                    </Dropdown.Item>
-                    <Dropdown.Item as={Link} to={`/products/fabrics/3`}>
-                      {t.fabricsSubCategories.holograme}
+                      {t.fabricsSubCategories.ph} 
                     </Dropdown.Item>
                   </div>
                 </li>
@@ -118,13 +115,13 @@ export default function Header({ lang, toggleLang, t }) {
                       {t.productsCategories.tracks}
                     </Dropdown.Item>
                     <div className="dropdown-menu-nested">
-                      <Dropdown.Item as={Link} to={`/products/tracks/5`}>
+                      <Dropdown.Item as={Link} to={`/products/tracks/3`}>
                         {t.tracksSubCategories.chainTrack}
                       </Dropdown.Item>
-                      <Dropdown.Item as={Link} to={`/products/tracks/6`}>
+                      <Dropdown.Item as={Link} to={`/products/tracks/4`}>
                         {t.tracksSubCategories.revealSystems}
                       </Dropdown.Item>
-                      <Dropdown.Item as={Link} to={`/products/tracks/7`}>
+                      <Dropdown.Item as={Link} to={`/products/tracks/5`}>
                         {t.tracksSubCategories.rollups}
                       </Dropdown.Item>
                     </div>
@@ -178,10 +175,7 @@ export default function Header({ lang, toggleLang, t }) {
                     {t.fabricsSubCategories.decoration}
                 </Dropdown.Item>
                 <Dropdown.Item as={Link} to={`/products/fabrics/2`} onClick={handleMenuToggle} className="nav-btn-child">
-                    {t.fabricsSubCategories.projectsScreen}
-                </Dropdown.Item>
-                <Dropdown.Item as={Link} to={`/products/fabrics/3`} onClick={handleMenuToggle} className="nav-btn-child">
-                    {t.fabricsSubCategories.holograme}
+                    {t.fabricsSubCategories.ph} 
                 </Dropdown.Item>
             </Dropdown.Menu>
             </Dropdown>
@@ -195,14 +189,13 @@ export default function Header({ lang, toggleLang, t }) {
                 {t.productsCategories.tracks}
             </Dropdown.Toggle>
             <Dropdown.Menu className="mobile-dropdown-menu">
-                {/* ⚠️ NOTE: Replace the numeric IDs (5, 6, 7) with the actual database ID for each subcategory */}
-                <Dropdown.Item as={Link} to={`/products/tracks/5`} onClick={handleMenuToggle} className="nav-btn-child">
+                <Dropdown.Item as={Link} to={`/products/tracks/3`} onClick={handleMenuToggle} className="nav-btn-child">
                     {t.tracksSubCategories.chainTrack}
                 </Dropdown.Item>
-                <Dropdown.Item as={Link} to={`/products/tracks/6`} onClick={handleMenuToggle} className="nav-btn-child">
+                <Dropdown.Item as={Link} to={`/products/tracks/4`} onClick={handleMenuToggle} className="nav-btn-child">
                     {t.tracksSubCategories.revealSystems}
                 </Dropdown.Item>
-                <Dropdown.Item as={Link} to={`/products/tracks/7`} onClick={handleMenuToggle} className="nav-btn-child">
+                <Dropdown.Item as={Link} to={`/products/tracks/5`} onClick={handleMenuToggle} className="nav-btn-child">
                     {t.tracksSubCategories.rollups}
                 </Dropdown.Item>
             </Dropdown.Menu>

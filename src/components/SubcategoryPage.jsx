@@ -12,12 +12,10 @@ const SubcategoryPage = ({ t, dir }) => {
   // 1. Create a map to connect Database IDs to your UI keys
   const subcategoryKeyMap = {
     "1": "decoration",
-    "2": "projectionScreens",
-    "3": "holograme",
-    "4": "flooring",
-    "5": "Chain Track",
-    "6": "Reveal systems",
-    "7": "Rollups"
+    "2": "ph",
+    "3": "chainTrack",
+    "4": "revealSystems",
+    "5": "rollups"
 };
 
   const API_URL = `http://localhost:5000/api/subcategory-products/${subcategoryId}`;
@@ -59,7 +57,7 @@ const SubcategoryPage = ({ t, dir }) => {
   // Get the key (e.g., 'projectionScreens') based on the ID from the URL
   const uiKey = subcategoryKeyMap[subcategoryId];
   // Look it up in your translated UI object
-  const subcategoryTitle = t?.fabricsSubCategories?.[uiKey] || (dir === "rtl" ? "المنتجات" : "Products");
+  const subcategoryTitle = t?.allSubCategories?.[uiKey] || (dir === "rtl" ? "المنتجات" : "Products");
 
   return (
     <div className="container py-5" dir={dir || "ltr"}>
