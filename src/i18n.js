@@ -77,8 +77,17 @@ export const UI = {
       revealSystems: "Reveal Systems",
       rollups: "Rollups",
     },
-
-
+    productsDetails: { 
+      details: "Details", 
+      product_code: "Product Code", 
+      width: "Width", 
+      fabric_thickness: "Fabric Thickness", 
+      fr_durability: "FR Durability", 
+      roll_length: "Roll Length", 
+      weight: "Weight", 
+      fr_certification: "FR Certification", 
+      custom_dye: "Custom Dye"
+    }
 
   },
 
@@ -160,6 +169,17 @@ export const UI = {
       chainTrack: "مسار السلسلة",
       revealSystems: "شاشة المشاريع",
       rollups: "التجميعات"
+    },
+    productsDetails: { 
+      details: "التفاصيل", 
+      product_code: "رمز المنتج", 
+      width: "العرض", 
+      fabric_thickness: "السماكة", 
+      fr_durability: "مقاومة الاشتعال", 
+      roll_length: "طول اللفة", 
+      weight: "الوزن", 
+      fr_certification: "شهادات مقاومة الاشتعال", 
+      custom_dye: "صباغة مخصصة" 
     }
 
 

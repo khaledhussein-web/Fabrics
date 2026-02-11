@@ -191,8 +191,10 @@ router.delete('/subcategories/:id', async (req, res) => {
 
 // ==================== PRODUCTS ROUTES (UPDATED) ====================
 
-// 🟢 GET all products (JOIN category and subcategory)
-router.get('/products', async (req, res) => {
+// 🟢 GET single product by product_id (with Data Pack + Sample Request fields)
+router.get('/product/:id', async (req, res) => {
+    const { id } = req.params;
+
     try {
         const query = `
             SELECT
@@ -205,33 +207,61 @@ router.get('/products', async (req, res) => {
                 p.description_ar,
                 p.image_path,
                 p.created_at,
+
+                -- Data Pack fields
+                p.product_code,
+                p.product_code_ar,
+                p.width,
+                p.width_ar,
+                p.fabric_thickness,
+                p.fabric_thickness_ar,
+                p.fr_durability,
+                p.fr_durability_ar,
+
+                -- Sample Request fields
+                p.roll_length,
+                p.roll_length_ar,
+                p.weight,
+                p.weight_ar,
+                p.fr_certification,
+                p.fr_certification_ar,
+                p.custom_dye,
+                p.custom_dye_ar,
+
+                -- Category & Subcategory names
                 c.name AS category_name,
                 s.name AS subcategory_name
             FROM products p
             LEFT JOIN categories c ON p.category_id = c.category_id
             LEFT JOIN subcategories s ON p.subcategory_id = s.subcategory_id
-            ORDER BY p.created_at DESC
+            WHERE p.product_id = $1
+            LIMIT 1
         `;
-    
-        const { rows } = await db.query(query);
-    
-        // Clean image paths (assuming this was part of your original logic)
-        const cleanedRows = rows.map(row => ({
-            ...row,
-            image_path: row.image_path
-                ? row.image_path.replace(/^["']|["']$/g, '')
-                : row.image_path
-        }));
-    
-        res.json({ products: cleanedRows });
+
+        const { rows } = await db.query(query, [id]);
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        const product = {
+            ...rows[0],
+            image_path: rows[0].image_path
+                ? rows[0].image_path.replace(/^["']|["']$/g, '')
+                : rows[0].image_path
+        };
+
+        res.json({ product });
     } catch (error) {
-        console.error('❌ Error fetching products:', error);
+        console.error('❌ Error fetching product:', error);
         res.status(500).json({
-            message: 'Internal server error while fetching products',
+            message: 'Internal server error while fetching product',
             error: error.message
         });
     }
 });
+
+
 
 // NOTE: The POST /products route remains in AddingProducts.js
 
