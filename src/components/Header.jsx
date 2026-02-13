@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Dropdown from 'react-bootstrap/Dropdown';
-import Navbar from 'react-bootstrap/Navbar'; 
+import Navbar from 'react-bootstrap/Navbar';
 import Image from 'react-bootstrap/Image';
 
-
+import logo from "../../public/logo.png"
 
 export default function Header({ lang, toggleLang, t }) {
 
@@ -57,7 +57,7 @@ export default function Header({ lang, toggleLang, t }) {
         </Link> */}
 <Navbar.Brand as={Link} to="/" className="nav-logo">
           <Image
-            src="/logo.png"
+            src={logo} 
             alt="Company Logo"
             height="70" 
             className="d-inline-block" 
