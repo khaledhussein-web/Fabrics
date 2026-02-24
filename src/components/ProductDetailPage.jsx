@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from 'react-router-dom'; 
 import axios from "axios"; 
+import { UI } from "../i18n"; // استدعاء الترجمات
 
 const ProductDetailPage = ({ t, dir }) => {
-    // 1. productId must match your App.js route exactly
     const { productId } = useParams(); 
     
     const [product, setProduct] = useState(null); 
@@ -23,7 +23,6 @@ const ProductDetailPage = ({ t, dir }) => {
             try {
                 setLoading(true);
                 const response = await axios.get(API_URL);
-                // Extracting 'product' object from the API response
                 setProduct(response.data.product || response.data); 
             } catch (err) {
                 console.error("Fetch error:", err);
@@ -35,13 +34,12 @@ const ProductDetailPage = ({ t, dir }) => {
         fetchProductDetails();
     }, [productId, API_URL]); 
 
-    // Helper: Determine folder based on category_id
     const getFolderByCategory = (catId) => {
-        switch (Number(catId)) { // Added Number() to ensure it matches correctly
+        switch (Number(catId)) {
             case 1: return "Fabrics";
-            case 2: return "Flooring"; // Changed from "Tracks" to "Flooring"
+            case 2: return "Flooring";
             case 3: return "Frames";
-            case 4: return "Tracks";   // Added Case 4 for your new Tracks ID
+            case 4: return "Tracks";
             default: return "General";
         }
     };
@@ -50,13 +48,14 @@ const ProductDetailPage = ({ t, dir }) => {
     if (error || !product) return <div className="container py-5 text-center text-danger">{error || "Not found"}</div>;
 
     const productName = dir === "rtl" ? product.name_ar || product.name_en : product.name_en;
-    
-    // 💡 DYNAMIC IMAGE PATH LOGIC
-    // Uses category_id from DB to pick the right folder
+    const productDescription = dir === "rtl" ? product.description_ar || product.description_en : product.description_en;
+
     const folder = getFolderByCategory(product.category_id);
     const imageUrl = product.image_path?.startsWith('/') 
         ? `http://localhost:5000${product.image_path}` 
         : `http://localhost:5000/uploads/${folder}/${product.image_path}`;
+
+    const labels = dir === "rtl" ? UI.ar.productsDetails : UI.en.productsDetails;
 
     return (
         <div className="product-detail-page py-5" dir={dir || "ltr"}>
@@ -78,14 +77,58 @@ const ProductDetailPage = ({ t, dir }) => {
 
                     <div className="col-lg-7">
                         <h3 className="mb-4" style={{color:'#1e3a8a'}}>
-                            {t?.details || (dir === "rtl" ? "التفاصيل" : "Details")}
+                            {labels.details}
                         </h3>
+                        
+                        {/* Product Description */}
                         <div 
-                            className="lead" 
+                            className="lead mb-4" 
                             style={{color:'#334155', lineHeight: '1.8'}} 
-                            dangerouslySetInnerHTML={{ __html: product.description_en || "" }}
+                            dangerouslySetInnerHTML={{ __html: productDescription || "" }}
                         ></div>
                         
+                        {/* Extra Product Fields in 2 columns */}
+                        <div className="row">
+                            <div className="col-md-6">
+                                <ul className="list-unstyled" style={{color:'#334155', lineHeight:'1.8'}}>
+                                    {dir === "rtl" ? (
+                                        <>
+                                            {product.product_code_ar && <li><strong>{labels.product_code}:</strong> {product.product_code_ar}</li>}
+                                            {product.width_ar && <li><strong>{labels.width}:</strong> {product.width_ar}</li>}
+                                            {product.fabric_thickness_ar && <li><strong>{labels.fabric_thickness}:</strong> {product.fabric_thickness_ar}</li>}
+                                            {product.fr_durability_ar && <li><strong>{labels.fr_durability}:</strong> {product.fr_durability_ar}</li>}
+                                        </>
+                                    ) : (
+                                        <>
+                                            {product.product_code && <li><strong>{labels.product_code}:</strong> {product.product_code}</li>}
+                                            {product.width && <li><strong>{labels.width}:</strong> {product.width}</li>}
+                                            {product.fabric_thickness && <li><strong>{labels.fabric_thickness}:</strong> {product.fabric_thickness}</li>}
+                                            {product.fr_durability && <li><strong>{labels.fr_durability}:</strong> {product.fr_durability}</li>}
+                                        </>
+                                    )}
+                                </ul>
+                            </div>
+                            <div className="col-md-6">
+                                <ul className="list-unstyled" style={{color:'#334155', lineHeight:'1.8'}}>
+                                    {dir === "rtl" ? (
+                                        <>
+                                            {product.roll_length_ar && <li><strong>{labels.roll_length}:</strong> {product.roll_length_ar}</li>}
+                                            {product.weight_ar && <li><strong>{labels.weight}:</strong> {product.weight_ar}</li>}
+                                            {product.fr_certification_ar && <li><strong>{labels.fr_certification}:</strong> {product.fr_certification_ar}</li>}
+                                            {product.custom_dye_ar && <li><strong>{labels.custom_dye}:</strong> {product.custom_dye_ar}</li>}
+                                        </>
+                                    ) : (
+                                        <>
+                                            {product.roll_length && <li><strong>{labels.roll_length}:</strong> {product.roll_length}</li>}
+                                            {product.weight && <li><strong>{labels.weight}:</strong> {product.weight}</li>}
+                                            {product.fr_certification && <li><strong>{labels.fr_certification}:</strong> {product.fr_certification}</li>}
+                                            {product.custom_dye && <li><strong>{labels.custom_dye}:</strong> {product.custom_dye}</li>}
+                                        </>
+                                    )}
+                                </ul>
+                            </div>
+                        </div>
+
                         <div className="mt-5">
                             <button onClick={() => window.history.back()} className="btn btn-primary rounded-pill px-4">
                                 {dir === "rtl" ? "العودة" : "Back"}

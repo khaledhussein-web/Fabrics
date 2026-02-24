@@ -286,33 +286,74 @@ router.post('/categories', async (req, res) => {
     }
 });
 
-// 🟢 GET: Fetch details for a SINGLE product by its ID
-router.get('/product/:productId', async (req, res) => {
-    const productId = req.params.productId;
-    
-    // 💡 CRITICAL FIX: The query must filter by the primary key: product_id
-    const query = `
-        SELECT p.*
-        FROM public.products p
-        WHERE p.product_id = $1;
-    `;
-    
+// 🟢 GET single product by product_id (with Data Pack + Sample Request fields)
+router.get('/product/:id', async (req, res) => {
+    const { id } = req.params;
+
     try {
-        const result = await db.query(query, [productId]);
-        
-        if (result.rows.length === 0) {
-            // Return 404 if the product ID doesn't exist in the DB
-            return res.status(404).json({ message: `Product ID ${productId} not found.` });
+        const query = `
+            SELECT
+                p.product_id,
+                p.category_id,
+                p.subcategory_id,
+                p.name_en,
+                p.name_ar,
+                p.description_en,
+                p.description_ar,
+                p.image_path,
+                p.created_at,
+
+                -- Data Pack fields
+                p.product_code,
+                p.product_code_ar,
+                p.width,
+                p.width_ar,
+                p.fabric_thickness,
+                p.fabric_thickness_ar,
+                p.fr_durability,
+                p.fr_durability_ar,
+
+                -- Sample Request fields
+                p.roll_length,
+                p.roll_length_ar,
+                p.weight,
+                p.weight_ar,
+                p.fr_certification,
+                p.fr_certification_ar,
+                p.custom_dye,
+                p.custom_dye_ar,
+
+                -- Category & Subcategory names
+                c.name AS category_name,
+                s.name AS subcategory_name
+            FROM products p
+            LEFT JOIN categories c ON p.category_id = c.category_id
+            LEFT JOIN subcategories s ON p.subcategory_id = s.subcategory_id
+            WHERE p.product_id = $1
+            LIMIT 1
+        `;
+
+        const { rows } = await db.query(query, [id]);
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'Product not found' });
         }
-        
-        // Success: Return the first (and only) row
-        res.json({ product: result.rows[0] });
-    } catch (err) {
-        console.error(`❌ Error fetching single product ID ${productId}:`, err);
+
+        const product = {
+            ...rows[0],
+            image_path: rows[0].image_path
+                ? rows[0].image_path.replace(/^["']|["']$/g, '')
+                : rows[0].image_path
+        };
+
+        res.json({ product });
+    } catch (error) {
+        console.error('❌ Error fetching product:', error);
         res.status(500).json({
-            message: 'Server error while fetching single product details.',
-            error: err.message
+            message: 'Internal server error while fetching product',
+            error: error.message
         });
     }
 });
+
 module.exports = router;
