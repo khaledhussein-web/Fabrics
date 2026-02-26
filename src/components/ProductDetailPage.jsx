@@ -52,9 +52,23 @@ const ProductDetailPage = ({ t, dir }) => {
     const productDescription = dir === "rtl" ? product.description_ar || product.description_en : product.description_en;
 
     const folder = getFolderByCategory(product.category_id);
-    const imageUrl = product.image_path?.startsWith('/') 
-        ? `http://localhost:5000${product.image_path}` 
-        : `http://localhost:5000/uploads/${folder}/${product.image_path}`;
+
+    const toDisplayImageUrl = (rawPath) => {
+        if (!rawPath) return "";
+        if (/^https?:\/\//i.test(rawPath)) return rawPath;
+        if (rawPath.startsWith("/uploads")) return `http://localhost:5000${rawPath}`;
+        if (rawPath.startsWith("src/")) return `/${rawPath.replace(/^src\//, "")}`;
+        if (rawPath.startsWith("/")) return rawPath;
+        return `http://localhost:5000/uploads/${folder}/${rawPath}`;
+    };
+
+    const imageUrl = toDisplayImageUrl(product.image_path);
+    const additionalPhotos = (product.additional_photos || [])
+        .map((item) => ({
+            url: toDisplayImageUrl(item.photo_url),
+            alt: dir === "rtl" ? item.alt_text_ar || item.alt_text : item.alt_text || item.alt_text_ar,
+        }))
+        .filter((item) => item.url && item.url !== imageUrl);
 
     const labels = dir === "rtl" ? UI.ar.productsDetails : UI.en.productsDetails;
 
@@ -159,9 +173,33 @@ const ProductDetailPage = ({ t, dir }) => {
                         </div>
                     </div>
                 </div>
+
+                {additionalPhotos.length > 0 && (
+                    <div className="row mt-4">
+                        <div className="col-12">
+                            <div className="row g-3">
+                                {additionalPhotos.map((photo, idx) => (
+                                    <div className="col-12" key={`${photo.url}-${idx}`}>
+                                        <img
+                                            src={photo.url}
+                                            alt={photo.alt || `${productName} ${idx + 1}`}
+                                            className="img-fluid rounded shadow-sm w-100"
+                                            style={{ objectFit: "contain" }}
+                                            onError={(e) => {
+                                                e.target.onerror = null;
+                                                e.target.src = "https://via.placeholder.com/400x300?text=Image+Not+Found";
+                                            }}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
 };
 
 export default ProductDetailPage;
+

@@ -324,7 +324,7 @@ router.get('/product/:id', async (req, res) => {
           specQuery = 'SELECT * FROM print_frame_specs WHERE product_id = $1';
           break;
         case 4: // Tracks
-          specQuery = 'SELECT * FROM tracks_specs WHERE product_id = $1';
+          specQuery = 'SELECT * FROM tracks_specs WHERE product_id = $1 ORDER BY photo_id ASC';
           break;
         case 5: // Legacy Projection Screens category
           specQuery = 'SELECT * FROM projection_specs WHERE product_id = $1';
@@ -337,8 +337,23 @@ router.get('/product/:id', async (req, res) => {
     if (specQuery) {
       const { rows: specRows } = await db.query(specQuery, [id]);
       product.specs = specRows[0] || {};
+
+      // Tracks specs table stores additional photos. Keep product.image_path as the main image.
+      if (Number(product.category_id) === 4) {
+        product.additional_photos = specRows
+          .filter((row) => row.photo_url)
+          .map((row) => ({
+            photo_id: row.photo_id,
+            photo_url: row.photo_url,
+            alt_text: row.alt_text || product.name_en || 'Track photo',
+            alt_text_ar: row.alt_text_ar || row.alt_text || product.name_ar || product.name_en || 'Track photo',
+          }));
+      } else {
+        product.additional_photos = [];
+      }
     } else {
       product.specs = product.specs_json || {};
+      product.additional_photos = [];
     }
 
     res.json({ product });
