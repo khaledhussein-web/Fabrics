@@ -26,7 +26,7 @@ const About = ({ t }) => {
                     <div className="col-lg-5 d-none d-lg-block">
                         <div className="p-2 border rounded-4 shadow-sm">
                             <img 
-                                src="logo.png"
+                                src="/logo.png"
                                 alt="Stage Engineering" 
                                 className="img-fluid rounded-4"
                             />

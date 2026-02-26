@@ -1,0 +1,112 @@
+[
+  {
+    "product_id": 75,
+    "name_en": "Wool Serge 1.8m",
+    "slug": "wool-serge-1-8m"
+  },
+  {
+    "product_id": 76,
+    "name_en": "Wool Serge 3.0m",
+    "slug": "wool-serge-3-0m"
+  },
+  {
+    "product_id": 93,
+    "name_en": "Premier Blackout 1.5m",
+    "slug": "premier-blackout-1-5m"
+  },
+  {
+    "product_id": 94,
+    "name_en": "Premier Blackout 3.0m",
+    "slug": "premier-blackout-3-0m"
+  },
+  {
+    "product_id": 108,
+    "name_en": "StageWare Mat (Chroma Key)",
+    "slug": "stageware-mat"
+  },
+  {
+    "product_id": 109,
+    "name_en": "Casement 1.2 Fabric — Decorative & Display",
+    "slug": "casement-1-2-fabric"
+  },
+  {
+    "product_id": 110,
+    "name_en": "Casement 1.4 Fabric — Decorative & Display",
+    "slug": "casement-1-4-fabric"
+  },
+  {
+    "product_id": 111,
+    "name_en": "Casement 1.5 Fabric — Decorative & Display",
+    "slug": "casement-1-5-fabric"
+  },
+  {
+    "product_id": 112,
+    "name_en": "Casement 3.2 Fabric — Decorative & Display",
+    "slug": "casement-3-2-fabric"
+  },
+  {
+    "product_id": 121,
+    "name_en": "StageWare Elastic 3.1 — Decorative & Display",
+    "slug": "stageware-elastic-3-1"
+  },
+  {
+    "product_id": 122,
+    "name_en": "PUFC 160 — Decorative & Display",
+    "slug": "pufc160"
+  },
+  {
+    "product_id": 128,
+    "name_en": "Trevira CS String Drape — Decorative & Display",
+    "slug": "trevira-cs-string-drape"
+  },
+  {
+    "product_id": 194,
+    "name_en": "8pt Sharkstooth 10.97",
+    "slug": "8pt-sharkstooth-10-97"
+  },
+  {
+    "product_id": 195,
+    "name_en": "8pt Sharkstooth 12.0",
+    "slug": "8pt-sharkstooth-12-0"
+  },
+  {
+    "product_id": 196,
+    "name_en": "8pt Sharkstooth 3.6",
+    "slug": "8pt-sharkstooth-3-6"
+  },
+  {
+    "product_id": 197,
+    "name_en": "8pt Sharkstooth 6.1",
+    "slug": "8pt-sharkstooth-6-1"
+  },
+  {
+    "product_id": 198,
+    "name_en": "8pt Sharkstooth 9.75",
+    "slug": "8pt-sharkstooth-9-75"
+  },
+  {
+    "product_id": 200,
+    "name_en": "Polysilk Black",
+    "slug": "polysilk-black"
+  },
+  {
+    "product_id": 201,
+    "name_en": "Polysilk White",
+    "slug": "polysilk-white"
+  },
+  {
+    "product_id": 202,
+    "name_en": "1/4 Stop Silk",
+    "slug": "14-stop-silk"
+  },
+  {
+    "product_id": 209,
+    "name_en": "Voile 3.0 IFR",
+    "slug": "voile-3-0-ifr"
+  },
+  {
+    "product_id": 213,
+    "name_en": "Duchess Velvet",
+    "slug": "duchess-velvet"
+  }
+]

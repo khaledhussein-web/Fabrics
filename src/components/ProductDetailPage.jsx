@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from 'react-router-dom'; 
 import axios from "axios"; 
-import { UI } from "../i18n"; // استدعاء الترجمات
+import { UI } from "../i18n"; // translations
 
 const ProductDetailPage = ({ t, dir }) => {
     const { productId } = useParams(); 
@@ -40,6 +40,7 @@ const ProductDetailPage = ({ t, dir }) => {
             case 2: return "Flooring";
             case 3: return "Frames";
             case 4: return "Tracks";
+            case 5: return "ProjectionScreens";
             default: return "General";
         }
     };
@@ -56,6 +57,67 @@ const ProductDetailPage = ({ t, dir }) => {
         : `http://localhost:5000/uploads/${folder}/${product.image_path}`;
 
     const labels = dir === "rtl" ? UI.ar.productsDetails : UI.en.productsDetails;
+
+    // Helper to render bilingual specs dynamically
+    const renderSpecs = () => {
+        if (!product.specs) return null;
+
+        const specs = product.specs;
+        const isRTL = dir === "rtl";
+
+        return (
+            <div className="row">
+                <div className="col-md-6">
+                    <ul className="list-unstyled" style={{color:'#334155', lineHeight:'1.8'}}>
+                        {isRTL ? (
+                            <>
+                                {specs.product_code_ar && <li><strong>{labels.product_code}:</strong> {specs.product_code_ar}</li>}
+                                {specs.width_ar && <li><strong>{labels.width}:</strong> {specs.width_ar}</li>}
+                                {specs.fabric_thickness_ar && <li><strong>{labels.fabric_thickness}:</strong> {specs.fabric_thickness_ar}</li>}
+                                {specs.fr_durability_ar && <li><strong>{labels.fr_durability}:</strong> {specs.fr_durability_ar}</li>}
+                                {specs.perfect_for_ar && <li><strong>{labels.perfect_for || "الاستخدام المثالي"}:</strong> {specs.perfect_for_ar}</li>}
+                                {specs.gain_ar && <li><strong>{labels.gain || "معامل السطوع"}:</strong> {specs.gain_ar}</li>}
+                                {specs.diameter_ar && <li><strong>{labels.diameter}:</strong> {specs.diameter_ar}</li>}
+                            </>
+                        ) : (
+                            <>
+                                {specs.product_code && <li><strong>{labels.product_code}:</strong> {specs.product_code}</li>}
+                                {specs.width && <li><strong>{labels.width}:</strong> {specs.width}</li>}
+                                {specs.fabric_thickness && <li><strong>{labels.fabric_thickness}:</strong> {specs.fabric_thickness}</li>}
+                                {specs.fr_durability && <li><strong>{labels.fr_durability}:</strong> {specs.fr_durability}</li>}
+                                {specs.perfect_for && <li><strong>{labels.perfect_for || "Perfect For"}:</strong> {specs.perfect_for}</li>}
+                                {specs.gain && <li><strong>{labels.gain || "Gain"}:</strong> {specs.gain}</li>}
+                                {specs.diameter && <li><strong>{labels.diameter}:</strong> {specs.diameter}</li>}
+                            </>
+                        )}
+                    </ul>
+                </div>
+                <div className="col-md-6">
+                    <ul className="list-unstyled" style={{color:'#334155', lineHeight:'1.8'}}>
+                        {isRTL ? (
+                            <>
+                                {specs.roll_length_ar && <li><strong>{labels.roll_length}:</strong> {specs.roll_length_ar}</li>}
+                                {specs.weight_ar && <li><strong>{labels.weight}:</strong> {specs.weight_ar}</li>}
+                                {specs.fr_certification_ar && <li><strong>{labels.fr_certification}:</strong> {specs.fr_certification_ar}</li>}
+                                {specs.custom_dye_ar && <li><strong>{labels.custom_dye}:</strong> {specs.custom_dye_ar}</li>}
+                                {specs.transmittance_ar && <li><strong>{labels.transmittance || "النفاذية الضوئية"}:</strong> {specs.transmittance_ar}</li>}
+                                {specs.length_ar && <li><strong>{labels.length}:</strong> {specs.length_ar}</li>}
+                            </>
+                        ) : (
+                            <>
+                                {specs.roll_length && <li><strong>{labels.roll_length}:</strong> {specs.roll_length}</li>}
+                                {specs.weight && <li><strong>{labels.weight}:</strong> {specs.weight}</li>}
+                                {specs.fr_certification && <li><strong>{labels.fr_certification}:</strong> {specs.fr_certification}</li>}
+                                {specs.custom_dye && <li><strong>{labels.custom_dye}:</strong> {specs.custom_dye}</li>}
+                                {specs.transmittance && <li><strong>{labels.transmittance || "Transmittance"}:</strong> {specs.transmittance}</li>}
+                                {specs.length && <li><strong>{labels.length}:</strong> {specs.length}</li>}
+                            </>
+                        )}
+                    </ul>
+                </div>
+            </div>
+        );
+    };
 
     return (
         <div className="product-detail-page py-5" dir={dir || "ltr"}>
@@ -87,47 +149,8 @@ const ProductDetailPage = ({ t, dir }) => {
                             dangerouslySetInnerHTML={{ __html: productDescription || "" }}
                         ></div>
                         
-                        {/* Extra Product Fields in 2 columns */}
-                        <div className="row">
-                            <div className="col-md-6">
-                                <ul className="list-unstyled" style={{color:'#334155', lineHeight:'1.8'}}>
-                                    {dir === "rtl" ? (
-                                        <>
-                                            {product.product_code_ar && <li><strong>{labels.product_code}:</strong> {product.product_code_ar}</li>}
-                                            {product.width_ar && <li><strong>{labels.width}:</strong> {product.width_ar}</li>}
-                                            {product.fabric_thickness_ar && <li><strong>{labels.fabric_thickness}:</strong> {product.fabric_thickness_ar}</li>}
-                                            {product.fr_durability_ar && <li><strong>{labels.fr_durability}:</strong> {product.fr_durability_ar}</li>}
-                                        </>
-                                    ) : (
-                                        <>
-                                            {product.product_code && <li><strong>{labels.product_code}:</strong> {product.product_code}</li>}
-                                            {product.width && <li><strong>{labels.width}:</strong> {product.width}</li>}
-                                            {product.fabric_thickness && <li><strong>{labels.fabric_thickness}:</strong> {product.fabric_thickness}</li>}
-                                            {product.fr_durability && <li><strong>{labels.fr_durability}:</strong> {product.fr_durability}</li>}
-                                        </>
-                                    )}
-                                </ul>
-                            </div>
-                            <div className="col-md-6">
-                                <ul className="list-unstyled" style={{color:'#334155', lineHeight:'1.8'}}>
-                                    {dir === "rtl" ? (
-                                        <>
-                                            {product.roll_length_ar && <li><strong>{labels.roll_length}:</strong> {product.roll_length_ar}</li>}
-                                            {product.weight_ar && <li><strong>{labels.weight}:</strong> {product.weight_ar}</li>}
-                                            {product.fr_certification_ar && <li><strong>{labels.fr_certification}:</strong> {product.fr_certification_ar}</li>}
-                                            {product.custom_dye_ar && <li><strong>{labels.custom_dye}:</strong> {product.custom_dye_ar}</li>}
-                                        </>
-                                    ) : (
-                                        <>
-                                            {product.roll_length && <li><strong>{labels.roll_length}:</strong> {product.roll_length}</li>}
-                                            {product.weight && <li><strong>{labels.weight}:</strong> {product.weight}</li>}
-                                            {product.fr_certification && <li><strong>{labels.fr_certification}:</strong> {product.fr_certification}</li>}
-                                            {product.custom_dye && <li><strong>{labels.custom_dye}:</strong> {product.custom_dye}</li>}
-                                        </>
-                                    )}
-                                </ul>
-                            </div>
-                        </div>
+                        {/* Dynamic Specs */}
+                        {renderSpecs()}
 
                         <div className="mt-5">
                             <button onClick={() => window.history.back()} className="btn btn-primary rounded-pill px-4">

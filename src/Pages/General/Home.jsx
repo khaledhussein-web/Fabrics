@@ -118,7 +118,7 @@ export default function Home({ t , dir}) {
           />
         </div>
         <div className="card-body text-center bg-white p-4">
-          <h4 className="fw-bold mb-3">Tracks</h4>
+          <h4 className="fw-bold mb-3">{t?.productsCategories?.tracks || (t?.dir === "rtl" ? "المسارات" : "Tracks")}</h4>
           <a href="/products/tracks" className="btn btn-primary w-100 py-2 rounded-pill fw-bold shadow-sm">
             {t?.viewDetails || (dir === "rtl" ? "عرض اكثر" : "View More")}
           </a>

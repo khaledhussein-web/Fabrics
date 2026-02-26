@@ -204,13 +204,13 @@ router.get('/products', async (req, res) => {
                 p.description_en,
                 p.description_ar,
                 p.image_path,
-                p.created_at,
+                NULL::timestamp AS created_at,
                 c.name AS category_name,
                 s.name AS subcategory_name
             FROM products p
             LEFT JOIN categories c ON p.category_id = c.category_id
             LEFT JOIN subcategories s ON p.subcategory_id = s.subcategory_id
-            ORDER BY p.created_at DESC
+            ORDER BY p.product_id DESC
         `;
     
         const { rows } = await db.query(query);
@@ -286,74 +286,70 @@ router.post('/categories', async (req, res) => {
     }
 });
 
-// 🟢 GET single product by product_id (with Data Pack + Sample Request fields)
 router.get('/product/:id', async (req, res) => {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    try {
-        const query = `
-            SELECT
-                p.product_id,
-                p.category_id,
-                p.subcategory_id,
-                p.name_en,
-                p.name_ar,
-                p.description_en,
-                p.description_ar,
-                p.image_path,
-                p.created_at,
+  try {
+    // Base product query
+    const productQuery = `
+      SELECT p.*, c.name AS category_name, s.name AS subcategory_name
+      FROM products p
+      LEFT JOIN categories c ON p.category_id = c.category_id
+      LEFT JOIN subcategories s ON p.subcategory_id = s.subcategory_id
+      WHERE p.product_id = $1
+      LIMIT 1
+    `;
+    const { rows } = await db.query(productQuery, [id]);
 
-                -- Data Pack fields
-                p.product_code,
-                p.product_code_ar,
-                p.width,
-                p.width_ar,
-                p.fabric_thickness,
-                p.fabric_thickness_ar,
-                p.fr_durability,
-                p.fr_durability_ar,
-
-                -- Sample Request fields
-                p.roll_length,
-                p.roll_length_ar,
-                p.weight,
-                p.weight_ar,
-                p.fr_certification,
-                p.fr_certification_ar,
-                p.custom_dye,
-                p.custom_dye_ar,
-
-                -- Category & Subcategory names
-                c.name AS category_name,
-                s.name AS subcategory_name
-            FROM products p
-            LEFT JOIN categories c ON p.category_id = c.category_id
-            LEFT JOIN subcategories s ON p.subcategory_id = s.subcategory_id
-            WHERE p.product_id = $1
-            LIMIT 1
-        `;
-
-        const { rows } = await db.query(query, [id]);
-
-        if (rows.length === 0) {
-            return res.status(404).json({ message: 'Product not found' });
-        }
-
-        const product = {
-            ...rows[0],
-            image_path: rows[0].image_path
-                ? rows[0].image_path.replace(/^["']|["']$/g, '')
-                : rows[0].image_path
-        };
-
-        res.json({ product });
-    } catch (error) {
-        console.error('❌ Error fetching product:', error);
-        res.status(500).json({
-            message: 'Internal server error while fetching product',
-            error: error.message
-        });
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'Product not found' });
     }
+
+    const product = rows[0];
+
+    // Decide which spec table to join
+    let specQuery;
+    if (Number(product.category_id) === 1 && Number(product.subcategory_id) === 2) {
+      // Projection Screens live under Fabrics -> subcategory 2
+      specQuery = 'SELECT * FROM projection_specs WHERE product_id = $1';
+    } else {
+      switch (Number(product.category_id)) {
+        case 1: // Fabrics
+          specQuery = 'SELECT * FROM fabric_specs WHERE product_id = $1';
+          break;
+        case 2: // Flooring
+          specQuery = 'SELECT * FROM flooring_specs WHERE product_id = $1';
+          break;
+        case 3: // Frames
+          specQuery = 'SELECT * FROM print_frame_specs WHERE product_id = $1';
+          break;
+        case 4: // Tracks
+          specQuery = 'SELECT * FROM tracks_specs WHERE product_id = $1';
+          break;
+        case 5: // Legacy Projection Screens category
+          specQuery = 'SELECT * FROM projection_specs WHERE product_id = $1';
+          break;
+        default:
+          specQuery = null;
+      }
+    }
+
+    if (specQuery) {
+      const { rows: specRows } = await db.query(specQuery, [id]);
+      product.specs = specRows[0] || {};
+    } else {
+      product.specs = product.specs_json || {};
+    }
+
+    res.json({ product });
+  } catch (error) {
+    console.error('❌ Error fetching product:', error);
+    res.status(500).json({
+      message: 'Internal server error while fetching product',
+      error: error.message
+    });
+  }
 });
+
 
 module.exports = router;
