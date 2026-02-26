@@ -22,6 +22,28 @@ app.use('/api', generalRoutes);
 
 // ==================== API ROUTES (POOL VERSION) ====================
 
+const DEFAULT_UK_WHATSAPP_NUMBER = "447700900123";
+const DEFAULT_WHATSAPP_TEXT = "Hello, need some help with your products.";
+
+const normalizeWhatsAppNumber = (input) => {
+  const digits = (input || "").replace(/\D/g, "");
+  if (!digits) return DEFAULT_UK_WHATSAPP_NUMBER;
+  if (digits.startsWith("44")) return digits;
+  if (digits.startsWith("0")) return `44${digits.slice(1)}`;
+  return digits;
+};
+
+const buildWhatsAppChatUrl = () => {
+  const rawNumber = process.env.WHATSAPP_UK_NUMBER || DEFAULT_UK_WHATSAPP_NUMBER;
+  const rawText = (process.env.WHATSAPP_DEFAULT_TEXT || DEFAULT_WHATSAPP_TEXT).trim();
+  const digitsOnly = normalizeWhatsAppNumber(rawNumber);
+  return `https://wa.me/${digitsOnly}?text=${encodeURIComponent(rawText)}`;
+};
+
+app.get("/api/config/whatsapp", (req, res) => {
+  res.json({ chatUrl: buildWhatsAppChatUrl() });
+});
+
 // Get Categories (L1)
 app.get("/api/categories", async (req, res) => {
   try {

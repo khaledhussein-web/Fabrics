@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import '../../assets/Contact.css';
 
 export default function Contact({ t }) {
@@ -14,6 +14,24 @@ export default function Contact({ t }) {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isSent, setIsSent] = useState(false);
+  const [whatsAppUrl, setWhatsAppUrl] = useState("https://wa.me/447700900123?text=Hello");
+
+  useEffect(() => {
+    const fetchWhatsAppUrl = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/config/whatsapp");
+        if (!response.ok) return;
+        const data = await response.json();
+        if (data?.chatUrl) {
+          setWhatsAppUrl(data.chatUrl);
+        }
+      } catch (error) {
+        console.error("Failed to load WhatsApp link:", error);
+      }
+    };
+
+    fetchWhatsAppUrl();
+  }, []);
 
   const showToast = (msg, type = "success") => {
     setToast(msg);
@@ -155,7 +173,7 @@ export default function Contact({ t }) {
       )}
 
       <a
-        href="https://wa.me/your-phone-number?text=Hello"
+        href={whatsAppUrl}
         target="_blank"
         rel="noopener noreferrer"
         className="whatsapp-float"

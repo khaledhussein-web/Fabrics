@@ -7,3 +7,4 @@ export default defineConfig({
     historyApiFallback: true, // ✅ ensures all routes go to index.html
   },
 });
+
