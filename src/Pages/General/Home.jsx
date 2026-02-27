@@ -133,14 +133,14 @@ export default function Home({ t , dir}) {
 
       {/* ====== ABOUT SECTION ====== */}
       <section className="container" style={{ color: "var(--text-color)" }}>
-        <h2>{t?.about?.title || "About Us"}</h2>
+        <h2>{t?.nav?.about || (t?.dir === "rtl" ? "من نحن" : "About Us")}</h2>
         <p>
-          {t?.about?.body ||
+          {t?.hero?.aboutUs ||
             "We are a specialized interior solutions company providing high-quality fabrics, curtains, flooring, and decorative materials."}
         </p>
-        <h3>{t?.about?.missionTitle || "Our Mission"}</h3>
+        <h3>{t?.dir === "rtl" ? "مهمتنا" : "Our Mission"}</h3>
         <p>
-          {t?.about?.mission ||
+          {t?.hero?.ourMission ||
             "To deliver elegant, durable, and tailor-made interior finishes that reflect our clients’ style."}
         </p>
       </section>

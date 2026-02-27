@@ -24,6 +24,10 @@ export const UI = {
       slogan: "Elegance in Every Detail",
       subtitle:
         "Premium fabrics, flooring, and decorative materials - designed, delivered, and installed with care.",
+      aboutUs:
+        "StageWare is a trusted provider of premium stage and interior solutions, specializing in flame-retardant fabrics, flooring systems, aluminum frames, and technical track solutions. We support theatres, events, hospitality venues, and commercial spaces with materials engineered for performance, safety, and visual impact. From product selection to installation guidance, our team delivers reliable, high-quality solutions tailored to every project requirement.",
+      ourMission:
+        "Our mission is to deliver safe, innovative, and high-performance textile and staging solutions that elevate every space. We are committed to combining technical excellence, certified quality, and professional service to help clients achieve durable, elegant, and functional environments. Through continuous improvement and customer-focused execution, StageWare aims to be the preferred partner for stage, event, and interior finishing projects.",
       cta: "View Products",
       quote: "Get a Quote",
     },
@@ -122,6 +126,10 @@ export const UI = {
     hero: {
       slogan: "الأناقة في كل تفصيل",
       subtitle: "أقمشة وأرضيات ومواد ديكور عالية الجودة، بتنفيذ احترافي متكامل.",
+      aboutUs:
+        "ستايج وير هي شركة موثوقة في تقديم حلول المسارح والديكور الداخلي، متخصصة في الأقمشة المقاومة للاشتعال، وأنظمة الأرضيات، وإطارات الألمنيوم، وحلول المسارات التقنية. نخدم المسارح والفعاليات وقطاع الضيافة والمساحات التجارية بمنتجات مصممة للأداء العالي والسلامة والتأثير البصري. ومن اختيار المواد إلى التوجيه في التركيب، يقدّم فريقنا حلولًا احترافية مخصصة لكل مشروع.",
+      ourMission:
+        "رسالتنا هي تقديم حلول نسيجية وتقنية آمنة ومبتكرة وعالية الأداء ترتقي بكل مساحة. نلتزم بالجمع بين الجودة المعتمدة، والكفاءة الفنية، والخدمة الاحترافية لمساعدة عملائنا على تنفيذ بيئات عملية وأنيقة ومستدامة. ومن خلال التطوير المستمر والتركيز على احتياجات العميل، تسعى ستايج وير لتكون الشريك الأول في مشاريع المسارح والفعاليات والتشطيبات الداخلية.",
       cta: "عرض المنتجات",
       quote: "اطلب عرض سعر",
     },
@@ -205,4 +213,3 @@ export const UI = {
     },
   },
 };
-

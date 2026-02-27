@@ -4,7 +4,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import Navbar from 'react-bootstrap/Navbar';
 import Image from 'react-bootstrap/Image';
 
-import logo from "../../public/logo.png"
+import logo from "/logo.png"
 
 export default function Header({ lang, toggleLang, t }) {
 
