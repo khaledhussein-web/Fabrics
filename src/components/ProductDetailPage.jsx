@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from 'react-router-dom'; 
-import axios from "axios"; 
-import { UI } from "../i18n"; // translations
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import { UI } from "../i18n";
+import Seo from "./Seo";
+import { API_BASE_URL, toApiUrl } from "../config/env";
 
-const ProductDetailPage = ({ t, dir }) => {
-    const { productId } = useParams(); 
-    
-    const [product, setProduct] = useState(null); 
-    const [loading, setLoading] = useState(true); 
+const ProductDetailPage = ({ dir }) => {
+    const { productId } = useParams();
+
+    const [product, setProduct] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    
-    const API_URL = `http://localhost:5000/api/product/${productId}`;
+
+    const API_URL = toApiUrl(`/api/product/${productId}`);
 
     useEffect(() => {
         if (!productId || productId === "undefined") {
@@ -18,12 +20,12 @@ const ProductDetailPage = ({ t, dir }) => {
             setLoading(false);
             return;
         }
-        
+
         const fetchProductDetails = async () => {
             try {
                 setLoading(true);
                 const response = await axios.get(API_URL);
-                setProduct(response.data.product || response.data); 
+                setProduct(response.data.product || response.data);
             } catch (err) {
                 console.error("Fetch error:", err);
                 setError("Failed to load details.");
@@ -32,7 +34,7 @@ const ProductDetailPage = ({ t, dir }) => {
             }
         };
         fetchProductDetails();
-    }, [productId, API_URL]); 
+    }, [productId, API_URL]);
 
     const getFolderByCategory = (catId) => {
         switch (Number(catId)) {
@@ -56,10 +58,10 @@ const ProductDetailPage = ({ t, dir }) => {
     const toDisplayImageUrl = (rawPath) => {
         if (!rawPath) return "";
         if (/^https?:\/\//i.test(rawPath)) return rawPath;
-        if (rawPath.startsWith("/uploads")) return `http://localhost:5000${rawPath}`;
+        if (rawPath.startsWith("/uploads")) return `${API_BASE_URL}${rawPath}`;
         if (rawPath.startsWith("src/")) return `/${rawPath.replace(/^src\//, "")}`;
         if (rawPath.startsWith("/")) return rawPath;
-        return `http://localhost:5000/uploads/${folder}/${rawPath}`;
+        return toApiUrl(`/uploads/${folder}/${rawPath}`);
     };
 
     const imageUrl = toDisplayImageUrl(product.image_path);
@@ -72,7 +74,6 @@ const ProductDetailPage = ({ t, dir }) => {
 
     const labels = dir === "rtl" ? UI.ar.productsDetails : UI.en.productsDetails;
 
-    // Helper to render bilingual specs dynamically
     const renderSpecs = () => {
         if (!product.specs) return null;
 
@@ -82,7 +83,7 @@ const ProductDetailPage = ({ t, dir }) => {
         return (
             <div className="row">
                 <div className="col-md-6">
-                    <ul className="list-unstyled" style={{color:'#334155', lineHeight:'1.8'}}>
+                    <ul className="list-unstyled" style={{ color: "#334155", lineHeight: "1.8" }}>
                         {isRTL ? (
                             <>
                                 {specs.product_code_ar && <li><strong>{labels.product_code}:</strong> {specs.product_code_ar}</li>}
@@ -107,7 +108,7 @@ const ProductDetailPage = ({ t, dir }) => {
                     </ul>
                 </div>
                 <div className="col-md-6">
-                    <ul className="list-unstyled" style={{color:'#334155', lineHeight:'1.8'}}>
+                    <ul className="list-unstyled" style={{ color: "#334155", lineHeight: "1.8" }}>
                         {isRTL ? (
                             <>
                                 {specs.roll_length_ar && <li><strong>{labels.roll_length}:</strong> {specs.roll_length_ar}</li>}
@@ -135,35 +136,42 @@ const ProductDetailPage = ({ t, dir }) => {
 
     return (
         <div className="product-detail-page py-5" dir={dir || "ltr"}>
+            <Seo
+                title={`${productName} | StageWare`}
+                description={
+                    productDescription
+                        ? String(productDescription).replace(/<[^>]*>/g, "").slice(0, 155)
+                        : "Product details from StageWare."
+                }
+                image={imageUrl || "/logo.png"}
+            />
             <div className="container">
-                <h1 className="mb-5 display-5 fw-bold" style={{color:'#1e3a8a'}}>{productName}</h1>
-                
+                <h1 className="mb-5 display-5 fw-bold" style={{ color: "#1e3a8a" }}>{productName}</h1>
+
                 <div className="row g-5">
                     <div className="col-lg-5">
                         <img
-                            src={imageUrl} 
-                            alt={productName} 
+                            src={imageUrl}
+                            alt={productName}
                             className="img-fluid rounded shadow-lg"
-                            onError={(e) => { 
-                                e.target.onerror = null; 
-                                e.target.src = "https://via.placeholder.com/500x400?text=Image+Not+Found"; 
+                            onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = "https://via.placeholder.com/500x400?text=Image+Not+Found";
                             }}
                         />
                     </div>
 
                     <div className="col-lg-7">
-                        <h3 className="mb-4" style={{color:'#1e3a8a'}}>
+                        <h2 className="mb-4" style={{ color: "#1e3a8a" }}>
                             {labels.details}
-                        </h3>
-                        
-                        {/* Product Description */}
-                        <div 
-                            className="lead mb-4" 
-                            style={{color:'#334155', lineHeight: '1.8'}} 
+                        </h2>
+
+                        <div
+                            className="lead mb-4"
+                            style={{ color: "#334155", lineHeight: "1.8" }}
                             dangerouslySetInnerHTML={{ __html: productDescription || "" }}
                         ></div>
-                        
-                        {/* Dynamic Specs */}
+
                         {renderSpecs()}
 
                         <div className="mt-5">
@@ -202,4 +210,3 @@ const ProductDetailPage = ({ t, dir }) => {
 };
 
 export default ProductDetailPage;
-

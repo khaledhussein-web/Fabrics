@@ -1,12 +1,21 @@
 import React from "react";
 import { FaHardHat, FaUsers, FaLanguage, FaAward } from "react-icons/fa";
 import "../../assets/Listing.css";
+import Seo from "../../components/Seo";
 
 const About = ({ t }) => {
     const isRtl = t?.dir === "rtl";
 
     return (
         <div className="about-page bg-white" dir={isRtl ? "rtl" : "ltr"}>
+            <Seo
+                title={isRtl ? "من نحن | ستايج وير" : "About StageWare | Stage Solutions Experts"}
+                description={
+                    isRtl
+                        ? "تعرّف على ستايج وير وخبرتنا في الأقمشة المقاومة للاشتعال وحلول المسارح والفعاليات."
+                        : "Learn about StageWare, our story, and our expertise in flame-retardant fabrics and stage solutions."
+                }
+            />
             {/* --- Hero Section --- */}
             <div className="container py-5">
                 <div className="row align-items-center mb-5">

@@ -1,11 +1,21 @@
 import React from "react";
 import '../../assets/Home.css'; 
+import Seo from "../../components/Seo";
 
 export default function Home({ t , dir}) {
+  const isRtl = t?.dir === "rtl";
 
   return (
 
     <div dir={t.dir} >
+      <Seo
+        title={isRtl ? "ستايج وير | حلول المسرح والأقمشة" : "StageWare | Stage Fabrics, Flooring, Tracks and Frames"}
+        description={
+          isRtl
+            ? "ستايج وير توفر أقمشة مقاومة للاشتعال، أرضيات، مسارات، وإطارات للمسارح والفعاليات."
+            : "StageWare supplies flame-retardant fabrics, flooring, track systems, and frame profiles for theatres and events."
+        }
+      />
       <div className="p-0 m-0"  >
         {/* The p-0 and m-0 classes remove any default padding/margin */}
 

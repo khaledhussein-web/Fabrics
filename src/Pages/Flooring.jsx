@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom"; // Use Link for smoother SPA navigation
+import { Link } from "react-router-dom";
 import axios from "axios";
 import "../assets/Listing.css";
+import Seo from "../components/Seo";
+import { toApiUrl } from "../config/env";
 
 const Flooring = ({ t }) => {
     const [content, setContent] = useState([]);
@@ -9,21 +11,20 @@ const Flooring = ({ t }) => {
     const [error, setError] = useState(null);
 
     const CATEGORY_ID = 2;
-    const IMAGE_BASE_URL = "http://localhost:5000/uploads/Flooring";
-    const API_URL = `http://localhost:5000/api/category-content/${CATEGORY_ID}`;
+    const IMAGE_BASE_URL = toApiUrl("/uploads/Flooring");
+    const API_URL = toApiUrl(`/api/category-content/${CATEGORY_ID}`);
 
     useEffect(() => {
-        let isMounted = true; // Prevents state updates on unmounted components
+        let isMounted = true;
 
         const fetchContent = async () => {
             try {
-                // 1. Reset states immediately to ensure a fresh UI on back/forward navigation
                 setLoading(true);
                 setError(null);
-                setContent([]); 
+                setContent([]);
 
                 const response = await axios.get(API_URL);
-                
+
                 if (isMounted) {
                     setContent(response.data.content || []);
                 }
@@ -37,7 +38,6 @@ const Flooring = ({ t }) => {
 
         fetchContent();
 
-        // 2. Cleanup function
         return () => {
             isMounted = false;
         };
@@ -61,56 +61,59 @@ const Flooring = ({ t }) => {
         </div>
     );
 
-    // 🚀 CONSTRAINT: Only display if category_id=1 AND parent_id is null
-    const topLevelContent = content.filter(item => item.parent_id === null);
+    const topLevelContent = content.filter((item) => item.parent_id === null);
 
     return (
         <div className="container-fluid py-5 bg-white" dir={t?.dir || "ltr"}>
+            <Seo
+                title={t?.dir === "rtl" ? "الأرضيات | ستايج وير" : "Flooring | StageWare"}
+                description={
+                    t?.dir === "rtl"
+                        ? "حلول أرضيات احترافية للمسارح والفعاليات، تشمل خيارات مقاومة للاشتعال وسهلة التركيب."
+                        : "Professional flooring solutions for theatres and events, including flame-retardant performance options."
+                }
+            />
             <div className="container">
-                <h2 className="display-6 fw-bold mb-5 border-bottom pb-3 text-dark">
-                    {t?.productsCategories?.flooring || (t?.dir === "rtl" ? "الأقمشة" : "Flooring")}
-                </h2>
-                
+                <h1 className="display-6 fw-bold mb-5 border-bottom pb-3 text-dark">
+                    {t?.productsCategories?.flooring || (t?.dir === "rtl" ? "الأرضيات" : "Flooring")}
+                </h1>
+
                 <div className="row g-4">
                     {topLevelContent.map((item, index) => {
                         const itemId = item.product_id;
-                        // 🔑 Consistent Link Logic
-                        const itemHref = item.is_folder 
-                            ? `/products/sub-sub-list/${itemId}` 
+                        const itemHref = item.is_folder
+                            ? `/products/sub-sub-list/${itemId}`
                             : `/static-content/${itemId}`;
 
                         return (
                             <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={itemId || index}>
                                 <div className="card h-100 border-0 shadow-sm overflow-hidden bg-white hover-lift">
-                                    
                                     <div className="product-img-wrapper-wide bg-light overflow-hidden">
                                         <Link to={itemHref}>
                                             <img
-                                            // 1. Ensure the URL is formed correctly
-                                            src={`${IMAGE_BASE_URL}/${item.image_path}`} 
-                                            alt={getNameField(item)} 
-                                            className="w-100 h-100 img-zoom-effect"
-                                            style={{ objectFit: 'cover' }}
-                                            loading="lazy"
-                                            onError={(e) => { 
-                                                // 2. Prevent infinite loops if the placeholder also fails
-                                                if (e.target.src !== "https://via.placeholder.com/300x220?text=No+Image") {
-                                                    e.target.onerror = null; 
-                                                    e.target.src = "https://via.placeholder.com/300x220?text=No+Image"; 
-                                                }
-                                            }}
-                                        />
+                                                src={`${IMAGE_BASE_URL}/${item.image_path}`}
+                                                alt={getNameField(item)}
+                                                className="w-100 h-100 img-zoom-effect"
+                                                style={{ objectFit: "cover" }}
+                                                loading="lazy"
+                                                onError={(e) => {
+                                                    if (e.target.src !== "https://via.placeholder.com/300x220?text=No+Image") {
+                                                        e.target.onerror = null;
+                                                        e.target.src = "https://via.placeholder.com/300x220?text=No+Image";
+                                                    }
+                                                }}
+                                            />
                                         </Link>
                                     </div>
 
                                     <div className="card-body d-flex flex-column text-start p-3">
                                         <h6 className="card-title fw-bold mt-1 mb-auto text-dark">
-                                            {getNameField(item)} 
+                                            {getNameField(item)}
                                         </h6>
                                         <div className="mt-4">
                                             <Link className="btn btn-primary rounded-pill px-4 py-2 shadow-sm fw-bold d-inline-block border-0" to={itemHref}>
-                                                {item.is_folder 
-                                                    ? (t?.dir === "rtl" ? "عرض الخيارات" : "View Options") 
+                                                {item.is_folder
+                                                    ? (t?.dir === "rtl" ? "عرض الخيارات" : "View Options")
                                                     : (t?.dir === "rtl" ? "عرض التفاصيل" : "View Details")}
                                             </Link>
                                         </div>
@@ -120,7 +123,7 @@ const Flooring = ({ t }) => {
                         );
                     })}
                 </div>
-                
+
                 {topLevelContent.length === 0 && (
                     <div className="text-center py-5">
                         <p className="text-muted">

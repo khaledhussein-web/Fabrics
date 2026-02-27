@@ -41,8 +41,9 @@ function App() {
   const t = UI[lang];
 
   useEffect(() => {
-    document.title = "Fire retendant fabrics - StageWare";
-  }, []);
+    document.documentElement.lang = lang;
+    document.documentElement.dir = t.dir;
+  }, [lang, t.dir]);
 
   return (
     

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom"; // Use Link for smoother navigation
+import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import "../assets/Listing.css";
+import Seo from "./Seo";
+import { toApiUrl } from "../config/env";
 
 const SubSubListing = ({ t, dir }) => {
-    const { folderId } = useParams(); 
+    const { folderId } = useParams();
     const [content, setContent] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -20,21 +22,20 @@ const SubSubListing = ({ t, dir }) => {
         "39": "scrimGauzeNetting",
         "40": "sheersSilksSatins",
         "41": "velvetNatural",
-        "42": "velvetSynthetic"
+        "42": "velvetSynthetic",
     };
 
     useEffect(() => {
-        let isMounted = true; // Prevents updating state on an unmounted component
+        let isMounted = true;
 
         const fetchSubContent = async () => {
             try {
-                // 1. Reset states immediately when folderId changes
                 setLoading(true);
                 setError(null);
-                setContent([]); 
+                setContent([]);
 
-                const response = await axios.get(`http://localhost:5000/api/sub-content/${folderId}`);
-                
+                const response = await axios.get(toApiUrl(`/api/sub-content/${folderId}`));
+
                 if (isMounted) {
                     setContent(response.data.content || []);
                 }
@@ -50,11 +51,10 @@ const SubSubListing = ({ t, dir }) => {
             fetchSubContent();
         }
 
-        // 2. Cleanup function to cancel the request logic if user leaves the page
         return () => {
             isMounted = false;
         };
-    }, [folderId]); // Listens specifically for changes in the URL parameter
+    }, [folderId]);
 
     const getNameField = (item) => (dir === "rtl" ? item.name_ar || item.name_en : item.name_en);
 
@@ -80,30 +80,36 @@ const SubSubListing = ({ t, dir }) => {
 
     return (
         <div className="container py-5" dir={dir || "ltr"}>
+            <Seo
+                title={`${folderTitle} | StageWare`}
+                description={
+                    dir === "rtl"
+                        ? `تصفح منتجات ${folderTitle} من ستايج وير.`
+                        : `Browse ${folderTitle} products from StageWare.`
+                }
+            />
             <div className="row mb-5">
                 <div className="col-12">
-                    <h2 className="display-6 fw-bold border-bottom pb-3 text-dark">
+                    <h1 className="display-6 fw-bold border-bottom pb-3 text-dark">
                         {folderTitle}
-                    </h2>
+                    </h1>
                 </div>
             </div>
 
             <div className="row g-4">
                 {content.map((item, index) => {
-                    // Using Link instead of <a> tags prevents full page reloads 
-                    // and makes the 'Back' button work better in React apps.
                     const itemHref = `/product/${item.product_id}`;
 
                     return (
                         <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={item.product_id || index}>
                             <div className="card h-100 border-0 shadow-sm overflow-hidden bg-white hover-lift">
-                                <div className="bg-dark overflow-hidden" style={{ height: '220px' }}>
+                                <div className="bg-dark overflow-hidden" style={{ height: "220px" }}>
                                     <Link to={itemHref}>
-                                        <img 
-                                            src={`http://localhost:5000${item.image_path}`} 
-                                            alt={getNameField(item)} 
+                                        <img
+                                            src={toApiUrl(item.image_path)}
+                                            alt={getNameField(item)}
                                             className="img-fluid w-100 h-100 img-zoom-effect"
-                                            style={{ objectFit: 'cover' }}
+                                            style={{ objectFit: "cover" }}
                                             onError={(e) => {
                                                 e.target.onerror = null;
                                                 e.target.src = "https://via.placeholder.com/300x220?text=StageWare";

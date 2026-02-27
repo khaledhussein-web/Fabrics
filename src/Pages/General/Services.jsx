@@ -8,12 +8,21 @@ import {
 } from "react-icons/fa"; 
 
 import "../../assets/Listing.css";
+import Seo from "../../components/Seo";
 
 const Services = ({ t }) => {
     const isRtl = t?.dir === "rtl";
 
     return (
         <div className="services-page bg-white" dir={isRtl ? "rtl" : "ltr"}>
+            <Seo
+                title={isRtl ? "خدماتنا | ستايج وير" : "Services | StageWare"}
+                description={
+                    isRtl
+                        ? "حلول متكاملة للأقمشة، المسارات، الإطارات، والتركيب الاحترافي للمسارح والفعاليات."
+                        : "End-to-end services for stage fabrics, track systems, framing, and professional installation."
+                }
+            />
             <div className="container py-5">
                 {/* --- Main Header pulled from i18n.js --- */}
                 <div className="row mb-5">

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import '../../assets/Contact.css';
+import "../../assets/contact.css";
+import Seo from "../../components/Seo";
+import { toApiUrl } from "../../config/env";
 
 export default function Contact({ t }) {
   const [form, setForm] = useState({
@@ -19,7 +21,7 @@ export default function Contact({ t }) {
   useEffect(() => {
     const fetchWhatsAppUrl = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/config/whatsapp");
+        const response = await fetch(toApiUrl("/api/config/whatsapp"));
         if (!response.ok) return;
         const data = await response.json();
         if (data?.chatUrl) {
@@ -81,6 +83,14 @@ export default function Contact({ t }) {
 
   return (
     <div className="contact-page" dir={t.dir}>
+      <Seo
+        title={t?.dir === "rtl" ? "اتصل بنا | ستايج وير" : "Contact Us | StageWare"}
+        description={
+          t?.dir === "rtl"
+            ? "تواصل مع فريق ستايج وير للاستفسار عن الأقمشة، الأرضيات، المسارات والإطارات."
+            : "Contact StageWare for enquiries about fabrics, flooring, tracks, and frame systems."
+        }
+      />
       <section className="contact-form-section">
         <h1>{t?.contact?.title || "Contact Us"}</h1>
 

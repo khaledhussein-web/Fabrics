@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import Seo from "../../components/Seo";
+import { toApiUrl } from "../../config/env";
 
 export default function AddData() {
     const [formData, setFormData] = useState({
@@ -17,8 +19,8 @@ export default function AddData() {
         const loadInitial = async () => {
             try {
                 const [catRes, subRes] = await Promise.all([
-                    fetch("http://localhost:5000/api/categories"),
-                    fetch("http://localhost:5000/api/subcategories")
+                    fetch(toApiUrl("/api/categories")),
+                    fetch(toApiUrl("/api/subcategories"))
                 ]);
                 const catData = await catRes.json();
                 const subData = await subRes.json();
@@ -38,7 +40,7 @@ export default function AddData() {
     // 2. Fetch L3 Folders when Category changes
     useEffect(() => {
         if (formData.category_id) {
-            fetch(`http://localhost:5000/api/products-folders/${formData.category_id}`)
+            fetch(toApiUrl(`/api/products-folders/${formData.category_id}`))
                 .then(res => res.json())
                 .then(data => setParentOptions(data.products || []))
                 .catch(err => console.error("L3 Fetch error:", err));
@@ -63,19 +65,24 @@ export default function AddData() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch("http://localhost:5000/api/products", {
+            const res = await fetch(toApiUrl("/api/products"), {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData)
             });
             if (res.ok) alert("Data successfully saved!");
-        } catch (error) { alert("Error saving data"); }
+        } catch { alert("Error saving data"); }
     };
 
     if (loading) return <div style={{padding: "20px"}}>Loading Data...</div>;
 
     return (
         <div style={styles.container}>
+            <Seo
+                title="Add Product | StageWare"
+                description="Internal StageWare product management page."
+                noindex={true}
+            />
             <h2 style={{textAlign: "center", marginBottom: "20px"}}>Add Product</h2>
             <form onSubmit={handleSubmit} style={styles.form}>
                 <div style={styles.row}>
