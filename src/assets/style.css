@@ -16,6 +16,9 @@ body,
   height: 100%;
   /* Ensure all containers from root to app wrapper span the viewport height */
   margin: 0;
+  background: var(--background-color);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 .app-wrapper {
@@ -29,6 +32,7 @@ body,
 .main-content {
   /* This element must grow to fill the space between the Header and the Footer */
   flex-grow: 1;
+  background: var(--background-color);
 }
 
 a {
@@ -237,6 +241,35 @@ header {
   margin: 0 15px;
 }
 
+.mobile-products {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin: 0 15px;
+}
+
+.mobile-products-title {
+  color: var(--text-color);
+  font-weight: 600;
+  padding: 0.75rem 0 0.25rem;
+}
+
+.mobile-nav .mobile-product-parent {
+  margin: 0;
+}
+
+.mobile-nav .mobile-product-child {
+  margin: 0;
+  padding: 0.45rem 0 0.45rem 1.5rem;
+  font-size: 0.95em;
+  opacity: 0.85;
+}
+
+[dir="rtl"] .mobile-nav .mobile-product-child {
+  padding-right: 1.5rem;
+  padding-left: 0;
+}
+
 @media (max-width: 768px) {
   .navbar {
     padding: 14px 20px;
@@ -443,6 +476,101 @@ header {
 
 
 /* === END PRODUCT GRID === */
+
+
+
+/* === PRODUCT DETAIL === */
+
+.product-detail-page {
+  background: var(--background-color);
+  color: #334155;
+  padding: 3rem 0;
+}
+
+.product-detail-title {
+  color: var(--primary-color);
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 3rem;
+}
+
+.product-detail-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 1rem 2rem rgba(15, 23, 42, 0.18);
+}
+
+.product-detail-heading {
+  color: var(--primary-color);
+  font-size: 2rem;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+}
+
+.product-detail-description {
+  color: #334155;
+  font-size: 1.25rem;
+  line-height: 1.75;
+  margin-bottom: 1.5rem;
+}
+
+.product-spec-list {
+  color: #334155;
+  font-size: 1rem;
+  line-height: 1.8;
+  margin-bottom: 0;
+}
+
+.product-detail-actions {
+  margin-top: 3rem;
+}
+
+@media (max-width: 768px) {
+  .product-detail-page {
+    padding: 1.5rem 0 2rem;
+  }
+
+  .product-detail-title {
+    font-size: 1.6rem;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+  }
+
+  .product-detail-heading {
+    font-size: 1.25rem;
+    margin: 1.5rem 0 0.9rem;
+  }
+
+  .product-detail-description {
+    font-size: 0.95rem;
+    line-height: 1.65;
+    margin-bottom: 1rem;
+  }
+
+  .product-spec-list {
+    font-size: 0.9rem;
+    line-height: 1.65;
+  }
+
+  .product-spec-list li + li {
+    margin-top: 0.35rem;
+  }
+
+  .product-detail-actions {
+    margin-top: 1.75rem;
+  }
+
+  .product-detail-actions .btn {
+    font-size: 0.95rem;
+  }
+}
+
+
+
+/* === END PRODUCT DETAIL === */
 
 
 

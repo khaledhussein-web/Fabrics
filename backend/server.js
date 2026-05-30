@@ -1,7 +1,10 @@
 const express = require('express');
 const cors = require('cors');
+<<<<<<< Updated upstream
 const dotenv = require('dotenv');
 const path = require('path');
+=======
+>>>>>>> Stashed changes
 const pool = require('./db'); // Renamed to 'pool' for clarity
 const { corsOptions, createRateLimiter, securityHeaders } = require("./security");
 
@@ -9,7 +12,10 @@ const { corsOptions, createRateLimiter, securityHeaders } = require("./security"
 const productAddRoutes = require('./AddingProducts');
 const generalRoutes = require('./RetrivingProducts');
 
+<<<<<<< Updated upstream
 dotenv.config({ path: path.resolve(__dirname, '.env'), override: true });
+=======
+>>>>>>> Stashed changes
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -141,6 +147,15 @@ app.get('/', (req, res) => {
   res.json({ message: 'Server is running 🚀' });
 });
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
+});
+
+server.on('error', (error) => {
+  console.error('❌ Server failed:', error);
+  process.exit(1);
+});
+
+server.on('close', () => {
+  console.log('⚠️ Server closed.');
 });

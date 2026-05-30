@@ -16,6 +16,7 @@ export default function Header({ lang, toggleLang, t }) {
   const [mobileMenu, setMobileMenu] = useState(false);
 
   const handleMenuToggle = () => setMobileMenu(!mobileMenu);
+  const closeMobileMenu = () => setMobileMenu(false);
 
   // Close mobile nav when language changes
   useEffect(() => {
@@ -42,6 +43,9 @@ export default function Header({ lang, toggleLang, t }) {
 
 
   // End of mobile menu logic
+
+//web menu
+
 
   return (
     <header dir={t.dir}>
@@ -159,56 +163,48 @@ export default function Header({ lang, toggleLang, t }) {
 
       <div className={`mobile-nav ${mobileMenu ? "show" : ""}`} id="mobile-nav">
         {/* Primary Top-Level Links */}
-        <Link to="/about" className="nav-btn" onClick={handleMenuToggle}>{t.nav.about}</Link>
-        <Link to="/services" className="nav-btn" onClick={handleMenuToggle}>{t.nav.services}</Link>
-        
-        {/* --- 1. FABRICS DROPDOWN (Vertical Accordion) --- */}
-        <Dropdown className="w-100 mobile-dropdown-item">
-            <Dropdown.Toggle as={Link} to={`/products/fabrics`} className="nav-btn-parent w-100 text-start" onClick={handleMenuToggle}>
-                {t.productsCategories.fabrics}
-            </Dropdown.Toggle>
+        <Link to="/about" className="nav-btn" onClick={closeMobileMenu}>{t.nav.about}</Link>
+        <Link to="/services" className="nav-btn" onClick={closeMobileMenu}>{t.nav.services}</Link>
 
-            {/* Sub-Items are inside the Dropdown.Menu */}
-            <Dropdown.Menu className="mobile-dropdown-menu">
-                {/* ⚠️ NOTE: Replace the numeric IDs (1, 2, 3, 4) with the actual database ID for each subcategory */}
-                <Dropdown.Item as={Link} to={`/products/fabrics/1`} onClick={handleMenuToggle} className="nav-btn-child">
-                    {t.fabricsSubCategories.decoration}
-                </Dropdown.Item>
-                <Dropdown.Item as={Link} to={`/products/fabrics/2`} onClick={handleMenuToggle} className="nav-btn-child">
-                    {t.fabricsSubCategories.ph} 
-                </Dropdown.Item>
-            </Dropdown.Menu>
-            </Dropdown>
-                    <Dropdown.Item as={Link} to={`/products/flooring`} onClick={handleMenuToggle} className="nav-btn-child">
-                    {t.fabricsSubCategories.flooring}
-            </Dropdown.Item>
-        
-        {/* --- 2. TRACKS DROPDOWN (Vertical Accordion) --- */}
-        <Dropdown className="w-100 mobile-dropdown-item">
-            <Dropdown.Toggle as={Link} to={`/products/tracks/`} className="nav-btn-parent w-100 text-start" onClick={handleMenuToggle}>
-                {t.productsCategories.tracks}
-            </Dropdown.Toggle>
-            <Dropdown.Menu className="mobile-dropdown-menu">
-                <Dropdown.Item as={Link} to={`/products/tracks/3`} onClick={handleMenuToggle} className="nav-btn-child">
-                    {t.tracksSubCategories.chainTrack}
-                </Dropdown.Item>
-                <Dropdown.Item as={Link} to={`/products/tracks/4`} onClick={handleMenuToggle} className="nav-btn-child">
-                    {t.tracksSubCategories.revealSystems}
-                </Dropdown.Item>
-                <Dropdown.Item as={Link} to={`/products/tracks/5`} onClick={handleMenuToggle} className="nav-btn-child">
-                    {t.tracksSubCategories.rollups}
-                </Dropdown.Item>
-            </Dropdown.Menu>
-        </Dropdown>
-        
-        {/* --- 3. FRAMES Standalone Item --- */}
-        <Link to={`/products/frames`} className="nav-btn" onClick={handleMenuToggle}>
-           {t.productsCategories.frames}
-        </Link>
+        {/* Products links mirror the desktop menu, including third-level items. */}
+        <div className="mobile-products">
+          <div className="mobile-products-title">{t.nav.products}</div>
+
+          <Link to="/products/fabrics" className="nav-btn mobile-product-parent" onClick={closeMobileMenu}>
+            {t.productsCategories.fabrics}
+          </Link>
+          <Link to="/products/fabrics/1" className="nav-btn mobile-product-child" onClick={closeMobileMenu}>
+            {t.fabricsSubCategories.decoration}
+          </Link>
+          <Link to="/products/fabrics/2" className="nav-btn mobile-product-child" onClick={closeMobileMenu}>
+            {t.fabricsSubCategories.ph}
+          </Link>
+
+          <Link to="/products/flooring" className="nav-btn mobile-product-parent" onClick={closeMobileMenu}>
+            {t.productsCategories.flooring}
+          </Link>
+
+          <Link to="/products/frames" className="nav-btn mobile-product-parent" onClick={closeMobileMenu}>
+            {t.productsCategories.frames}
+          </Link>
+
+          <Link to="/products/tracks" className="nav-btn mobile-product-parent" onClick={closeMobileMenu}>
+            {t.productsCategories.tracks}
+          </Link>
+          <Link to="/products/tracks/3" className="nav-btn mobile-product-child" onClick={closeMobileMenu}>
+            {t.tracksSubCategories.chainTrack}
+          </Link>
+          <Link to="/products/tracks/4" className="nav-btn mobile-product-child" onClick={closeMobileMenu}>
+            {t.tracksSubCategories.revealSystems}
+          </Link>
+          <Link to="/products/tracks/5" className="nav-btn mobile-product-child" onClick={closeMobileMenu}>
+            {t.tracksSubCategories.rollups}
+          </Link>
+        </div>
 
         {/* Utility Links */}
-        <Link to="/contact" className="nav-btn" onClick={handleMenuToggle}>{t.nav.contact}</Link>
-        <Link to="/AddData" className="nav-btn" onClick={handleMenuToggle}>AddData</Link>
+        <Link to="/contact" className="nav-btn" onClick={closeMobileMenu}>{t.nav.contact}</Link>
+        <Link to="/AddData" className="nav-btn" onClick={closeMobileMenu}>AddData</Link>
       </div>
     </header>
   );

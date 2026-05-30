@@ -60,9 +60,9 @@ const ProductDetailPage = ({ dir }) => {
         const isRTL = dir === "rtl";
 
         return (
-            <div className="row">
+            <div className="row product-specs">
                 <div className="col-md-6">
-                    <ul className="list-unstyled" style={{ color: "#334155", lineHeight: "1.8" }}>
+                    <ul className="list-unstyled product-spec-list">
                         {isRTL ? (
                             <>
                                 {specs.product_code_ar && <li><strong>{labels.product_code}:</strong> {specs.product_code_ar}</li>}
@@ -87,7 +87,7 @@ const ProductDetailPage = ({ dir }) => {
                     </ul>
                 </div>
                 <div className="col-md-6">
-                    <ul className="list-unstyled" style={{ color: "#334155", lineHeight: "1.8" }}>
+                    <ul className="list-unstyled product-spec-list">
                         {isRTL ? (
                             <>
                                 {specs.roll_length_ar && <li><strong>{labels.roll_length}:</strong> {specs.roll_length_ar}</li>}
@@ -114,7 +114,7 @@ const ProductDetailPage = ({ dir }) => {
     };
 
     return (
-        <div className="product-detail-page py-5" dir={dir || "ltr"}>
+        <div className="product-detail-page" dir={dir || "ltr"}>
             <Seo
                 title={`${productName} | StageWare`}
                 description={
@@ -125,14 +125,14 @@ const ProductDetailPage = ({ dir }) => {
                 image={imageUrl || "/logo.png"}
             />
             <div className="container">
-                <h1 className="mb-5 display-5 fw-bold" style={{ color: "#1e3a8a" }}>{productName}</h1>
+                <h1 className="product-detail-title">{productName}</h1>
 
                 <div className="row g-5">
                     <div className="col-lg-5">
                         <img
                             src={imageUrl}
                             alt={productName}
-                            className="img-fluid rounded shadow-lg"
+                            className="product-detail-image"
                             onError={(e) => {
                                 e.target.onerror = null;
                                 e.target.src = "https://via.placeholder.com/500x400?text=Image+Not+Found";
@@ -141,20 +141,26 @@ const ProductDetailPage = ({ dir }) => {
                     </div>
 
                     <div className="col-lg-7">
-                        <h2 className="mb-4" style={{ color: "#1e3a8a" }}>
+                        <h2 className="product-detail-heading">
                             {labels.details}
                         </h2>
 
                         <div
+<<<<<<< Updated upstream
                             className="lead mb-4"
                             style={{ color: "#334155", lineHeight: "1.8" }}
                         >
                             {productDescriptionText}
                         </div>
+=======
+                            className="product-detail-description"
+                            dangerouslySetInnerHTML={{ __html: productDescription || "" }}
+                        ></div>
+>>>>>>> Stashed changes
 
                         {renderSpecs()}
 
-                        <div className="mt-5">
+                        <div className="product-detail-actions">
                             <button onClick={() => window.history.back()} className="btn btn-primary rounded-pill px-4">
                                 {dir === "rtl" ? "العودة" : "Back"}
                             </button>
