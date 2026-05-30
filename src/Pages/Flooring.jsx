@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import "../assets/Listing.css";
 import Seo from "../components/Seo";
-import { toApiUrl } from "../config/env";
+import { toApiUrl, toProductImageUrl } from "../config/env";
 
 const Flooring = ({ t }) => {
     const [content, setContent] = useState([]);
@@ -11,7 +11,6 @@ const Flooring = ({ t }) => {
     const [error, setError] = useState(null);
 
     const CATEGORY_ID = 2;
-    const IMAGE_BASE_URL = toApiUrl("/uploads/Flooring");
     const API_URL = toApiUrl(`/api/category-content/${CATEGORY_ID}`);
 
     useEffect(() => {
@@ -91,7 +90,7 @@ const Flooring = ({ t }) => {
                                     <div className="product-img-wrapper-wide bg-light overflow-hidden">
                                         <Link to={itemHref}>
                                             <img
-                                                src={`${IMAGE_BASE_URL}/${item.image_path}`}
+                                                src={toProductImageUrl(item.image_path, item.category_id)}
                                                 alt={getNameField(item)}
                                                 className="w-100 h-100 img-zoom-effect"
                                                 style={{ objectFit: "cover" }}

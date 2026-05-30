@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import "../assets/Listing.css";
 import Seo from "./Seo";
-import { toApiUrl } from "../config/env";
+import { toApiUrl, toProductImageUrl } from "../config/env";
 
 const SubcategoryPage = ({ t, dir }) => {
   const { subcategoryId } = useParams();
@@ -92,7 +92,7 @@ const SubcategoryPage = ({ t, dir }) => {
                   <div className="bg-dark overflow-hidden" style={{ height: "220px" }}>
                     <Link to={itemHref}>
                       <img
-                        src={toApiUrl(item.image_path)}
+                        src={toProductImageUrl(item.image_path, item.category_id)}
                         alt={getNameField(item)}
                         className="img-fluid w-100 h-100 transition-zoom"
                         style={{ objectFit: "cover" }}

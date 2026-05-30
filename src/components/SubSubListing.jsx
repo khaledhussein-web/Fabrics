@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import "../assets/Listing.css";
 import Seo from "./Seo";
-import { toApiUrl } from "../config/env";
+import { toApiUrl, toProductImageUrl } from "../config/env";
 
 const SubSubListing = ({ t, dir }) => {
     const { folderId } = useParams();
@@ -106,7 +106,7 @@ const SubSubListing = ({ t, dir }) => {
                                 <div className="bg-dark overflow-hidden" style={{ height: "220px" }}>
                                     <Link to={itemHref}>
                                         <img
-                                            src={toApiUrl(item.image_path)}
+                                            src={toProductImageUrl(item.image_path, item.category_id)}
                                             alt={getNameField(item)}
                                             className="img-fluid w-100 h-100 img-zoom-effect"
                                             style={{ objectFit: "cover" }}

@@ -1,6 +1,43 @@
 const express = require('express');
 const router = express.Router();
 const db = require('./db'); // The PostgreSQL connection pool
+const { createRateLimiter, requireAdminAuth } = require("./security");
+
+const stripHtmlTags = (value) => String(value ?? '').replace(/<[^>]*>/g, '');
+const sanitizeText = (value) => stripHtmlTags(value).trim();
+const sanitizeOptionalText = (value) => {
+    if (value === undefined || value === null) return null;
+    const clean = sanitizeText(value);
+    return clean || null;
+};
+const cleanImagePath = (value) =>
+    value ? String(value).replace(/^["']|["']$/g, '') : value;
+const sanitizeProductRecord = (row) => ({
+    ...row,
+    name_en: sanitizeOptionalText(row.name_en) ?? row.name_en,
+    name_ar: sanitizeOptionalText(row.name_ar) ?? row.name_ar,
+    description_en: sanitizeOptionalText(row.description_en) ?? row.description_en,
+    description_ar: sanitizeOptionalText(row.description_ar) ?? row.description_ar,
+    image_path: cleanImagePath(row.image_path),
+});
+const parsePositiveInt = (value) => {
+    const number = Number(value);
+    if (!Number.isInteger(number) || number <= 0) return null;
+    return number;
+};
+const validatePositiveIdParam = (req, res, paramName) => {
+    const parsed = parsePositiveInt(req.params[paramName]);
+    if (!parsed) {
+        res.status(400).json({ message: `Invalid ${paramName}` });
+        return null;
+    }
+    return parsed;
+};
+const writeLimiter = createRateLimiter({
+    windowMs: 60 * 1000,
+    max: 20,
+    keyPrefix: "api-write",
+});
 
 // ==================== HIERARCHY & SUBCATEGORY ROUTES ====================
 
@@ -45,7 +82,8 @@ router.get('/hierarchy/menu', async (req, res) => {
 
 // 🟢 GET: Fetch all L1 content for a given Parent Category ID
 router.get('/category-content/:categoryId', async (req, res) => {
-    const categoryId = req.params.categoryId;
+    const categoryId = validatePositiveIdParam(req, res, "categoryId");
+    if (!categoryId) return;
     const query = `
         SELECT p.*
         FROM public.products p
@@ -54,7 +92,8 @@ router.get('/category-content/:categoryId', async (req, res) => {
     `;
     try {
         const result = await db.query(query, [categoryId]);
-        res.json({ content: result.rows });
+        const safeRows = result.rows.map(sanitizeProductRecord);
+        res.json({ content: safeRows });
     } catch (err) {
         console.error('❌ Error fetching L1 category content:', err);
         res.status(500).json({
@@ -66,7 +105,8 @@ router.get('/category-content/:categoryId', async (req, res) => {
 
 // 🟢 GET: Fetch all products for a specific Subcategory ID
 router.get('/subcategory-products/:subcategoryId', async (req, res) => {
-    const subcategoryId = req.params.subcategoryId;
+    const subcategoryId = validatePositiveIdParam(req, res, "subcategoryId");
+    if (!subcategoryId) return;
     const query = `
         SELECT p.*
         FROM public.products p
@@ -75,7 +115,8 @@ router.get('/subcategory-products/:subcategoryId', async (req, res) => {
     `;
     try {
         const result = await db.query(query, [subcategoryId]);
-        res.json({ products: result.rows });
+        const safeRows = result.rows.map(sanitizeProductRecord);
+        res.json({ products: safeRows });
     } catch (err) {
         console.error('❌ Error fetching subcategory products:', err);
         res.status(500).json({
@@ -89,10 +130,13 @@ router.get('/subcategory-products/:subcategoryId', async (req, res) => {
 // ==================== SUBCATEGORIES MANAGEMENT ROUTES (CRUD) ====================
 
 // 🟢 POST: Create a new subcategory
-router.post('/subcategories', async (req, res) => {
+router.post('/subcategories', writeLimiter, requireAdminAuth, async (req, res) => {
     const { parent_category_id, name, name_ar } = req.body;
+    const safeParentCategoryId = parsePositiveInt(parent_category_id);
+    const safeName = sanitizeOptionalText(name);
+    const safeNameAr = sanitizeOptionalText(name_ar);
     
-    if (!parent_category_id || !name) {
+    if (!safeParentCategoryId || !safeName) {
         return res.status(400).json({ message: 'Parent Category ID and English name are required.' });
     }
 
@@ -102,7 +146,7 @@ router.post('/subcategories', async (req, res) => {
             VALUES ($1, $2, $3)
             RETURNING subcategory_id, name, parent_category_id;
         `;
-        const values = [parent_category_id, name, name_ar || null];
+        const values = [safeParentCategoryId, safeName, safeNameAr];
 
         const { rows } = await db.query(query, values);
         res.status(201).json({
@@ -119,9 +163,21 @@ router.post('/subcategories', async (req, res) => {
 });
 
 // 🟡 PUT: Update an existing subcategory
-router.put('/subcategories/:id', async (req, res) => {
-    const subcategoryId = req.params.id;
+router.put('/subcategories/:id', writeLimiter, requireAdminAuth, async (req, res) => {
+    const subcategoryId = validatePositiveIdParam(req, res, "id");
+    if (!subcategoryId) return;
     const { parent_category_id, name, name_ar } = req.body;
+    const safeParentCategoryId =
+      parent_category_id === undefined ? undefined : parsePositiveInt(parent_category_id);
+    const safeName = name === undefined ? undefined : sanitizeOptionalText(name);
+    const safeNameAr = name_ar === undefined ? undefined : sanitizeOptionalText(name_ar);
+
+    if (name !== undefined && !safeName) {
+        return res.status(400).json({ message: 'Subcategory English name cannot be empty.' });
+    }
+    if (parent_category_id !== undefined && !safeParentCategoryId) {
+        return res.status(400).json({ message: 'Invalid parent_category_id' });
+    }
     
     try {
         const query = `
@@ -133,7 +189,7 @@ router.put('/subcategories/:id', async (req, res) => {
             WHERE subcategory_id = $4
             RETURNING subcategory_id, name, name_ar;
         `;
-        const values = [parent_category_id, name, name_ar || null, subcategoryId];
+        const values = [safeParentCategoryId, safeName, safeNameAr, subcategoryId];
 
         const { rowCount, rows } = await db.query(query, values);
 
@@ -155,8 +211,9 @@ router.put('/subcategories/:id', async (req, res) => {
 });
 
 // 🔴 DELETE: Delete a subcategory
-router.delete('/subcategories/:id', async (req, res) => {
-    const subcategoryId = req.params.id;
+router.delete('/subcategories/:id', writeLimiter, requireAdminAuth, async (req, res) => {
+    const subcategoryId = validatePositiveIdParam(req, res, "id");
+    if (!subcategoryId) return;
 
     try {
         // IMPORTANT: Check if any products still reference this subcategory_id
@@ -216,12 +273,7 @@ router.get('/products', async (req, res) => {
         const { rows } = await db.query(query);
     
         // Clean image paths (assuming this was part of your original logic)
-        const cleanedRows = rows.map(row => ({
-            ...row,
-            image_path: row.image_path
-                ? row.image_path.replace(/^["']|["']$/g, '')
-                : row.image_path
-        }));
+        const cleanedRows = rows.map(sanitizeProductRecord);
     
         res.json({ products: cleanedRows });
     } catch (error) {
@@ -267,15 +319,17 @@ router.get('/categories', async (req, res) => {
 });
 
 // 🟢 POST a new category
-router.post('/categories', async (req, res) => {
+router.post('/categories', writeLimiter, requireAdminAuth, async (req, res) => {
     const { name } = req.body;
-    if (!name) {
+    const safeName = sanitizeOptionalText(name);
+
+    if (!safeName) {
         return res.status(400).json({ message: 'Category name is required' });
     }
 
     try {
         const query = `INSERT INTO categories (name) VALUES ($1) RETURNING id`;
-        const { rows } = await db.query(query, [name]);
+        const { rows } = await db.query(query, [safeName]);
         res.status(201).json({ message: 'Category added successfully', id: rows[0].id });
     } catch (error) {
         console.error('❌ Error adding category:', error);
@@ -287,7 +341,8 @@ router.post('/categories', async (req, res) => {
 });
 
 router.get('/product/:id', async (req, res) => {
-  const { id } = req.params;
+  const id = validatePositiveIdParam(req, res, "id");
+  if (!id) return;
 
   try {
     // Base product query
@@ -305,7 +360,7 @@ router.get('/product/:id', async (req, res) => {
       return res.status(404).json({ message: 'Product not found' });
     }
 
-    const product = rows[0];
+    const product = sanitizeProductRecord(rows[0]);
 
     // Decide which spec table to join
     let specQuery;
@@ -345,8 +400,13 @@ router.get('/product/:id', async (req, res) => {
           .map((row) => ({
             photo_id: row.photo_id,
             photo_url: row.photo_url,
-            alt_text: row.alt_text || product.name_en || 'Track photo',
-            alt_text_ar: row.alt_text_ar || row.alt_text || product.name_ar || product.name_en || 'Track photo',
+            alt_text: sanitizeOptionalText(row.alt_text) || product.name_en || 'Track photo',
+            alt_text_ar:
+              sanitizeOptionalText(row.alt_text_ar) ||
+              sanitizeOptionalText(row.alt_text) ||
+              product.name_ar ||
+              product.name_en ||
+              'Track photo',
           }));
       } else {
         product.additional_photos = [];

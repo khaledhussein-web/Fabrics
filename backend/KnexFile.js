@@ -1,4 +1,6 @@
-require("dotenv").config();
+const path = require("path");
+
+require("dotenv").config({ path: path.resolve(__dirname, ".env"), override: true });
 
 module.exports = {
 
@@ -14,7 +16,7 @@ module.exports = {
 
       user: process.env.DB_USER,
 
-      password: process.env.DB_PASS,
+      password: process.env.DB_PASSWORD || process.env.DB_PASS,
 
       database: process.env.DB_NAME,
 

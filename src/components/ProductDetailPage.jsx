@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { UI } from "../i18n";
 import Seo from "./Seo";
-import { API_BASE_URL, toApiUrl } from "../config/env";
+import { toApiUrl, toProductImageUrl } from "../config/env";
 
 const ProductDetailPage = ({ dir }) => {
     const { productId } = useParams();
@@ -36,38 +36,17 @@ const ProductDetailPage = ({ dir }) => {
         fetchProductDetails();
     }, [productId, API_URL]);
 
-    const getFolderByCategory = (catId) => {
-        switch (Number(catId)) {
-            case 1: return "Fabrics";
-            case 2: return "Flooring";
-            case 3: return "Frames";
-            case 4: return "Tracks";
-            case 5: return "ProjectionScreens";
-            default: return "General";
-        }
-    };
-
     if (loading) return <div className="container py-5 text-center">Loading...</div>;
     if (error || !product) return <div className="container py-5 text-center text-danger">{error || "Not found"}</div>;
 
     const productName = dir === "rtl" ? product.name_ar || product.name_en : product.name_en;
     const productDescription = dir === "rtl" ? product.description_ar || product.description_en : product.description_en;
+    const productDescriptionText = String(productDescription || "").replace(/<[^>]*>/g, "");
 
-    const folder = getFolderByCategory(product.category_id);
-
-    const toDisplayImageUrl = (rawPath) => {
-        if (!rawPath) return "";
-        if (/^https?:\/\//i.test(rawPath)) return rawPath;
-        if (rawPath.startsWith("/uploads")) return `${API_BASE_URL}${rawPath}`;
-        if (rawPath.startsWith("src/")) return `/${rawPath.replace(/^src\//, "")}`;
-        if (rawPath.startsWith("/")) return rawPath;
-        return toApiUrl(`/uploads/${folder}/${rawPath}`);
-    };
-
-    const imageUrl = toDisplayImageUrl(product.image_path);
+    const imageUrl = toProductImageUrl(product.image_path, product.category_id);
     const additionalPhotos = (product.additional_photos || [])
         .map((item) => ({
-            url: toDisplayImageUrl(item.photo_url),
+            url: toProductImageUrl(item.photo_url, product.category_id),
             alt: dir === "rtl" ? item.alt_text_ar || item.alt_text : item.alt_text || item.alt_text_ar,
         }))
         .filter((item) => item.url && item.url !== imageUrl);
@@ -169,8 +148,9 @@ const ProductDetailPage = ({ dir }) => {
                         <div
                             className="lead mb-4"
                             style={{ color: "#334155", lineHeight: "1.8" }}
-                            dangerouslySetInnerHTML={{ __html: productDescription || "" }}
-                        ></div>
+                        >
+                            {productDescriptionText}
+                        </div>
 
                         {renderSpecs()}
 

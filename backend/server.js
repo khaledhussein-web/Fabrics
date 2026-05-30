@@ -1,20 +1,68 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const path = require('path');
 const pool = require('./db'); // Renamed to 'pool' for clarity
+const { corsOptions, createRateLimiter, securityHeaders } = require("./security");
 
 // Import Route Files
 const productAddRoutes = require('./AddingProducts');
 const generalRoutes = require('./RetrivingProducts');
 
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, '.env'), override: true });
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+const stripHtmlTags = (value) => String(value ?? '').replace(/<[^>]*>/g, '');
+const sanitizeOptionalText = (value) => {
+  if (value === undefined || value === null) return value;
+  const clean = stripHtmlTags(value).trim();
+  return clean || null;
+};
+const sanitizeProductRecord = (row) => ({
+  ...row,
+  name_en: sanitizeOptionalText(row.name_en),
+  name_ar: sanitizeOptionalText(row.name_ar),
+  description_en: sanitizeOptionalText(row.description_en),
+  description_ar: sanitizeOptionalText(row.description_ar),
+});
+const parsePositiveInt = (value) => {
+  const number = Number(value);
+  if (!Number.isInteger(number) || number <= 0) return null;
+  return number;
+};
+
 // Middleware
-app.use(cors());
-app.use(express.json());
-app.use('/uploads', express.static('uploads'));
+app.use(securityHeaders);
+app.use(cors(corsOptions));
+app.use(express.json({ limit: "100kb" }));
+app.use(
+  createRateLimiter({
+    windowMs: 60 * 1000,
+    max: 180,
+    keyPrefix: "api-global",
+  })
+);
+app.use(
+  "/uploads",
+  (req, res, next) => {
+    const blocked = /\.(?:html?|svg|js|mjs|cjs|php|aspx?)$/i.test(req.path || "");
+    if (blocked) {
+      return res.status(403).json({ message: "File type not allowed." });
+    }
+    return next();
+  },
+  express.static(path.resolve(__dirname, "uploads"), {
+    dotfiles: "deny",
+    fallthrough: false,
+    index: false,
+    maxAge: "7d",
+    setHeaders: (res) => {
+      res.setHeader("X-Content-Type-Options", "nosniff");
+      res.setHeader("Cache-Control", "public, max-age=604800, immutable");
+    },
+  })
+);
 
 // Connect Routers
 app.use('/api', productAddRoutes); 
@@ -72,14 +120,17 @@ app.get("/api/subcategories", async (req, res) => {
 // Get Sub-products for a specific Folder (L3)
 // This fixes the "TypeError" and the 404
 app.get("/api/sub-content/:folderId", async (req, res) => {
-    const { folderId } = req.params;
+    const folderId = parsePositiveInt(req.params.folderId);
+    if (!folderId) {
+      return res.status(400).json({ message: "Invalid folderId" });
+    }
     try {
         const result = await pool.query(
             'SELECT * FROM products WHERE parent_id = $1 ORDER BY product_id ASC',
             [folderId]
         );
         // React expects response.data.content
-        res.json({ content: result.rows });
+        res.json({ content: result.rows.map(sanitizeProductRecord) });
     } catch (error) {
         console.error("Database Error:", error);
         res.status(500).json({ error: "Internal server error" });
