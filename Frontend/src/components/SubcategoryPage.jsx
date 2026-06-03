@@ -1,0 +1,141 @@
+import React, { useState, useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
+import axios from "axios";
+import "../assets/Listing.css";
+import Seo from "./Seo";
+import { toApiUrl, toProductImageUrl } from "../config/env";
+import { breadcrumbJsonLd, collectionJsonLd } from "../seo";
+
+const SubcategoryPage = ({ t }) => {
+  const { categoryName, subcategoryId } = useParams();
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const subcategoryKeyMap = {
+    "1": "decoration",
+    "2": "ph",
+    "6": "fabricDrawings",
+    "3": "chainTrack",
+    "4": "revealSystems",
+    "5": "rollups",
+  };
+
+  const API_URL = toApiUrl(`/api/subcategory-products/${subcategoryId}`);
+
+  useEffect(() => {
+    if (!subcategoryId) {
+      setError("Invalid subcategory URL.");
+      setLoading(false);
+      return;
+    }
+
+    const fetchSubcategoryProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(API_URL);
+        setProducts(response.data.products || []);
+      } catch (err) {
+        console.error("Error fetching products:", err);
+        setError("Failed to load products.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSubcategoryProducts();
+  }, [subcategoryId, API_URL]);
+
+  const getNameField = (item) => item.name_en;
+
+  if (loading) return (
+    <div className="text-center my-5 py-5">
+      <div className="spinner-border text-primary"></div>
+    </div>
+  );
+
+  if (error) return (
+    <div className="container py-5 text-center text-danger">
+      <h3>{error}</h3>
+    </div>
+  );
+
+  const uiKey = subcategoryKeyMap[subcategoryId];
+  const subcategoryTitle = t?.allSubCategories?.[uiKey] || "Products";
+  const parentCategory = categoryName || "products";
+  const parentTitle =
+    parentCategory === "tracks"
+      ? t?.productsCategories?.tracks || "Tracks"
+      : t?.productsCategories?.fabrics || "Fabrics";
+  const pagePath = `/products/${parentCategory}/${subcategoryId}`;
+  const pageDescription = `Browse ${subcategoryTitle} products from StageWare.`;
+
+  return (
+    <div className="container py-5" dir="ltr">
+      <Seo
+        title={`${subcategoryTitle} | StageWare`}
+        description={pageDescription}
+        jsonLd={[
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: parentTitle, path: `/products/${parentCategory}` },
+            { name: subcategoryTitle, path: pagePath },
+          ]),
+          collectionJsonLd({
+            name: subcategoryTitle,
+            description: pageDescription,
+            path: pagePath,
+            items: products.map((item) => ({
+              name: getNameField(item),
+              url: `/product/${item.product_id}`,
+            })),
+          }),
+        ]}
+      />
+      <h1 className="display-6 fw-bold mb-5 border-bottom pb-3">
+        {subcategoryTitle}
+      </h1>
+
+      <div className="row g-4">
+        {products.length === 0 ? (
+          <div className="col-12 text-center py-5">
+            <p className="lead text-muted">No products found.</p>
+          </div>
+        ) : (
+          products.map((item, index) => {
+            const itemHref = `/product/${item.product_id}`;
+
+            return (
+              <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={item.product_id || index}>
+                <div className="card h-100 border-0 shadow-sm overflow-hidden bg-white">
+                  <div className="bg-dark overflow-hidden" style={{ height: "220px" }}>
+                    <Link to={itemHref}>
+                      <img
+                        src={toProductImageUrl(item.image_path, item.category_id)}
+                        alt={getNameField(item)}
+                        className="img-fluid w-100 h-100 transition-zoom"
+                        style={{ objectFit: "cover" }}
+                        loading="lazy"
+                      />
+                    </Link>
+                  </div>
+
+                  <div className="card-body d-flex flex-column align-items-start p-3">
+                    <h6 className="card-title fw-bold text-dark mt-1 mb-3 flex-grow-1">
+                      {getNameField(item)}
+                    </h6>
+                    <Link className="btn btn-primary rounded-pill px-4 py-2 fw-bold shadow-sm border-0" to={itemHref}>
+                      {t?.viewDetails || "View Details"}
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default SubcategoryPage;

@@ -1,38 +1,35 @@
 const express = require('express');
 const router = express.Router();
 const db = require('./db'); // The PostgreSQL connection pool
-const { createRateLimiter, requireAdminAuth } = require("./security");
+const {
+    createRateLimiter,
+    parsePositiveInt,
+    requireAdminAuth,
+    sanitizeText,
+    sendServerError,
+    validatePositiveIdParam,
+} = require("./security");
 
-const stripHtmlTags = (value) => String(value ?? '').replace(/<[^>]*>/g, '');
-const sanitizeText = (value) => stripHtmlTags(value).trim();
-const sanitizeOptionalText = (value) => {
+const sanitizeOptionalText = (value, maxLength = 5000) => {
     if (value === undefined || value === null) return null;
-    const clean = sanitizeText(value);
+    const clean = sanitizeText(value, { maxLength });
     return clean || null;
 };
 const cleanImagePath = (value) =>
     value ? String(value).replace(/^["']|["']$/g, '') : value;
 const sanitizeProductRecord = (row) => ({
     ...row,
-    name_en: sanitizeOptionalText(row.name_en) ?? row.name_en,
-    name_ar: sanitizeOptionalText(row.name_ar) ?? row.name_ar,
+    name_en: sanitizeOptionalText(row.name_en, 150) ?? row.name_en,
+    name_ar: sanitizeOptionalText(row.name_ar, 150) ?? row.name_ar,
     description_en: sanitizeOptionalText(row.description_en) ?? row.description_en,
     description_ar: sanitizeOptionalText(row.description_ar) ?? row.description_ar,
     image_path: cleanImagePath(row.image_path),
 });
-const parsePositiveInt = (value) => {
-    const number = Number(value);
-    if (!Number.isInteger(number) || number <= 0) return null;
-    return number;
-};
-const validatePositiveIdParam = (req, res, paramName) => {
-    const parsed = parsePositiveInt(req.params[paramName]);
-    if (!parsed) {
-        res.status(400).json({ message: `Invalid ${paramName}` });
-        return null;
-    }
-    return parsed;
-};
+const sanitizeCategoryRecord = (row) => ({
+    ...row,
+    name: sanitizeOptionalText(row.name, 150) ?? row.name,
+    name_ar: sanitizeOptionalText(row.name_ar, 150) ?? row.name_ar,
+});
 const writeLimiter = createRateLimiter({
     windowMs: 60 * 1000,
     max: 20,
@@ -73,10 +70,7 @@ router.get('/hierarchy/menu', async (req, res) => {
         res.json({ hierarchy: cleanRows });
     } catch (err) {
         console.error('❌ Error fetching hierarchy:', err);
-        res.status(500).json({
-            message: 'Internal server error while fetching hierarchy',
-            error: err.message
-        });
+        return sendServerError(res, err, 'Unable to fetch hierarchy.');
     }
 });
 
@@ -96,10 +90,7 @@ router.get('/category-content/:categoryId', async (req, res) => {
         res.json({ content: safeRows });
     } catch (err) {
         console.error('❌ Error fetching L1 category content:', err);
-        res.status(500).json({
-            message: 'Server error while fetching L1 category content.',
-            error: err.message
-        });
+        return sendServerError(res, err, 'Unable to fetch category content.');
     }
 });
 
@@ -119,10 +110,7 @@ router.get('/subcategory-products/:subcategoryId', async (req, res) => {
         res.json({ products: safeRows });
     } catch (err) {
         console.error('❌ Error fetching subcategory products:', err);
-        res.status(500).json({
-            message: 'Server error while fetching subcategory products.',
-            error: err.message
-        });
+        return sendServerError(res, err, 'Unable to fetch subcategory products.');
     }
 });
 
@@ -133,8 +121,8 @@ router.get('/subcategory-products/:subcategoryId', async (req, res) => {
 router.post('/subcategories', writeLimiter, requireAdminAuth, async (req, res) => {
     const { parent_category_id, name, name_ar } = req.body;
     const safeParentCategoryId = parsePositiveInt(parent_category_id);
-    const safeName = sanitizeOptionalText(name);
-    const safeNameAr = sanitizeOptionalText(name_ar);
+    const safeName = sanitizeOptionalText(name, 150);
+    const safeNameAr = sanitizeOptionalText(name_ar, 150);
     
     if (!safeParentCategoryId || !safeName) {
         return res.status(400).json({ message: 'Parent Category ID and English name are required.' });
@@ -155,10 +143,7 @@ router.post('/subcategories', writeLimiter, requireAdminAuth, async (req, res) =
         });
     } catch (error) {
         console.error('❌ Error adding subcategory:', error);
-        res.status(500).json({
-            message: 'Internal server error while adding subcategory',
-            error: error.message
-        });
+        return sendServerError(res, error, 'Unable to add subcategory.');
     }
 });
 
@@ -169,8 +154,8 @@ router.put('/subcategories/:id', writeLimiter, requireAdminAuth, async (req, res
     const { parent_category_id, name, name_ar } = req.body;
     const safeParentCategoryId =
       parent_category_id === undefined ? undefined : parsePositiveInt(parent_category_id);
-    const safeName = name === undefined ? undefined : sanitizeOptionalText(name);
-    const safeNameAr = name_ar === undefined ? undefined : sanitizeOptionalText(name_ar);
+    const safeName = name === undefined ? undefined : sanitizeOptionalText(name, 150);
+    const safeNameAr = name_ar === undefined ? undefined : sanitizeOptionalText(name_ar, 150);
 
     if (name !== undefined && !safeName) {
         return res.status(400).json({ message: 'Subcategory English name cannot be empty.' });
@@ -203,10 +188,7 @@ router.put('/subcategories/:id', writeLimiter, requireAdminAuth, async (req, res
         });
     } catch (error) {
         console.error('❌ Error updating subcategory:', error);
-        res.status(500).json({
-            message: 'Internal server error while updating subcategory',
-            error: error.message
-        });
+        return sendServerError(res, error, 'Unable to update subcategory.');
     }
 });
 
@@ -238,10 +220,7 @@ router.delete('/subcategories/:id', writeLimiter, requireAdminAuth, async (req, 
         res.json({ message: `Subcategory ID ${subcategoryId} deleted successfully.` });
     } catch (error) {
         console.error('❌ Error deleting subcategory:', error);
-        res.status(500).json({
-            message: 'Internal server error while deleting subcategory',
-            error: error.message
-        });
+        return sendServerError(res, error, 'Unable to delete subcategory.');
     }
 });
 
@@ -278,10 +257,7 @@ router.get('/products', async (req, res) => {
         res.json({ products: cleanedRows });
     } catch (error) {
         console.error('❌ Error fetching products:', error);
-        res.status(500).json({
-            message: 'Internal server error while fetching products',
-            error: error.message
-        });
+        return sendServerError(res, error, 'Unable to fetch products.');
     }
 });
 
@@ -294,13 +270,10 @@ router.get('/products', async (req, res) => {
 router.get('/subcategories', async (req, res) => {
     try {
         const { rows } = await db.query('SELECT * FROM subcategories ORDER BY subcategory_id ASC');
-        res.json({ subcategories: rows });
+        res.json({ subcategories: rows.map(sanitizeCategoryRecord) });
     } catch (error) {
         console.error('❌ Error fetching subcategories:', error);
-        res.status(500).json({
-            message: 'Internal server error while fetching subcategories',
-            error: error.message
-        });
+        return sendServerError(res, error, 'Unable to fetch subcategories.');
     }
 });
 
@@ -308,20 +281,17 @@ router.get('/subcategories', async (req, res) => {
 router.get('/categories', async (req, res) => {
     try {
         const { rows } = await db.query('SELECT category_id, name FROM categories ORDER BY category_id ASC');
-        res.json({ categories: rows });
+        res.json({ categories: rows.map(sanitizeCategoryRecord) });
     } catch (error) {
         console.error('❌ Error fetching categories:', error);
-        res.status(500).json({
-            message: 'Internal server error while fetching categories',
-            error: error.message
-        });
+        return sendServerError(res, error, 'Unable to fetch categories.');
     }
 });
 
 // 🟢 POST a new category
 router.post('/categories', writeLimiter, requireAdminAuth, async (req, res) => {
     const { name } = req.body;
-    const safeName = sanitizeOptionalText(name);
+    const safeName = sanitizeOptionalText(name, 150);
 
     if (!safeName) {
         return res.status(400).json({ message: 'Category name is required' });
@@ -333,10 +303,7 @@ router.post('/categories', writeLimiter, requireAdminAuth, async (req, res) => {
         res.status(201).json({ message: 'Category added successfully', id: rows[0].id });
     } catch (error) {
         console.error('❌ Error adding category:', error);
-        res.status(500).json({
-            message: 'Internal server error while adding category',
-            error: error.message
-        });
+        return sendServerError(res, error, 'Unable to add category.');
     }
 });
 
@@ -419,10 +386,7 @@ router.get('/product/:id', async (req, res) => {
     res.json({ product });
   } catch (error) {
     console.error('❌ Error fetching product:', error);
-    res.status(500).json({
-      message: 'Internal server error while fetching product',
-      error: error.message
-    });
+    return sendServerError(res, error, 'Unable to fetch product.');
   }
 });
 

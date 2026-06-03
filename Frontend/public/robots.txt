@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Allow: /about
+Allow: /services
+Allow: /contact
+Allow: /products/
+Disallow: /AddData
+Disallow: /adddata
+Disallow: /api/
+
+Sitemap: https://stageware.co.uk/sitemap.xml

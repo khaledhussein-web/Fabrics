@@ -1,10 +1,14 @@
 import { spawn } from "node:child_process";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const processes = [];
 let isShuttingDown = false;
+const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
 function run(name, command) {
   const child = spawn(command, {
+    cwd: repoRoot,
     stdio: "inherit",
     shell: true,
     env: process.env,
@@ -40,5 +44,5 @@ function shutdown(exitCode = 0) {
 process.on("SIGINT", () => shutdown(0));
 process.on("SIGTERM", () => shutdown(0));
 
-run("frontend", process.platform === "win32" ? "npm.cmd run dev" : "npm run dev");
-run("backend", "node backend/server.js");
+run("frontend", process.platform === "win32" ? "npm.cmd --prefix Frontend run dev" : "npm --prefix Frontend run dev");
+run("backend", process.platform === "win32" ? "npm.cmd --prefix backend start" : "npm --prefix backend start");

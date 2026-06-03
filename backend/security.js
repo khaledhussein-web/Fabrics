@@ -1,20 +1,38 @@
 const crypto = require("crypto");
+const helmet = require("helmet");
 
-const DEFAULT_ALLOWED_ORIGINS = [
+const isProduction = process.env.NODE_ENV === "production";
+
+const LOCAL_DEV_ORIGINS = [
   "http://localhost:5173",
   "http://127.0.0.1:5173",
   "http://localhost:4173",
   "http://127.0.0.1:4173",
-  "https://stageware.co.uk",
 ];
+
+const PRODUCTION_FRONTEND_ORIGIN = "https://stageware.co.uk";
 
 const parseAllowedOrigins = () => {
   const raw = process.env.CORS_ALLOWED_ORIGINS || "";
   const list = raw
     .split(",")
     .map((origin) => origin.trim())
-    .filter(Boolean);
-  return list.length > 0 ? list : DEFAULT_ALLOWED_ORIGINS;
+    .filter(Boolean)
+    .filter((origin) => {
+      try {
+        const parsed = new URL(origin);
+        return parsed.protocol === "http:" || parsed.protocol === "https:";
+      } catch {
+        return false;
+      }
+    });
+  if (list.length > 0) return list;
+
+  if (isProduction) {
+    return [process.env.FRONTEND_URL || PRODUCTION_FRONTEND_ORIGIN];
+  }
+
+  return [...LOCAL_DEV_ORIGINS, process.env.FRONTEND_URL].filter(Boolean);
 };
 
 const allowedOrigins = parseAllowedOrigins();
@@ -26,6 +44,7 @@ const isAllowedOrigin = (origin) => {
 
 const corsOptions = {
   origin(origin, callback) {
+    // Browser clients must come from known frontend origins; server-to-server/no-origin requests are allowed.
     if (isAllowedOrigin(origin)) {
       return callback(null, true);
     }
@@ -34,32 +53,67 @@ const corsOptions = {
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "X-Admin-Token"],
   credentials: false,
+  maxAge: 600,
+  optionsSuccessStatus: 204,
 };
 
-const securityHeaders = (req, res, next) => {
-  res.setHeader("X-Content-Type-Options", "nosniff");
-  res.setHeader("X-Frame-Options", "DENY");
-  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
-  res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
-  res.setHeader(
-    "Content-Security-Policy",
-    "default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; connect-src 'self' https:; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
-  );
-  next();
+const cspConnectSources = [
+  "'self'",
+  ...allowedOrigins,
+  process.env.BACKEND_URL,
+  "https://api.web3forms.com",
+].filter(Boolean);
+
+const cspDirectives = {
+  "default-src": ["'self'"],
+  "base-uri": ["'self'"],
+  "font-src": ["'self'", "https://fonts.gstatic.com", "data:"],
+  "frame-ancestors": ["'none'"],
+  "img-src": ["'self'", "data:", "blob:", "https:"],
+  "object-src": ["'none'"],
+  "script-src": ["'self'"],
+  "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+  "connect-src": cspConnectSources,
+  "form-action": ["'self'", "https://api.web3forms.com"],
 };
+
+if (isProduction) {
+  cspDirectives["upgrade-insecure-requests"] = [];
+}
+
+// Helmet sets common secure headers and hides framework details.
+const securityHeaders = helmet({
+  contentSecurityPolicy: {
+    useDefaults: true,
+    directives: cspDirectives,
+  },
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  frameguard: { action: "deny" },
+  hidePoweredBy: true,
+  noSniff: true,
+  referrerPolicy: { policy: "strict-origin-when-cross-origin" },
+});
 
 const createRateLimiter = ({ windowMs, max, keyPrefix = "global" }) => {
   const buckets = new Map();
+  let lastCleanup = Date.now();
 
   return (req, res, next) => {
     const now = Date.now();
-    const ip =
-      (req.headers["x-forwarded-for"] || "").toString().split(",")[0].trim() ||
-      req.socket?.remoteAddress ||
-      "unknown";
+    const ip = req.ip || req.socket?.remoteAddress || "unknown";
     const key = `${keyPrefix}:${ip}`;
     const existing = buckets.get(key) || [];
     const fresh = existing.filter((ts) => now - ts < windowMs);
+
+    // Periodically drop expired buckets so the in-memory limiter cannot grow forever.
+    if (now - lastCleanup > windowMs) {
+      for (const [bucketKey, timestamps] of buckets.entries()) {
+        const active = timestamps.filter((ts) => now - ts < windowMs);
+        if (active.length === 0) buckets.delete(bucketKey);
+        else buckets.set(bucketKey, active);
+      }
+      lastCleanup = now;
+    }
 
     if (fresh.length >= max) {
       return res.status(429).json({ message: "Too many requests. Please try again later." });
@@ -69,6 +123,48 @@ const createRateLimiter = ({ windowMs, max, keyPrefix = "global" }) => {
     buckets.set(key, fresh);
     next();
   };
+};
+
+const stripHtmlTags = (value) => String(value ?? "").replace(/<[^>]*>/g, "");
+
+const sanitizeText = (value, { maxLength = 255, required = false } = {}) => {
+  if (value === undefined || value === null) {
+    return required ? null : "";
+  }
+
+  if (typeof value !== "string" && typeof value !== "number") {
+    return required ? null : "";
+  }
+
+  const clean = stripHtmlTags(value).replace(/\s+/g, " ").trim();
+  if (required && !clean) return null;
+  return clean.slice(0, maxLength);
+};
+
+const parsePositiveInt = (value) => {
+  const number = Number(value);
+  if (!Number.isInteger(number) || number <= 0) return null;
+  return number;
+};
+
+const validatePositiveIdParam = (req, res, paramName) => {
+  const parsed = parsePositiveInt(req.params[paramName]);
+  if (!parsed) {
+    res.status(400).json({ message: `Invalid ${paramName}` });
+    return null;
+  }
+  return parsed;
+};
+
+const validateSearchQuery = (value) => {
+  if (value === undefined || value === null || value === "") return "";
+  return sanitizeText(value, { maxLength: 80 });
+};
+
+const sendServerError = (res, error, publicMessage = "Internal server error") => {
+  // Detailed errors stay in server logs; clients receive a clean generic message.
+  console.error(publicMessage, error);
+  return res.status(500).json({ message: publicMessage });
 };
 
 const timingSafeMatch = (input, expected) => {
@@ -108,6 +204,11 @@ module.exports = {
   corsOptions,
   createRateLimiter,
   isAllowedOrigin,
+  parsePositiveInt,
   requireAdminAuth,
+  sanitizeText,
   securityHeaders,
+  sendServerError,
+  validatePositiveIdParam,
+  validateSearchQuery,
 };
