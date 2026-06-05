@@ -19,7 +19,7 @@ const config = {
   staging: {
     client: 'postgresql',
     connection: {
-      database: 'my_db',
+      database: 'fabrics_db',
       user:     'username',
       password: 'password'
     },
@@ -35,7 +35,7 @@ const config = {
   production: {
     client: 'postgresql',
     connection: {
-      database: 'my_db',
+      database: 'fabrics_db',
       user:     'username',
       password: 'password'
     },
