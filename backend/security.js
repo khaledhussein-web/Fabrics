@@ -1,7 +1,31 @@
 const crypto = require("crypto");
 const helmet = require("helmet");
+const { logApiError } = require("./errorLogger");
+const { isProductionAdminTokenAllowed } = require("./runtimeConfig");
 
 const isProduction = process.env.NODE_ENV === "production";
+
+const ERROR_CODES = Object.freeze({
+  NOT_FOUND: 10000,
+  BAD_REQUEST: 10001,
+  UNAUTHORIZED: 10002,
+  FORBIDDEN: 10003,
+  METHOD_NOT_ALLOWED: 10004,
+  RATE_LIMITED: 10005,
+  INTERNAL_ERROR: 10006,
+  SERVICE_UNAVAILABLE: 10007,
+});
+
+const ERROR_CODE_BY_STATUS = Object.freeze({
+  400: ERROR_CODES.BAD_REQUEST,
+  401: ERROR_CODES.UNAUTHORIZED,
+  403: ERROR_CODES.FORBIDDEN,
+  404: ERROR_CODES.NOT_FOUND,
+  405: ERROR_CODES.METHOD_NOT_ALLOWED,
+  429: ERROR_CODES.RATE_LIMITED,
+  500: ERROR_CODES.INTERNAL_ERROR,
+  503: ERROR_CODES.SERVICE_UNAVAILABLE,
+});
 
 const LOCAL_DEV_ORIGINS = [
   "http://localhost:5173",
@@ -61,7 +85,6 @@ const cspConnectSources = [
   "'self'",
   ...allowedOrigins,
   process.env.BACKEND_URL,
-  "https://api.web3forms.com",
 ].filter(Boolean);
 
 const cspDirectives = {
@@ -74,7 +97,7 @@ const cspDirectives = {
   "script-src": ["'self'"],
   "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
   "connect-src": cspConnectSources,
-  "form-action": ["'self'", "https://api.web3forms.com"],
+  "form-action": ["'self'"],
 };
 
 if (isProduction) {
@@ -93,6 +116,47 @@ const securityHeaders = helmet({
   noSniff: true,
   referrerPolicy: { policy: "strict-origin-when-cross-origin" },
 });
+
+const requestContext = (req, res, next) => {
+  const incomingId = req.get("x-request-id");
+  const requestId =
+    typeof incomingId === "string" && /^[A-Za-z0-9_-]{8,64}$/.test(incomingId)
+      ? incomingId
+      : crypto.randomUUID();
+
+  res.locals.requestId = requestId;
+  res.setHeader("X-Request-ID", requestId);
+  next();
+};
+
+const errorCodeForStatus = (status) => {
+  if (ERROR_CODE_BY_STATUS[status]) return ERROR_CODE_BY_STATUS[status];
+  return status >= 400 && status < 500
+    ? ERROR_CODES.BAD_REQUEST
+    : ERROR_CODES.INTERNAL_ERROR;
+};
+
+const sendPublicError = (res, status, code, message, extra = {}) => {
+  const requestId = res.locals.requestId || crypto.randomUUID();
+  const req = res.req;
+
+  void logApiError({
+    requestId,
+    errorCode: code,
+    httpStatus: status,
+    method: req?.method,
+    // originalUrl includes the query string, so use path/baseUrl only.
+    requestPath: req ? `${req.baseUrl || ""}${req.path || "/"}` : "/",
+    publicMessage: message,
+  });
+
+  return res.status(status).json({
+    ...extra,
+    code,
+    message,
+    requestId,
+  });
+};
 
 const createRateLimiter = ({ windowMs, max, keyPrefix = "global" }) => {
   const buckets = new Map();
@@ -116,7 +180,12 @@ const createRateLimiter = ({ windowMs, max, keyPrefix = "global" }) => {
     }
 
     if (fresh.length >= max) {
-      return res.status(429).json({ message: "Too many requests. Please try again later." });
+      return sendPublicError(
+        res,
+        429,
+        ERROR_CODES.RATE_LIMITED,
+        "Too many requests. Please try again later."
+      );
     }
 
     fresh.push(now);
@@ -150,7 +219,7 @@ const parsePositiveInt = (value) => {
 const validatePositiveIdParam = (req, res, paramName) => {
   const parsed = parsePositiveInt(req.params[paramName]);
   if (!parsed) {
-    res.status(400).json({ message: `Invalid ${paramName}` });
+    sendPublicError(res, 400, ERROR_CODES.BAD_REQUEST, `Invalid ${paramName}`);
     return null;
   }
   return parsed;
@@ -162,9 +231,14 @@ const validateSearchQuery = (value) => {
 };
 
 const sendServerError = (res, error, publicMessage = "Internal server error") => {
-  // Detailed errors stay in server logs; clients receive a clean generic message.
-  console.error(publicMessage, error);
-  return res.status(500).json({ message: publicMessage });
+  const requestId = res.locals.requestId || crypto.randomUUID();
+  console.error(`[${requestId}] ${publicMessage}`, error);
+  return sendPublicError(
+    res,
+    500,
+    ERROR_CODES.INTERNAL_ERROR,
+    publicMessage
+  );
 };
 
 const timingSafeMatch = (input, expected) => {
@@ -176,10 +250,19 @@ const timingSafeMatch = (input, expected) => {
 
 const requireAdminAuth = (req, res, next) => {
   const configuredToken = process.env.ADMIN_API_TOKEN || "";
-  if (!configuredToken) {
-    return res.status(503).json({
-      message: "Admin API is disabled. Set ADMIN_API_TOKEN to enable write operations.",
-    });
+  if (
+    !configuredToken ||
+    !isProductionAdminTokenAllowed({
+      nodeEnv: process.env.NODE_ENV,
+      adminToken: configuredToken,
+    })
+  ) {
+    return sendPublicError(
+      res,
+      503,
+      ERROR_CODES.SERVICE_UNAVAILABLE,
+      "Admin API is unavailable."
+    );
   }
 
   const authHeader = req.get("authorization") || "";
@@ -188,26 +271,40 @@ const requireAdminAuth = (req, res, next) => {
   const providedToken = bearer || fallback;
 
   if (!timingSafeMatch(providedToken, configuredToken)) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return sendPublicError(
+      res,
+      401,
+      ERROR_CODES.UNAUTHORIZED,
+      "Unauthorized"
+    );
   }
 
   const origin = req.get("origin");
   if (!isAllowedOrigin(origin)) {
-    return res.status(403).json({ message: "Forbidden origin" });
+    return sendPublicError(
+      res,
+      403,
+      ERROR_CODES.FORBIDDEN,
+      "Forbidden origin"
+    );
   }
 
   return next();
 };
 
 module.exports = {
+  ERROR_CODES,
   allowedOrigins,
   corsOptions,
   createRateLimiter,
+  errorCodeForStatus,
   isAllowedOrigin,
   parsePositiveInt,
   requireAdminAuth,
+  requestContext,
   sanitizeText,
   securityHeaders,
+  sendPublicError,
   sendServerError,
   validatePositiveIdParam,
   validateSearchQuery,

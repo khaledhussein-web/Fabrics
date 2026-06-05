@@ -16,7 +16,7 @@ export default function Contact({ t }) {
   const [toastType, setToastType] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSent, setIsSent] = useState(false);
-  const [whatsAppUrl, setWhatsAppUrl] = useState("https://wa.me/447700900123?text=Hello");
+  const [whatsAppUrl, setWhatsAppUrl] = useState("https://wa.me/447441922124?text=Hello");
 
   useEffect(() => {
     const fetchWhatsAppUrl = async () => {
@@ -44,41 +44,38 @@ export default function Contact({ t }) {
     event.preventDefault();
     setIsLoading(true);
 
-    const data = {
-      access_key: "85557aa4-5508-4ecb-9819-3a11e23b9f61",
+    const contactData = {
       name: form.name,
       email: form.email,
       phone: form.phone,
       message: form.message,
-      from_name: "Fabrics Website Contact",
-      subject: "New Contact Message"
     };
 
     try {
-      const res = await fetch("https://api.web3forms.com/submit", {
+      const response = await fetch(toApiUrl("/api/contact-requests"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(contactData),
       });
 
-      const result = await res.json();
+      const result = await response.json().catch(() => ({}));
 
-      if (result.success) {
-        showToast(t?.contact?.success || "Message sent successfully!");
-        setIsSent(true);
-        setForm({ name: "", email: "", phone: "", message: "" });
-      } else {
-        showToast(t?.contact?.error || "Failed to send the message.", "error");
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || "Failed to save contact request.");
       }
+
+      showToast(t?.contact?.success || "Message sent successfully!");
+      setIsSent(true);
+      setForm({ name: "", email: "", phone: "", message: "" });
     } catch (error) {
       showToast(t?.contact?.error || "Something went wrong.", "error");
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   return (
@@ -156,11 +153,11 @@ export default function Contact({ t }) {
         <div className="company-info">
           <div className="info-item">
             <strong>{t?.contact?.form?.address || "Address"}:</strong>
-            <p>{t?.contact?.company?.address || "123 Main Street, Beirut, Lebanon"}</p>
+            <p>{t?.contact?.company?.address || "61 Bridge Street, Kingston, HR5 3DJ, United Kingdom"}</p>
           </div>
           <div className="info-item">
             <strong>{t?.contact?.form?.phone || "Phone"}:</strong>
-            <p>{t?.contact?.company?.phone || "+961 1 234 567"}</p>
+            <p>{t?.contact?.company?.phone || "+44 7441 922124"}</p>
           </div>
           <div className="info-item">
             <strong>{t?.contact?.form?.email || "Email"}:</strong>

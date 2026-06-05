@@ -2,6 +2,10 @@
   "name": "fabrics",
   "private": true,
   "scripts": {
+    "build": "npm --prefix Frontend run build",
+    "lint": "npm --prefix Frontend run lint",
+    "test": "npm --prefix backend test",
+    "release:check": "npm run lint && npm run test && npm run build",
     "dev": "npm --prefix Frontend run dev",
     "dev:frontend": "npm --prefix Frontend run dev",
     "dev:backend": "npm --prefix backend start",

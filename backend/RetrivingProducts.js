@@ -2,10 +2,12 @@ const express = require('express');
 const router = express.Router();
 const db = require('./db'); // The PostgreSQL connection pool
 const {
+    ERROR_CODES,
     createRateLimiter,
     parsePositiveInt,
     requireAdminAuth,
     sanitizeText,
+    sendPublicError,
     sendServerError,
     validatePositiveIdParam,
 } = require("./security");
@@ -125,7 +127,12 @@ router.post('/subcategories', writeLimiter, requireAdminAuth, async (req, res) =
     const safeNameAr = sanitizeOptionalText(name_ar, 150);
     
     if (!safeParentCategoryId || !safeName) {
-        return res.status(400).json({ message: 'Parent Category ID and English name are required.' });
+        return sendPublicError(
+            res,
+            400,
+            ERROR_CODES.BAD_REQUEST,
+            'Parent Category ID and English name are required.'
+        );
     }
 
     try {
@@ -158,10 +165,20 @@ router.put('/subcategories/:id', writeLimiter, requireAdminAuth, async (req, res
     const safeNameAr = name_ar === undefined ? undefined : sanitizeOptionalText(name_ar, 150);
 
     if (name !== undefined && !safeName) {
-        return res.status(400).json({ message: 'Subcategory English name cannot be empty.' });
+        return sendPublicError(
+            res,
+            400,
+            ERROR_CODES.BAD_REQUEST,
+            'Subcategory English name cannot be empty.'
+        );
     }
     if (parent_category_id !== undefined && !safeParentCategoryId) {
-        return res.status(400).json({ message: 'Invalid parent_category_id' });
+        return sendPublicError(
+            res,
+            400,
+            ERROR_CODES.BAD_REQUEST,
+            'Invalid parent_category_id'
+        );
     }
     
     try {
@@ -179,7 +196,12 @@ router.put('/subcategories/:id', writeLimiter, requireAdminAuth, async (req, res
         const { rowCount, rows } = await db.query(query, values);
 
         if (rowCount === 0) {
-            return res.status(404).json({ message: 'Subcategory not found.' });
+            return sendPublicError(
+                res,
+                404,
+                ERROR_CODES.NOT_FOUND,
+                'Subcategory not found.'
+            );
         }
 
         res.json({
@@ -203,10 +225,13 @@ router.delete('/subcategories/:id', writeLimiter, requireAdminAuth, async (req, 
         const { rows: productRows } = await db.query(productCheckQuery, [subcategoryId]);
         
         if (parseInt(productRows[0].count, 10) > 0) {
-            return res.status(400).json({
-                message: 'Cannot delete subcategory. Products are still linked to it.',
-                linked_products_count: parseInt(productRows[0].count, 10)
-            });
+            return sendPublicError(
+                res,
+                400,
+                ERROR_CODES.BAD_REQUEST,
+                'Cannot delete subcategory. Products are still linked to it.',
+                { linked_products_count: parseInt(productRows[0].count, 10) }
+            );
         }
         
         // No products linked, proceed with deletion
@@ -214,7 +239,12 @@ router.delete('/subcategories/:id', writeLimiter, requireAdminAuth, async (req, 
         const { rowCount } = await db.query(deleteQuery, [subcategoryId]);
 
         if (rowCount === 0) {
-            return res.status(404).json({ message: 'Subcategory not found.' });
+            return sendPublicError(
+                res,
+                404,
+                ERROR_CODES.NOT_FOUND,
+                'Subcategory not found.'
+            );
         }
 
         res.json({ message: `Subcategory ID ${subcategoryId} deleted successfully.` });
@@ -294,7 +324,12 @@ router.post('/categories', writeLimiter, requireAdminAuth, async (req, res) => {
     const safeName = sanitizeOptionalText(name, 150);
 
     if (!safeName) {
-        return res.status(400).json({ message: 'Category name is required' });
+        return sendPublicError(
+            res,
+            400,
+            ERROR_CODES.BAD_REQUEST,
+            'Category name is required'
+        );
     }
 
     try {
@@ -324,7 +359,12 @@ router.get('/product/:id', async (req, res) => {
     const { rows } = await db.query(productQuery, [id]);
 
     if (rows.length === 0) {
-      return res.status(404).json({ message: 'Product not found' });
+      return sendPublicError(
+        res,
+        404,
+        ERROR_CODES.NOT_FOUND,
+        'Product not found'
+      );
     }
 
     const product = sanitizeProductRecord(rows[0]);

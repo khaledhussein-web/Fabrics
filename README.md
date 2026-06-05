@@ -1,58 +1,75 @@
-# React + Vite
+# StageWare Website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+StageWare is a React/Vite frontend with an Express and PostgreSQL backend.
 
-Currently, two official plugins are available:
+## Local Development
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Install dependencies in both applications:
 
-## React Compiler
+```powershell
+npm install
+npm --prefix Frontend install
+npm --prefix backend install
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Create `backend/.env` from `backend/.env.example`, then run:
 
-## Expanding the ESLint configuration
+```powershell
+npm run dev:all
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Release Check
 
+Run the complete local release gate before pushing:
 
-<!-- The database drawing  -->
+```powershell
+npm run release:check
+```
 
+This runs frontend linting, backend tests, and the production frontend build.
 
-# 🛒 E-Commerce Schema Diagram (Using Mermaid)
+## Production Deployment
 
-This diagram visualizes the main entities and their relationships.
+Deploy the frontend and backend as separate services.
 
-```mermaid
-erDiagram
-    CUSTOMER ||--o{ CART : places
+Frontend:
 
-    CUSTOMER {
-        int id PK
-        string name
-        string email
-    }
+- Root directory: `Frontend`
+- Build command: `npm ci && npm run build`
+- Publish directory: `Frontend/dist`
+- Set `VITE_API_BASE_URL` to the public backend origin.
+- Set `VITE_SITE_URL=https://stageware.co.uk`.
+- Configure the static host to rewrite application routes to `index.html`.
 
-    PRODUCT {
-        int id PK
-        string name
-        float price
-        int stockQuantity
-    }
+Backend:
 
-    CART {
-        int id PK
-        int customerId FK "CUSTOMER"
-        date creationDate
-    }
+- Root directory: `backend`
+- Install command: `npm ci`
+- Start command: `npm run start:production`
+- Health check: `/api/health`
+- Use a persistent deployment or include `backend/uploads` in every release because product images are served from that directory.
 
-    CART ||--o{ CART_ITEM : contains
+Required backend environment variables:
 
-    CART_ITEM {
-        int id PK
-        int cartId FK "CART"
-        int productId FK "PRODUCT"
-        int quantity
-    }
+```text
+NODE_ENV=production
+DATABASE_URL=postgres://...
+FRONTEND_URL=https://stageware.co.uk
+CORS_ALLOWED_ORIGINS=https://stageware.co.uk
+ADMIN_API_TOKEN=<at least 32 random characters>
+WHATSAPP_UK_NUMBER=447441922124
+WHATSAPP_DEFAULT_TEXT=Hello, I need some help with your products.
+WEB3FORMS_ACCESS_KEY=<optional contact notification key>
+```
 
-    PRODUCT ||--o{ CART_ITEM : included_in
+Set `DB_SSL=true` only when the PostgreSQL provider supplies a certificate trusted by the Node.js runtime.
+
+Generate the admin token locally:
+
+```powershell
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+The production start command applies all pending Knex migrations before starting the API. The migrations are idempotent for the existing StageWare catalog database and create the new contact and error-log structures when needed.
+
+Do not commit `.env` files, generated security reports, local SQLite databases, or build output.

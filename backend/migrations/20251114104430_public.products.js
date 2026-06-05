@@ -2,8 +2,11 @@
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.up = function (knex) {
-  return knex.schema.createTable("products", (table) => {
+exports.up = async function (knex) {
+  const exists = await knex.schema.hasTable("products");
+  if (exists) return;
+
+  await knex.schema.createTable("products", (table) => {
     table.increments("product_id").primary();
     table.integer("subcategory_id").index().nullable();
     table.string("name_en", 150).notNullable();
@@ -21,5 +24,5 @@ exports.up = function (knex) {
  * @returns { Promise<void> }
  */
 exports.down = function (knex) {
-  return knex.schema.dropTable("products");
+  return knex.schema.dropTableIfExists("products");
 };

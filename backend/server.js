@@ -2,18 +2,25 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
-const pool = require('./db'); // Renamed to 'pool' for clarity
+const pool = require('./db');
+const { ensureErrorLogTable } = require("./errorLogger");
+const { validateProductionAdminToken } = require("./runtimeConfig");
 const {
+  ERROR_CODES,
   corsOptions,
   createRateLimiter,
+  errorCodeForStatus,
+  requestContext,
   sanitizeText,
   securityHeaders,
+  sendPublicError,
   sendServerError,
   validatePositiveIdParam,
 } = require("./security");
 
 // Import Route Files
 const productAddRoutes = require('./AddingProducts');
+const contactRequestRoutes = require("./ContactRequests");
 const generalRoutes = require('./RetrivingProducts');
 
 dotenv.config({ path: path.resolve(__dirname, '.env'), override: true });
@@ -46,12 +53,17 @@ const validateRuntimeEnv = () => {
     missing.push("FRONTEND_URL or CORS_ALLOWED_ORIGINS");
   }
 
+  validateProductionAdminToken();
+
   if (missing.length > 0) {
     throw new Error(`Missing required backend environment values: ${missing.join(", ")}`);
   }
 };
 
 validateRuntimeEnv();
+ensureErrorLogTable().catch((error) => {
+  console.error("Unable to initialize API error logging:", error);
+});
 // In production, trust the first platform proxy so req.ip is accurate for rate limiting.
 app.set("trust proxy", isProduction ? 1 : false);
 app.disable("x-powered-by");
@@ -64,6 +76,7 @@ const publicApiLimiter = createRateLimiter({
 
 // Middleware
 // Helmet applies secure headers such as CSP, no-sniff, frame protection, and hidden framework headers.
+app.use(requestContext);
 app.use(securityHeaders);
 app.use(cors(corsOptions));
 // Small body limits reduce abuse from oversized JSON/form submissions.
@@ -84,19 +97,42 @@ app.use(
     try {
       decodedPath = decodeURIComponent(req.path || "");
     } catch {
-      return res.status(400).json({ message: "Invalid file path." });
+      return sendPublicError(
+        res,
+        400,
+        ERROR_CODES.BAD_REQUEST,
+        "Invalid file path."
+      );
     }
 
-    const safePath = path.posix.normalize(decodedPath);
+    // Express request paths start with "/", but paths under this mount are
+    // relative to the uploads directory. Normalize that relative path before
+    // checking for traversal so valid image requests are not rejected.
+    const relativePath = decodedPath.replace(/\\/g, "/").replace(/^\/+/, "");
+    const safePath = path.posix.normalize(relativePath);
     const allowedImage = /\.(?:png|jpe?g|gif|webp)$/i.test(safePath);
-    const traversal = safePath.includes("..") || path.isAbsolute(safePath);
+    const traversal =
+      !relativePath ||
+      safePath === ".." ||
+      safePath.startsWith("../") ||
+      path.posix.isAbsolute(safePath);
 
     if (req.method !== "GET" && req.method !== "HEAD") {
-      return res.status(405).json({ message: "Method not allowed." });
+      return sendPublicError(
+        res,
+        405,
+        ERROR_CODES.METHOD_NOT_ALLOWED,
+        "Method not allowed."
+      );
     }
 
     if (!allowedImage || traversal) {
-      return res.status(403).json({ message: "File type not allowed." });
+      return sendPublicError(
+        res,
+        403,
+        ERROR_CODES.FORBIDDEN,
+        "File type not allowed."
+      );
     }
     return next();
   },
@@ -114,11 +150,12 @@ app.use(
 
 // Connect Routers
 app.use('/api', publicApiLimiter, productAddRoutes); 
+app.use("/api", publicApiLimiter, contactRequestRoutes);
 app.use('/api', publicApiLimiter, generalRoutes); 
 
 // ==================== API ROUTES (POOL VERSION) ====================
 
-const DEFAULT_UK_WHATSAPP_NUMBER = "447700900123";
+const DEFAULT_UK_WHATSAPP_NUMBER = "447441922124";
 const DEFAULT_WHATSAPP_TEXT = "Hello, need some help with your products.";
 
 const normalizeWhatsAppNumber = (input) => {
@@ -138,6 +175,21 @@ const buildWhatsAppChatUrl = () => {
 
 app.get("/api/config/whatsapp", (req, res) => {
   res.json({ chatUrl: buildWhatsAppChatUrl() });
+});
+
+app.get("/api/health", async (req, res) => {
+  try {
+    await pool.query("SELECT 1");
+    return res.json({ status: "ok" });
+  } catch (error) {
+    console.error(`[${res.locals.requestId}] Health check failed`, error);
+    return sendPublicError(
+      res,
+      503,
+      ERROR_CODES.SERVICE_UNAVAILABLE,
+      "Service unavailable."
+    );
+  }
 });
 
 // Get Categories (L1)
@@ -184,9 +236,35 @@ app.get('/', (req, res) => {
   res.json({ message: 'Server is running 🚀' });
 });
 
+app.use((req, res) =>
+  sendPublicError(
+    res,
+    404,
+    ERROR_CODES.NOT_FOUND,
+    "Resource not found."
+  )
+);
+
 app.use((err, req, res, next) => {
   if (err?.message === "Origin not allowed by CORS") {
-    return res.status(403).json({ message: "Forbidden origin." });
+    return sendPublicError(
+      res,
+      403,
+      ERROR_CODES.FORBIDDEN,
+      "Forbidden origin."
+    );
+  }
+
+  const errorStatus = err?.status ?? err?.statusCode;
+  const status = Number.isInteger(errorStatus) ? errorStatus : 500;
+  if (status >= 400 && status < 500) {
+    const message = status === 404 ? "Resource not found." : "Request failed.";
+    return sendPublicError(
+      res,
+      status,
+      errorCodeForStatus(status),
+      message
+    );
   }
 
   return sendServerError(res, err, "Internal server error.");

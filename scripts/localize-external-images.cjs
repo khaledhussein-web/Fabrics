@@ -2,8 +2,10 @@ const fs = require("node:fs");
 const fsp = require("node:fs/promises");
 const path = require("node:path");
 const crypto = require("node:crypto");
+const dns = require("node:dns/promises");
 const http = require("node:http");
 const https = require("node:https");
+const net = require("node:net");
 const { createRequire } = require("node:module");
 
 const repoRoot = path.resolve(__dirname, "..");
@@ -49,6 +51,55 @@ const pool = new Pool({
 const isExternalUrl = (value) => /^https?:\/\//i.test(String(value || "").trim());
 const cleanStoredPath = (value) => String(value || "").trim().replace(/^["']|["']$/g, "");
 
+const isPublicAddress = (address) => {
+  const version = net.isIP(address);
+  if (version === 4) {
+    const octets = address.split(".").map(Number);
+    const [a, b] = octets;
+    return !(
+      a === 0 ||
+      a === 10 ||
+      a === 127 ||
+      (a === 100 && b >= 64 && b <= 127) ||
+      (a === 169 && b === 254) ||
+      (a === 172 && b >= 16 && b <= 31) ||
+      (a === 192 && b === 0) ||
+      (a === 192 && b === 2) ||
+      (a === 192 && b === 168) ||
+      (a === 198 && (b === 18 || b === 19 || b === 51)) ||
+      (a === 203 && b === 0) ||
+      a >= 224
+    );
+  }
+
+  if (version === 6) {
+    const normalized = address.toLowerCase();
+    if (normalized.startsWith("::ffff:")) {
+      return isPublicAddress(normalized.slice(7));
+    }
+    return !(
+      normalized === "::" ||
+      normalized === "::1" ||
+      normalized.startsWith("fc") ||
+      normalized.startsWith("fd") ||
+      /^fe[89ab]/.test(normalized) ||
+      normalized.startsWith("2001:db8:") ||
+      normalized.startsWith("ff")
+    );
+  }
+
+  return false;
+};
+
+const resolvePublicAddress = async (hostname) => {
+  const results = await dns.lookup(hostname, { all: true, verbatim: true });
+  const publicResult = results.find(({ address }) => isPublicAddress(address));
+  if (!publicResult || results.some(({ address }) => !isPublicAddress(address))) {
+    throw new Error(`Refusing non-public image host: ${hostname}`);
+  }
+  return publicResult;
+};
+
 const slugify = (value) =>
   String(value || "image")
     .normalize("NFKD")
@@ -76,14 +127,19 @@ const extensionFrom = (url, contentType) => {
   return ".jpg";
 };
 
-const requestBuffer = (url, redirectCount = 0) =>
-  new Promise((resolve, reject) => {
-    if (redirectCount > 5) {
-      reject(new Error("Too many redirects"));
-      return;
-    }
+const requestBuffer = async (url, redirectCount = 0) => {
+  if (redirectCount > 5) {
+    throw new Error("Too many redirects");
+  }
 
-    const parsedUrl = new URL(url);
+  const parsedUrl = new URL(url);
+  if (!["http:", "https:"].includes(parsedUrl.protocol)) {
+    throw new Error(`Unsupported image URL protocol: ${parsedUrl.protocol}`);
+  }
+
+  const resolved = await resolvePublicAddress(parsedUrl.hostname);
+
+  return new Promise((resolve, reject) => {
     const client = parsedUrl.protocol === "https:" ? https : http;
     const request = client.get(
       parsedUrl,
@@ -91,7 +147,11 @@ const requestBuffer = (url, redirectCount = 0) =>
         headers: {
           "User-Agent": "StageWare image localizer/1.0",
         },
+        family: resolved.family,
         timeout: 30000,
+        lookup(hostname, options, callback) {
+          callback(null, resolved.address, resolved.family);
+        },
       },
       (response) => {
         const status = response.statusCode || 0;
@@ -140,6 +200,7 @@ const requestBuffer = (url, redirectCount = 0) =>
     request.on("timeout", () => request.destroy(new Error("Request timed out")));
     request.on("error", reject);
   });
+};
 
 const ensureTracksSpecsExists = async () => {
   const { rows } = await pool.query("SELECT to_regclass('public.tracks_specs') AS table_name");

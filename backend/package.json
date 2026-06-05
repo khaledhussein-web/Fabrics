@@ -2,8 +2,15 @@
   "name": "fabrics-backend",
   "version": "1.0.0",
   "main": "server.js",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "start": "node server.js",
+    "start:production": "npm run migrate && node server.js",
+    "migrate": "knex --knexfile KnexFile.js migrate:latest",
+    "migrate:status": "knex --knexfile KnexFile.js migrate:list",
+    "test": "node --test",
     "localize:images": "node ../scripts/localize-external-images.cjs",
     "localize:images:apply": "node ../scripts/localize-external-images.cjs --apply"
   },

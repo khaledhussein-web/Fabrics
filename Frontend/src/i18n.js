@@ -36,8 +36,8 @@ export const UI = {
         send: "Send Message",
       },
       company: {
-        address: "123 Main Street, Beirut, Lebanon",
-        phone: "+961 1 234 567",
+        address: "61 Bridge Street, Kingston, HR5 3DJ, United Kingdom",
+        phone: "+44 7441 922124",
         email: "info@stageware.com",
       },
       success: "Thanks! We will contact you soon.",
