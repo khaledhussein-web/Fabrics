@@ -37,7 +37,7 @@ Frontend:
 - Root directory: `Frontend`
 - Build command: `npm ci && npm run build`
 - Publish directory: `Frontend/dist`
-- Set `VITE_API_BASE_URL` to the public backend origin.
+- Set `VITE_API_URL` to the public backend origin.
 - Set `VITE_SITE_URL=https://stageware.co.uk`.
 - Configure the static host to rewrite application routes to `index.html`.
 
@@ -62,7 +62,7 @@ WHATSAPP_DEFAULT_TEXT=Hello, I need some help with your products.
 WEB3FORMS_ACCESS_KEY=<optional contact notification key>
 ```
 
-Set `DB_SSL=true` only when the PostgreSQL provider supplies a certificate trusted by the Node.js runtime.
+Connections configured with `DATABASE_URL` use TLS for managed PostgreSQL providers.
 
 Generate the admin token locally:
 

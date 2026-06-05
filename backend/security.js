@@ -34,7 +34,10 @@ const LOCAL_DEV_ORIGINS = [
   "http://127.0.0.1:4173",
 ];
 
-const PRODUCTION_FRONTEND_ORIGIN = "https://stageware.co.uk";
+const PRODUCTION_FRONTEND_ORIGINS = [
+  "https://stageware.co.uk",
+  "https://your-frontend-name.vercel.app",
+];
 
 const parseAllowedOrigins = () => {
   const raw = process.env.CORS_ALLOWED_ORIGINS || "";
@@ -53,7 +56,9 @@ const parseAllowedOrigins = () => {
   if (list.length > 0) return list;
 
   if (isProduction) {
-    return [process.env.FRONTEND_URL || PRODUCTION_FRONTEND_ORIGIN];
+    return process.env.FRONTEND_URL
+      ? [process.env.FRONTEND_URL]
+      : PRODUCTION_FRONTEND_ORIGINS;
   }
 
   return [...LOCAL_DEV_ORIGINS, process.env.FRONTEND_URL].filter(Boolean);
@@ -76,7 +81,7 @@ const corsOptions = {
   },
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "X-Admin-Token"],
-  credentials: false,
+  credentials: true,
   maxAge: 600,
   optionsSuccessStatus: 204,
 };

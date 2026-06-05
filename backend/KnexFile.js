@@ -18,24 +18,22 @@ const localConnection = {
   password: dbPassword,
   database: process.env.DB_NAME,
 };
+const databaseUrlConnection = process.env.DATABASE_URL
+  ? {
+      connectionString: process.env.DATABASE_URL,
+      ssl: { rejectUnauthorized: false },
+    }
+  : null;
 
 module.exports = {
   development: {
     client: "pg",
-    connection: process.env.DATABASE_URL || localConnection,
+    connection: databaseUrlConnection || localConnection,
     migrations,
   },
   production: {
     client: "pg",
-    connection: process.env.DATABASE_URL
-      ? {
-          connectionString: process.env.DATABASE_URL,
-          ssl:
-            process.env.DB_SSL === "true"
-              ? { rejectUnauthorized: true }
-              : undefined,
-        }
-      : localConnection,
+    connection: databaseUrlConnection || localConnection,
     migrations,
   },
 };

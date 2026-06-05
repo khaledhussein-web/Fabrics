@@ -28,7 +28,7 @@ if (missing.length > 0) {
 const pool = process.env.DATABASE_URL
   ? new Pool({
       connectionString: process.env.DATABASE_URL,
-      ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: true } : undefined,
+      ssl: { rejectUnauthorized: false },
     })
   : new Pool({
       host: process.env.DB_HOST,
