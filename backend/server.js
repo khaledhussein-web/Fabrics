@@ -270,15 +270,8 @@ app.use((err, req, res, next) => {
   return sendServerError(res, err, "Internal server error.");
 });
 
-const server = app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-});
+const HOST = "0.0.0.0";
 
-server.on('error', (error) => {
-  console.error('❌ Server failed:', error);
-  process.exit(1);
-});
-
-server.on('close', () => {
-  console.log('⚠️ Server closed.');
+app.listen(PORT, HOST, () => {
+  console.log(`Server running on port ${PORT}`);
 });
