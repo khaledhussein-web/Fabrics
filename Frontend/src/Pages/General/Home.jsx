@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import '../../assets/Home.css'; 
 import Seo from "../../components/Seo";
 import { collectionJsonLd, organizationJsonLd, websiteJsonLd } from "../../seo";
@@ -81,9 +82,9 @@ export default function Home({ t }) {
         </div>
         <div className="card-body text-center bg-white p-4 product-card-content">
           <h4 className="fw-bold mb-3 product-card-title">{t?.productsCategories?.fabrics || "Fabrics"}</h4>
-          <a href="/products/fabrics" className="btn btn-primary w-100 py-2 rounded-pill fw-bold shadow-sm product-card-button">
+          <Link to="/products/fabrics" className="btn btn-primary w-100 py-2 rounded-pill fw-bold shadow-sm product-card-button">
            {t?.viewDetails || "View More"}
-          </a>
+          </Link>
         </div>
       </div>
     </div>
@@ -102,9 +103,9 @@ export default function Home({ t }) {
         </div>
         <div className="card-body text-center bg-white p-4 product-card-content">
           <h4 className="fw-bold mb-3 product-card-title">{t?.productsCategories?.flooring || "Flooring"}</h4>
-          <a href="/products/flooring" className="btn btn-primary w-100 py-2 rounded-pill fw-bold shadow-sm product-card-button">
+          <Link to="/products/flooring" className="btn btn-primary w-100 py-2 rounded-pill fw-bold shadow-sm product-card-button">
             {t?.viewDetails || "View More"}
-          </a>
+          </Link>
         </div>
       </div>
     </div>
@@ -126,9 +127,9 @@ export default function Home({ t }) {
         </div>
         <div className="card-body text-center bg-white p-4 product-card-content">
           <h4 className="fw-bold mb-3 product-card-title">{t?.productsCategories?.frames || "Frames"}</h4>
-          <a href="/products/frames" className="btn btn-primary w-100 py-2 rounded-pill fw-bold shadow-sm product-card-button">
+          <Link to="/products/frames" className="btn btn-primary w-100 py-2 rounded-pill fw-bold shadow-sm product-card-button">
             {t?.viewDetails || "View More"}
-          </a>
+          </Link>
         </div>
       </div>
     </div>
@@ -148,9 +149,9 @@ export default function Home({ t }) {
         </div>
         <div className="card-body text-center bg-white p-4 product-card-content">
           <h4 className="fw-bold mb-3 product-card-title">{t?.productsCategories?.tracks || "Tracks"}</h4>
-          <a href="/products/tracks" className="btn btn-primary w-100 py-2 rounded-pill fw-bold shadow-sm product-card-button">
+          <Link to="/products/tracks" className="btn btn-primary w-100 py-2 rounded-pill fw-bold shadow-sm product-card-button">
             {t?.viewDetails || "View More"}
-          </a>
+          </Link>
         </div>
       </div>
     </div>
@@ -159,7 +160,7 @@ export default function Home({ t }) {
       <div className="card h-100 border-0 shadow-lg overflow-hidden rounded-4 product-category-card">
         <div className="position-relative overflow-hidden">
           <img
-            src="tracks.jpg"
+            src="/trussing.png"
             className="card-img-top img-fluid"
             alt="Stage trussing system"
             style={{ height: '280px', objectFit: 'cover', transition: 'transform 0.3s ease' }}
@@ -169,9 +170,9 @@ export default function Home({ t }) {
         </div>
         <div className="card-body text-center bg-white p-4 product-card-content">
           <h4 className="fw-bold mb-3 product-card-title">{t?.productsCategories?.trussing || "Standard and customize Trussing system"}</h4>
-          <a href="/products/trussing" className="btn btn-primary w-100 py-2 rounded-pill fw-bold shadow-sm product-card-button">
+          <Link to="/products/trussing" className="btn btn-primary w-100 py-2 rounded-pill fw-bold shadow-sm product-card-button">
             {t?.viewDetails || "View More"}
-          </a>
+          </Link>
         </div>
       </div>
     </div>
