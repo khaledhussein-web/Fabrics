@@ -67,6 +67,17 @@ export default function Contact({ t }) {
         throw new Error(result.message || "Failed to save contact request.");
       }
 
+      if (!result.emailSent) {
+        const message =
+          result.emailStatus === "not_configured"
+            ? "Your enquiry was saved, but email notifications are not configured."
+            : "Your enquiry was saved, but the email notification could not be delivered.";
+        showToast(message, "error");
+        setIsSent(false);
+        setForm({ name: "", email: "", phone: "", message: "" });
+        return;
+      }
+
       showToast(t?.contact?.success || "Message sent successfully!");
       setIsSent(true);
       setForm({ name: "", email: "", phone: "", message: "" });
