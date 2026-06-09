@@ -35,6 +35,32 @@ body,
   background: var(--background-color);
 }
 
+.skip-link {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 20000;
+  padding: 0.75rem 1rem;
+  color: #ffffff;
+  background: #1e3a8a;
+  border-radius: 6px;
+  transform: translateY(-150%);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+.route-loading {
+  padding: 3rem 1rem;
+  text-align: center;
+}
+
+:where(a, button, [tabindex]):focus-visible {
+  outline: 3px solid #f59e0b;
+  outline-offset: 3px;
+}
+
 a {
     text-decoration:none !important;
 
@@ -183,6 +209,22 @@ header {
   color: var(--accent-color);
 }
 
+.products-toggle,
+.products-toggle:hover,
+.products-toggle:focus {
+  background: transparent;
+  color: var(--text-color);
+  border-top: 0;
+  border-right: 0;
+  border-left: 0;
+}
+
+.products-toggle:hover,
+.products-toggle:focus {
+  color: var(--accent-color);
+  border-bottom-color: var(--accent-color);
+}
+
 .nav-controls {
   display: flex;
   align-items: center;
@@ -208,7 +250,11 @@ header {
 }
 
 .menu-toggle {
-  /* background: transparent; */
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0.35rem;
+  color: var(--text-color);
+  background: transparent;
   border: none;
   font-size: 1.5rem;
   cursor: pointer;

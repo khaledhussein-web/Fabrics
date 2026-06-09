@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Dropdown from 'react-bootstrap/Dropdown';
-import Navbar from 'react-bootstrap/Navbar';
-import Image from 'react-bootstrap/Image';
 
 import logo from "/logo.png"
 
@@ -54,14 +52,15 @@ export default function Header({ t }) {
             <div className="brand-text">{t.brand}</div>
           </div>
         </Link> */}
-<Navbar.Brand as={Link} to="/" className="nav-logo">
-          <Image
+        <Link to="/" className="nav-logo" aria-label="StageWare home">
+          <img
             src={logo} 
-            alt="Company Logo"
-            height="70" 
+            alt="StageWare"
+            width="216"
+            height="70"
             className="d-inline-block" 
             />
-        </Navbar.Brand>
+        </Link>
 
         {/* ===== Nav Links and Controls ===== */}
         <div className="nav-right">
@@ -76,7 +75,7 @@ export default function Header({ t }) {
 
             {/* Products dropdown (Desktop - RESTORED) */}
             <Dropdown className="products-dropdown-override">
-              <Dropdown.Toggle id="product-menu-dropdown-responsive" className="nav-btn" as="span">
+              <Dropdown.Toggle id="product-menu-dropdown-responsive" className="nav-btn products-toggle">
                 {t.nav.products}
               </Dropdown.Toggle>
               <Dropdown.Menu>
@@ -150,7 +149,16 @@ export default function Header({ t }) {
 
           <div className="nav-controls">
             {/* Burger menu button */}
-            <button onClick={handleMenuToggle} className="menu-toggle">{"\u2630"}</button>
+            <button
+              type="button"
+              onClick={handleMenuToggle}
+              className="menu-toggle"
+              aria-label={mobileMenu ? "Close navigation menu" : "Open navigation menu"}
+              aria-expanded={mobileMenu}
+              aria-controls="mobile-nav"
+            >
+              <span aria-hidden="true">{"\u2630"}</span>
+            </button>
 
           </div>
         </div>
@@ -159,7 +167,11 @@ export default function Header({ t }) {
 
 {/* ===== Mobile Navigation (RESTORED) ===== */}
 
-      <div className={`mobile-nav ${mobileMenu ? "show" : ""}`} id="mobile-nav">
+      <nav
+        className={`mobile-nav ${mobileMenu ? "show" : ""}`}
+        id="mobile-nav"
+        aria-label="Mobile navigation"
+      >
         {/* Primary Top-Level Links */}
         <Link to="/about" className="nav-btn" onClick={closeMobileMenu}>{t.nav.about}</Link>
         <Link to="/services" className="nav-btn" onClick={closeMobileMenu}>{t.nav.services}</Link>
@@ -209,7 +221,7 @@ export default function Header({ t }) {
 
         {/* Utility Links */}
         <Link to="/contact" className="nav-btn" onClick={closeMobileMenu}>{t.nav.contact}</Link>
-      </div>
+      </nav>
     </header>
   );
 }
