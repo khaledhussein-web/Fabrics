@@ -209,18 +209,23 @@ header {
   color: var(--accent-color);
 }
 
-.products-toggle,
-.products-toggle:hover,
-.products-toggle:focus {
-  background: transparent;
+.products-dropdown-override .products-toggle,
+.products-dropdown-override .products-toggle:hover,
+.products-dropdown-override .products-toggle:focus,
+.products-dropdown-override .products-toggle:active,
+.products-dropdown-override .products-toggle.show {
+  background-color: transparent;
   color: var(--text-color);
   border-top: 0;
   border-right: 0;
   border-left: 0;
+  border-bottom: 2px solid transparent;
+  box-shadow: none;
 }
 
-.products-toggle:hover,
-.products-toggle:focus {
+.products-dropdown-override .products-toggle:hover,
+.products-dropdown-override .products-toggle:focus-visible,
+.products-dropdown-override .products-toggle.show {
   color: var(--accent-color);
   border-bottom-color: var(--accent-color);
 }
