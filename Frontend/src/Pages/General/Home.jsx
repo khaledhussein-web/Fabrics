@@ -36,6 +36,8 @@ export default function Home({ t }) {
         <div className="home-hero-container">
         <img
           src="/banners/Fabrics_Home_page.jpg"
+          srcSet="/banners/Fabrics_Home_page-480.jpg 480w, /banners/Fabrics_Home_page-800.jpg 800w, /banners/Fabrics_Home_page-1200.jpg 1200w, /banners/Fabrics_Home_page.jpg 1445w"
+          sizes="(max-width: 576px) calc(100vw - 24px), (max-width: 1240px) calc(100vw - 40px), 1200px"
           alt="StageWare flame-retardant fabrics and stage solutions"
           className="home-hero-image"
           width="1445"

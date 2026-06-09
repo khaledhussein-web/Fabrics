@@ -213,7 +213,7 @@ header {
 .products-dropdown-override .products-toggle:hover,
 .products-dropdown-override .products-toggle:focus,
 .products-dropdown-override .products-toggle:active,
-.products-dropdown-override .products-toggle.show {
+.products-dropdown-override[open] .products-toggle {
   background-color: transparent;
   color: var(--text-color);
   border-top: 0;
@@ -225,9 +225,36 @@ header {
 
 .products-dropdown-override .products-toggle:hover,
 .products-dropdown-override .products-toggle:focus-visible,
-.products-dropdown-override .products-toggle.show {
+.products-dropdown-override[open] .products-toggle {
   color: var(--accent-color);
   border-bottom-color: var(--accent-color);
+}
+
+.products-toggle {
+  list-style: none;
+}
+
+.products-toggle::-webkit-details-marker {
+  display: none;
+}
+
+.desktop-products-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  display: none;
+  min-width: 12rem;
+  padding: 0.5rem 0;
+  color: var(--bs-dropdown-color);
+  background-color: var(--bs-dropdown-bg);
+  border: var(--bs-dropdown-border-width) solid var(--bs-dropdown-border-color);
+  border-radius: var(--bs-dropdown-border-radius);
+  box-shadow: var(--bs-dropdown-box-shadow);
+}
+
+.products-dropdown-override[open] > .desktop-products-menu {
+  display: block;
 }
 
 .nav-controls {
@@ -442,7 +469,8 @@ header {
 @media screen and (min-width: 992px) {
   /* Applies on desktop/large screens */
 
-  .dropdown-submenu:hover>.dropdown-menu-nested {
+  .dropdown-submenu:hover > .dropdown-menu-nested,
+  .dropdown-submenu:focus-within > .dropdown-menu-nested {
     display: block;
     /* Show the menu on hover */
 

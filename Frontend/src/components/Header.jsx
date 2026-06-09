@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import Dropdown from 'react-bootstrap/Dropdown';
 
 import logo from "/logo.png"
 
@@ -74,69 +73,66 @@ export default function Header({ t }) {
 
 
             {/* Products dropdown (Desktop - RESTORED) */}
-            <Dropdown className="products-dropdown-override">
-              <Dropdown.Toggle id="product-menu-dropdown-responsive" className="nav-btn products-toggle">
+            <details className="products-dropdown-override">
+              <summary id="product-menu-dropdown-responsive" className="nav-btn products-toggle">
                 {t.nav.products}
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
+              </summary>
+              <div className="desktop-products-menu">
                 
                 {/* 1. Fabrics Dropdown */}
-                <li className="dropdown-submenu">
+                <div className="dropdown-submenu">
                   {/* Link to main Fabrics page */}
-                  <Dropdown.Item as={Link} to={`/products/fabrics`} className="submenu-trigger cursor-pointer" >
+                  <Link to="/products/fabrics" className="dropdown-item submenu-trigger cursor-pointer">
                     {t.productsCategories.fabrics}
-                  </Dropdown.Item>
+                  </Link>
 
                   <div className="dropdown-menu-nested">
-                    <Dropdown.Item as={Link} to={`/products/fabrics/1`}> 
+                    <Link className="dropdown-item" to="/products/fabrics/1">
                       {t.fabricsSubCategories.decoration}
-                    </Dropdown.Item>
-                    <Dropdown.Item as={Link} to={`/products/fabrics/2`}>
+                    </Link>
+                    <Link className="dropdown-item" to="/products/fabrics/2">
                       {t.fabricsSubCategories.ph} 
-                    </Dropdown.Item>
-                    <Dropdown.Item as={Link} to={`/products/fabrics/6`}>
+                    </Link>
+                    <Link className="dropdown-item" to="/products/fabrics/6">
                       {t.fabricsSubCategories.fabricDrawings}
-                    </Dropdown.Item>
+                    </Link>
                   </div>
-                </li>
+                </div>
 
                 {/* 2. Flooring */}
-                <Dropdown.Item as={Link} to={`/products/flooring`}>
-                {t.productsCategories.flooring}
-                </Dropdown.Item>
+                <Link className="dropdown-item" to="/products/flooring">
+                  {t.productsCategories.flooring}
+                </Link>
 
                 {/* 3. Frames Link */}
-                <Dropdown.Item as={Link} to={`/products/frames`}> 
+                <Link className="dropdown-item" to="/products/frames">
                   {t.productsCategories.frames}
-                </Dropdown.Item>
+                </Link>
 
                 {/* 4. Tracks Dropdown */}
-                <li className="dropdown-submenu">
-                    <Dropdown.Item as={Link} to={`/products/tracks`} className="submenu-trigger cursor-pointer">
+                <div className="dropdown-submenu">
+                    <Link className="dropdown-item submenu-trigger cursor-pointer" to="/products/tracks">
                       {t.productsCategories.tracks}
-                    </Dropdown.Item>
+                    </Link>
                     <div className="dropdown-menu-nested">
-                      <Dropdown.Item as={Link} to={`/products/tracks/3`}>
+                      <Link className="dropdown-item" to="/products/tracks/3">
                         {t.tracksSubCategories.chainTrack}
-                      </Dropdown.Item>
-                      <Dropdown.Item as={Link} to={`/products/tracks/4`}>
+                      </Link>
+                      <Link className="dropdown-item" to="/products/tracks/4">
                         {t.tracksSubCategories.revealSystems}
-                      </Dropdown.Item>
-                      <Dropdown.Item as={Link} to={`/products/tracks/5`}>
+                      </Link>
+                      <Link className="dropdown-item" to="/products/tracks/5">
                         {t.tracksSubCategories.rollups}
-                      </Dropdown.Item>
+                      </Link>
                     </div>
-                </li>
+                </div>
 
                 {/* 5. Trussing */}
-                <Dropdown.Item as={Link} to={`/products/trussing`}>
+                <Link className="dropdown-item" to="/products/trussing">
                   {t.productsCategories.trussing}
-                </Dropdown.Item>
-                
-           
-
-              </Dropdown.Menu>
-            </Dropdown>
+                </Link>
+              </div>
+            </details>
             {/* End products dropdown*/}
 
 
