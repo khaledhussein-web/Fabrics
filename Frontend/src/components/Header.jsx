@@ -18,8 +18,8 @@ export default function Header({ t }) {
   // --- Close menu on desktop resize ---
   useEffect(() => {
     const handleResize = () => {
-      // Check if the screen width is greater than your mobile breakpoint (768px)
-      if (window.innerWidth > 768) {
+      // Keep this aligned with the responsive breakpoint in style.css.
+      if (window.innerWidth > 1050) {
         setMobileMenu(false); // Force close the menu
       }
     };

@@ -131,6 +131,7 @@ header {
 
 .navbar {
   display: flex;
+  flex-wrap: nowrap;
   justify-content: space-between;
   align-items: center;
   padding: 14px 60px;
@@ -168,6 +169,7 @@ header {
   display: flex;
   align-items: center;
   gap: 1rem;
+  min-width: 0;
 }
 
 .nav-links {
@@ -177,6 +179,7 @@ header {
 }
 
 .nav-logo {
+  flex-shrink: 0;
   color: var(--text-color);
   text-decoration: none;
   font-weight: 400;
@@ -245,12 +248,17 @@ header {
   z-index: 1000;
   display: none;
   min-width: 12rem;
+  max-width: min(22rem, calc(100vw - 2rem));
   padding: 0.5rem 0;
   color: var(--bs-dropdown-color);
-  background-color: var(--bs-dropdown-bg);
+  background-color: var(--bs-dropdown-bg, #fff);
   border: var(--bs-dropdown-border-width) solid var(--bs-dropdown-border-color);
   border-radius: var(--bs-dropdown-border-radius);
   box-shadow: var(--bs-dropdown-box-shadow);
+}
+
+.desktop-products-menu .dropdown-item {
+  white-space: normal;
 }
 
 .products-dropdown-override[open] > .desktop-products-menu {
@@ -343,7 +351,7 @@ header {
   opacity: 0.85;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1050px) {
   .navbar {
     padding: 14px 20px;
   }
