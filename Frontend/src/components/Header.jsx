@@ -72,11 +72,16 @@ export default function Header({ t }) {
 
 
 
-            {/* Products dropdown (Desktop - RESTORED) */}
-            <details className="products-dropdown-override">
-              <summary id="product-menu-dropdown-responsive" className="nav-btn products-toggle">
+            {/* Products dropdown */}
+            <div className="products-dropdown-override">
+              <button
+                type="button"
+                id="product-menu-dropdown-responsive"
+                className="nav-btn products-toggle"
+                aria-haspopup="true"
+              >
                 {t.nav.products}
-              </summary>
+              </button>
               <div className="desktop-products-menu">
                 
                 {/* 1. Fabrics Dropdown */}
@@ -132,7 +137,7 @@ export default function Header({ t }) {
                   {t.productsCategories.trussing}
                 </Link>
               </div>
-            </details>
+            </div>
             {/* End products dropdown*/}
 
 

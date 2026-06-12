@@ -215,8 +215,7 @@ header {
 .products-dropdown-override .products-toggle,
 .products-dropdown-override .products-toggle:hover,
 .products-dropdown-override .products-toggle:focus,
-.products-dropdown-override .products-toggle:active,
-.products-dropdown-override[open] .products-toggle {
+.products-dropdown-override .products-toggle:active {
   background-color: transparent;
   color: var(--text-color);
   border-top: 0;
@@ -224,44 +223,54 @@ header {
   border-left: 0;
   border-bottom: 2px solid transparent;
   box-shadow: none;
+  font: inherit;
 }
 
 .products-dropdown-override .products-toggle:hover,
 .products-dropdown-override .products-toggle:focus-visible,
-.products-dropdown-override[open] .products-toggle {
+.products-dropdown-override:hover .products-toggle,
+.products-dropdown-override:focus-within .products-toggle {
   color: var(--accent-color);
   border-bottom-color: var(--accent-color);
 }
 
-.products-toggle {
-  list-style: none;
-}
-
-.products-toggle::-webkit-details-marker {
-  display: none;
-}
-
 .desktop-products-menu {
   position: absolute;
-  top: 100%;
+  top: calc(100% - 1px);
   left: 0;
   z-index: 1000;
   display: none;
   min-width: 12rem;
   max-width: min(22rem, calc(100vw - 2rem));
-  padding: 0.5rem 0;
-  color: var(--bs-dropdown-color);
-  background-color: var(--bs-dropdown-bg, #fff);
-  border: var(--bs-dropdown-border-width) solid var(--bs-dropdown-border-color);
-  border-radius: var(--bs-dropdown-border-radius);
-  box-shadow: var(--bs-dropdown-box-shadow);
+  padding: 0.45rem;
+  color: var(--text-color);
+  background: rgba(255, 255, 255, 0.98);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
 }
 
 .desktop-products-menu .dropdown-item {
+  display: block;
+  padding: 0.6rem 0.75rem;
+  color: var(--text-color);
+  font-weight: 400;
+  text-decoration: none;
+  border-radius: 4px;
   white-space: normal;
+  transition: color 0.2s ease, background-color 0.2s ease;
 }
 
-.products-dropdown-override[open] > .desktop-products-menu {
+.desktop-products-menu .dropdown-item:hover,
+.desktop-products-menu .dropdown-item:focus-visible {
+  color: var(--accent-color);
+  background-color: rgba(0, 0, 0, 0.035);
+}
+
+.products-dropdown-override:hover > .desktop-products-menu,
+.products-dropdown-override:focus-within > .desktop-products-menu {
   display: block;
 }
 
@@ -461,10 +470,14 @@ header {
   margin: 0;
 
   /* Apply base Bootstrap menu styles */
-  background-color: var(--bs-dropdown-bg);
-  border: var(--bs-dropdown-border-width) solid var(--bs-dropdown-border-color);
-  border-radius: var(--bs-dropdown-border-radius);
-  box-shadow: var(--bs-dropdown-box-shadow);
+  min-width: 12rem;
+  padding: 0.45rem;
+  background: rgba(255, 255, 255, 0.98);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0 8px 8px 8px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
   z-index: 1000;
 
   display: none;
@@ -474,7 +487,7 @@ header {
 /* ------------------------------------------------------------------- */
 /* 2. Desktop Behavior (Hover to Open Submenu) */
 /* ------------------------------------------------------------------- */
-@media screen and (min-width: 992px) {
+@media screen and (min-width: 1051px) {
   /* Applies on desktop/large screens */
 
   .dropdown-submenu:hover > .dropdown-menu-nested,
